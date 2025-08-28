@@ -1,0 +1,4 @@
+source;share/pyrosens_heat/local_setup.bash
+source;share/pyrosens_heat/local_setup.dsv
+source;share/pyrosens_heat/local_setup.sh
+source;share/pyrosens_heat/local_setup.zsh

@@ -1,0 +1,2 @@
+source;share/pyrosens_heat/environment/ament_prefix_path.sh
+source;share/pyrosens_heat/environment/path.sh
