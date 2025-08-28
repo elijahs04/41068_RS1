@@ -21,16 +21,20 @@ private:
   // publishers
   rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr map_pub_;
 
-  // state
+  // grid state
+  nav_msgs::msg::OccupancyGrid grid_;
+  std::vector<float> heat_;   // floating-point "true" temperatures
   std::optional<geometry_msgs::msg::PointStamped> last_point_;
 
-  // grid data (fixed atm)
-  nav_msgs::msg::OccupancyGrid grid_;
-  double resolution_ = 1.0;
-  int width_ = 100; 
-  int height_ = 100;
-  double origin_x_ = -50.0;
-  double origin_y_ = -50.0;
-  double t_min_ = 15.0;
-  double t_max_ = 80.0;
+  // grid param
+  double resolution_ = 0.25;
+  int width_ = 200; 
+  int height_ = 200;
+  double origin_x_ = -25.0;
+  double origin_y_ = -25.0;
+
+  // map param
+  float alpha_ = 0.2f;
+  double t_min_ = 1.0f;
+  double t_max_ = 100.0f;
 };
