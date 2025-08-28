@@ -1,0 +1,19 @@
+[35m[1mConsolidate compiler generated dependencies of target test_node[0m
+[100%] Built target test_node
+-- Install configuration: ""
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/lib/testing_ground/test_node
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/ament_index/resource_index/package_run_dependencies/testing_ground
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/ament_index/resource_index/parent_prefix_path/testing_ground
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/environment/ament_prefix_path.sh
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/environment/ament_prefix_path.dsv
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/environment/path.sh
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/environment/path.dsv
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/local_setup.bash
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/local_setup.sh
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/local_setup.zsh
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/local_setup.dsv
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/package.dsv
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/ament_index/resource_index/packages/testing_ground
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/cmake/testing_groundConfig.cmake
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/cmake/testing_groundConfig-version.cmake
+-- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/package.xml
