@@ -14,7 +14,9 @@ MapperNode::MapperNode() : rclcpp::Node("mapper_node") {
     std::bind(&MapperNode::onTemp, this, std::placeholders::_1));
 
   // pub
-  map_pub_ = create_publisher<nav_msgs::msg::OccupancyGrid>("/heat/heatmap", 10);
+  // new (latched-style)
+  auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).reliable().transient_local();
+  map_pub_ = create_publisher<nav_msgs::msg::OccupancyGrid>("/heat/heatmap", qos);
 
   // init grid (fixed v0)
   grid_.header.frame_id = "map";
@@ -56,6 +58,11 @@ void MapperNode::onTemp(const sensor_msgs::msg::Temperature & msg) {
 
   // v0: overwrite cell
   grid_.data[idx] = val;
+
+  RCLCPP_INFO_THROTTLE(
+  get_logger(), *get_clock(), 1000,
+  "Set cell (i=%d, j=%d, idx=%zu) to %d (temp=%.1f, point=(%.2f,%.2f))",
+  i, j, idx, val, msg.temperature, p.x, p.y);
 
   // 3) publish
   grid_.header.stamp = now();
