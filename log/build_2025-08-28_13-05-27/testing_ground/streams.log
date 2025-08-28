@@ -1,0 +1,23 @@
+[0.006s] Invoking command in '/home/elijahs04/git/41068_RS1/build/testing_ground': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/elijahs04/git/41068_RS1/build/testing_ground -- -j16 -l16
+[0.033s] [35m[1mConsolidate compiler generated dependencies of target test_node[0m
+[0.041s] [100%] Built target test_node
+[0.049s] Invoked command in '/home/elijahs04/git/41068_RS1/build/testing_ground' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/elijahs04/git/41068_RS1/build/testing_ground -- -j16 -l16
+[0.061s] Invoking command in '/home/elijahs04/git/41068_RS1/build/testing_ground': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/elijahs04/git/41068_RS1/build/testing_ground
+[0.067s] -- Install configuration: ""
+[0.067s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/lib/testing_ground/test_node
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/ament_index/resource_index/package_run_dependencies/testing_ground
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/ament_index/resource_index/parent_prefix_path/testing_ground
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/environment/ament_prefix_path.sh
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/environment/ament_prefix_path.dsv
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/environment/path.sh
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/environment/path.dsv
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/local_setup.bash
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/local_setup.sh
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/local_setup.zsh
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/local_setup.dsv
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/package.dsv
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/ament_index/resource_index/packages/testing_ground
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/cmake/testing_groundConfig.cmake
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/cmake/testing_groundConfig-version.cmake
+[0.068s] -- Up-to-date: /home/elijahs04/git/41068_RS1/install/testing_ground/share/testing_ground/package.xml
+[0.069s] Invoked command in '/home/elijahs04/git/41068_RS1/build/testing_ground' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/elijahs04/git/41068_RS1/build/testing_ground
