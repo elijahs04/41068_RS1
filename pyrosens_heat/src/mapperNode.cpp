@@ -27,6 +27,7 @@ MapperNode::MapperNode() : rclcpp::Node("mapper_node") {
   grid_.info.origin.position.y = origin_y_;
   grid_.info.origin.orientation.w = 1.0;
   grid_.data.assign(width_ * height_, -1); // -1 = unknown
+  heat_.assign(width_ * height_, std::numeric_limits<float>::quiet_NaN());
 }
 
 void MapperNode::onPoint(const geometry_msgs::msg::PointStamped & msg) {
@@ -40,7 +41,6 @@ void MapperNode::onTemp(const sensor_msgs::msg::Temperature & msg) {
     return;
   }
 
-  // 1) index into grid
   const auto & p = last_point_.value().point;
   int i = static_cast<int>(std::floor((p.x - origin_x_) / resolution_));
   int j = static_cast<int>(std::floor((p.y - origin_y_) / resolution_));
@@ -49,22 +49,43 @@ void MapperNode::onTemp(const sensor_msgs::msg::Temperature & msg) {
                          "Point (%.2f, %.2f) out of grid", p.x, p.y);
     return;
   }
-  size_t idx = static_cast<size_t>(j) * static_cast<size_t>(width_) + static_cast<size_t>(i);
 
-  // 2) scale temperature (°C) → 0..100
-  double a = (msg.temperature - t_min_) / (t_max_ - t_min_);
-  a = std::clamp(a, 0.0, 1.0);
-  int8_t val = static_cast<int8_t>(std::round(a * 100.0));
+  // --- 3x3 Gaussian-ish kernel ---
+  const float K[3][3] = {
+    {0.05f, 0.10f, 0.05f},
+    {0.10f, 0.40f, 0.10f},
+    {0.05f, 0.10f, 0.05f}
+  };
 
-  // v0: overwrite cell
-  grid_.data[idx] = val;
+  float T = static_cast<float>(msg.temperature);
+
+  // loop around the center cell
+  for (int dy = -1; dy <= 1; ++dy) {
+    for (int dx = -1; dx <= 1; ++dx) {
+      int ii = i + dx;
+      int jj = j + dy;
+      if (ii < 0 || jj < 0 || ii >= width_ || jj >= height_) continue;
+
+      size_t k = static_cast<size_t>(jj) * width_ + static_cast<size_t>(ii);
+      float &H = heat_[k];
+      float w = K[dy + 1][dx + 1];
+
+      // EMA update with kernel weight
+      if (std::isnan(H)) H = T * w;
+      else               H = (1.0f - alpha_ * w) * H + (alpha_ * w) * T;
+
+      // scale to [0,100] for publishing
+      float a = (H - t_min_) / (t_max_ - t_min_);
+      a = std::clamp(a, 0.0f, 1.0f);
+      grid_.data[k] = static_cast<int8_t>(std::round(a * 100.0f));
+    }
+  }
 
   RCLCPP_INFO_THROTTLE(
-  get_logger(), *get_clock(), 1000,
-  "Set cell (i=%d, j=%d, idx=%zu) to %d (temp=%.1f, point=(%.2f,%.2f))",
-  i, j, idx, val, msg.temperature, p.x, p.y);
+    get_logger(), *get_clock(), 1000,
+    "Painted around (i=%d, j=%d) for temp=%.1f at point=(%.2f, %.2f)",
+    i, j, msg.temperature, p.x, p.y);
 
-  // 3) publish
   grid_.header.stamp = now();
   map_pub_->publish(grid_);
 }
