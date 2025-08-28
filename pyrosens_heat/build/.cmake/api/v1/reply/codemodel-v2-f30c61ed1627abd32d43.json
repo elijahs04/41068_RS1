@@ -1,0 +1,106 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-1b3b486ebc3a2e5a4fb3.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "pyrosens_heat",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "mapperNode::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mapperNode-Debug-ac6963aec4fc2c8f47fd.json",
+					"name" : "mapperNode",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "mapperNode_lib::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mapperNode_lib-Debug-b705edc7d7ed730efe70.json",
+					"name" : "mapperNode_lib",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pyrosens_heat_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pyrosens_heat_uninstall-Debug-c5d172e684d219c8d066.json",
+					"name" : "pyrosens_heat_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sensorNode::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sensorNode-Debug-22a7eb8e8d069ac919e6.json",
+					"name" : "sensorNode",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sensorNode_lib::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sensorNode_lib-Debug-a90ef8f4acf81757852e.json",
+					"name" : "sensorNode_lib",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Debug-b94bdcfa11642bd091aa.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/connorlindsel2204/git/41068_RS1/pyrosens_heat/build",
+		"source" : "/home/connorlindsel2204/git/41068_RS1/pyrosens_heat"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

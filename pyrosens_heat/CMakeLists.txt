@@ -12,29 +12,33 @@ find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 
-# --- Executables
-add_executable(sensorNode src/sensorNode.cpp)
-ament_target_dependencies(sensorNode rclcpp sensor_msgs geometry_msgs)
+# --- Include headers
+include_directories(include)
 
-add_executable(mapperNode src/mapperNode.cpp)
-ament_target_dependencies(mapperNode rclcpp sensor_msgs geometry_msgs nav_msgs)
+# --- Build libraries (node classes)
+add_library(sensorNode_lib src/sensorNode.cpp)
+ament_target_dependencies(sensorNode_lib rclcpp sensor_msgs geometry_msgs)
 
-# --- Install
+add_library(mapperNode_lib src/mapperNode.cpp)
+ament_target_dependencies(mapperNode_lib rclcpp sensor_msgs geometry_msgs nav_msgs)
+
+# --- Build executables (mains) linking the libs
+add_executable(sensorNode src/main_sensor.cpp)
+target_link_libraries(sensorNode sensorNode_lib)
+
+add_executable(mapperNode src/main_mapper.cpp)
+target_link_libraries(mapperNode mapperNode_lib)
+
 install(TARGETS
+  sensorNode_lib
+  mapperNode_lib
   sensorNode
   mapperNode
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# (Optional) install launch/ if you have it:
-# install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
-
-# --- Testing lint (unchanged)
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  set(ament_cmake_copyright_FOUND TRUE)
-  set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-endif()
+install(DIRECTORY include/
+  DESTINATION include
+)
 
 ament_package()
