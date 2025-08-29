@@ -41,6 +41,7 @@ void MapperNode::onTemp(const sensor_msgs::msg::Temperature & msg) {
     return;
   }
 
+  // ---- find the center cell for this sample ----
   const auto & p = last_point_.value().point;
   int i = static_cast<int>(std::floor((p.x - origin_x_) / resolution_));
   int j = static_cast<int>(std::floor((p.y - origin_y_) / resolution_));
@@ -50,42 +51,63 @@ void MapperNode::onTemp(const sensor_msgs::msg::Temperature & msg) {
     return;
   }
 
-  // --- 3x3 Gaussian-ish kernel ---
-  const float K[3][3] = {
-    {0.05f, 0.10f, 0.05f},
-    {0.10f, 0.40f, 0.10f},
-    {0.05f, 0.10f, 0.05f}
-  };
+  // ---- radial brush parameters (meters → cells) ----
+  // Brush radius R_m = cutoff_sigma_ * sigma_m_ (e.g., 3 * 0.5m = 1.5m)
+  double R_m = cutoff_sigma_ * sigma_m_;
+  int R = std::max(1, static_cast<int>(std::ceil(R_m / resolution_)));
+  double sigma2 = sigma_m_ * sigma_m_;
+  double R2 = R_m * R_m;
 
   float T = static_cast<float>(msg.temperature);
 
-  // loop around the center cell
-  for (int dy = -1; dy <= 1; ++dy) {
-    for (int dx = -1; dx <= 1; ++dx) {
+  // ---- paint a disk around (i,j) with Gaussian/top-hat weights ----
+  for (int dy = -R; dy <= R; ++dy) {
+    int jj = j + dy;
+    if (jj < 0 || jj >= height_) continue;
+
+    double y_m = dy * resolution_;  // meters
+
+    for (int dx = -R; dx <= R; ++dx) {
       int ii = i + dx;
-      int jj = j + dy;
-      if (ii < 0 || jj < 0 || ii >= width_ || jj >= height_) continue;
+      if (ii < 0 || ii >= width_) continue;
 
-      size_t k = static_cast<size_t>(jj) * width_ + static_cast<size_t>(ii);
-      float &H = heat_[k];
-      float w = K[dy + 1][dx + 1];
+      double x_m = dx * resolution_;  // meters
+      double r2 = x_m * x_m + y_m * y_m;
+      if (r2 > R2) continue;  // outside the circular brush
 
-      // EMA update with kernel weight
-      if (std::isnan(H)) H = T * w;
-      else               H = (1.0f - alpha_ * w) * H + (alpha_ * w) * T;
+      // weight at this offset
+      float w;
+      if (use_top_hat_) {
+        w = 1.0f;  // flat disk
+      } else {
+        // Gaussian: peak 1.0 at center, smooth falloff
+        w = static_cast<float>(std::exp(-0.5 * (r2 / sigma2)));
+      }
+
+      size_t k = static_cast<size_t>(jj) * static_cast<size_t>(width_)
+               + static_cast<size_t>(ii);
+
+      float &Hk = heat_[k];
+      if (std::isnan(Hk)) {
+        Hk = T * w;
+      } else {
+        // EMA toward T with kernel weight
+        Hk = (1.0f - alpha_ * w) * Hk + (alpha_ * w) * T;
+      }
 
       // scale to [0,100] for publishing
-      float a = (H - t_min_) / (t_max_ - t_min_);
+      float a = (Hk - t_min_) / (t_max_ - t_min_);
       a = std::clamp(a, 0.0f, 1.0f);
       grid_.data[k] = static_cast<int8_t>(std::round(a * 100.0f));
     }
   }
 
-  RCLCPP_INFO_THROTTLE(
-    get_logger(), *get_clock(), 1000,
-    "Painted around (i=%d, j=%d) for temp=%.1f at point=(%.2f, %.2f)",
-    i, j, msg.temperature, p.x, p.y);
-
+  grid_.header.frame_id = "map";
   grid_.header.stamp = now();
   map_pub_->publish(grid_);
+
+  RCLCPP_INFO_THROTTLE(
+    get_logger(), *get_clock(), 2000,
+    "Painted circular brush at (i=%d,j=%d) temp=%.1f (sigma=%.2fm, cutoff=%.1fσ)",
+    i, j, msg.temperature, sigma_m_, cutoff_sigma_);
 }

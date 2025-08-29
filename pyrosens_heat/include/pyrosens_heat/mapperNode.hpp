@@ -34,7 +34,11 @@ private:
   double origin_y_ = -25.0;
 
   // map param
-  float alpha_ = 0.2f;
+  float alpha_ = 0.3f;
   double t_min_ = 1.0f;
   double t_max_ = 100.0f;
+  double sigma_m_ = 0.5;         // Gaussian standard deviation (m). Try 0.3–1.0
+  double cutoff_sigma_ = 3.0;    // radius = cutoff_sigma_ * sigma_m_
+  bool   use_top_hat_ = false;   // true -> flat disk, false -> Gaussian
+
 };
