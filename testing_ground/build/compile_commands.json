@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/elijahs04/ros2_ws/src/41068_RS1/testing_ground/build",
+  "command": "/usr/bin/c++  -I/home/elijahs04/ros2_ws/src/41068_RS1/testing_ground/include -g -Wall -Wextra -Wpedantic -o CMakeFiles/test_node.dir/src/test_node.cpp.o -c /home/elijahs04/ros2_ws/src/41068_RS1/testing_ground/src/test_node.cpp",
+  "file": "/home/elijahs04/ros2_ws/src/41068_RS1/testing_ground/src/test_node.cpp"
+}
+]
