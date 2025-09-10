@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmapperNode_lib.a CMakeFiles/mapperNode_lib.dir/src/mapperNode.cpp.o
+/usr/bin/ranlib libmapperNode_lib.a
