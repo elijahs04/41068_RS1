@@ -31,4 +31,8 @@ private:
   double head_diam_;          // head diameter (m)
   double head_len_;           // head length (m)
   double speed_clip_max_;     // cap for arrow scaling
+  double speed_min_;          // m/s mapped to "cool" color / minimum size
+  double speed_max_;          // m/s mapped to "hot" color / maximum size
+  double length_gain_;        // extra gain on arrow length (multiplies current length)
+
 };
