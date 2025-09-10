@@ -687,4 +687,5 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/mapperNode_lib.dir/DependInfo.cmake"
   "CMakeFiles/sensorNode.dir/DependInfo.cmake"
   "CMakeFiles/mapperNode.dir/DependInfo.cmake"
+  "CMakeFiles/testCloudPub.dir/DependInfo.cmake"
   )

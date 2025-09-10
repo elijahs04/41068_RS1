@@ -249,6 +249,19 @@ mapperNode/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mapperNode.dir/build.make CMakeFiles/mapperNode.dir/build
 .PHONY : mapperNode/fast
 
+#=============================================================================
+# Target rules for targets named testCloudPub
+
+# Build rule for target.
+testCloudPub: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 testCloudPub
+.PHONY : testCloudPub
+
+# fast build rule for target.
+testCloudPub/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/testCloudPub.dir/build.make CMakeFiles/testCloudPub.dir/build
+.PHONY : testCloudPub/fast
+
 src/main_mapper.o: src/main_mapper.cpp.o
 .PHONY : src/main_mapper.o
 
@@ -345,6 +358,30 @@ src/sensorNode.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sensorNode_lib.dir/build.make CMakeFiles/sensorNode_lib.dir/src/sensorNode.cpp.s
 .PHONY : src/sensorNode.cpp.s
 
+src/testCloudPub.o: src/testCloudPub.cpp.o
+.PHONY : src/testCloudPub.o
+
+# target to build an object file
+src/testCloudPub.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/testCloudPub.dir/build.make CMakeFiles/testCloudPub.dir/src/testCloudPub.cpp.o
+.PHONY : src/testCloudPub.cpp.o
+
+src/testCloudPub.i: src/testCloudPub.cpp.i
+.PHONY : src/testCloudPub.i
+
+# target to preprocess a source file
+src/testCloudPub.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/testCloudPub.dir/build.make CMakeFiles/testCloudPub.dir/src/testCloudPub.cpp.i
+.PHONY : src/testCloudPub.cpp.i
+
+src/testCloudPub.s: src/testCloudPub.cpp.s
+.PHONY : src/testCloudPub.s
+
+# target to generate assembly for a file
+src/testCloudPub.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/testCloudPub.dir/build.make CMakeFiles/testCloudPub.dir/src/testCloudPub.cpp.s
+.PHONY : src/testCloudPub.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -364,6 +401,7 @@ help:
 	@echo "... mapperNode_lib"
 	@echo "... sensorNode"
 	@echo "... sensorNode_lib"
+	@echo "... testCloudPub"
 	@echo "... src/main_mapper.o"
 	@echo "... src/main_mapper.i"
 	@echo "... src/main_mapper.s"
@@ -376,6 +414,9 @@ help:
 	@echo "... src/sensorNode.o"
 	@echo "... src/sensorNode.i"
 	@echo "... src/sensorNode.s"
+	@echo "... src/testCloudPub.o"
+	@echo "... src/testCloudPub.i"
+	@echo "... src/testCloudPub.s"
 .PHONY : help
 
 
