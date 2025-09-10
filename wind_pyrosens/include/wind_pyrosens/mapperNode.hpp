@@ -31,5 +31,4 @@ private:
   double head_diam_;          // head diameter (m)
   double head_len_;           // head length (m)
   double speed_clip_max_;     // cap for arrow scaling
-  
 };

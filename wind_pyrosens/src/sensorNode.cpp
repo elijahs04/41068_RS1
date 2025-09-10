@@ -16,5 +16,5 @@ SensorNode::SensorNode() : rclcpp::Node("sensor_node") {
 }
 
 void SensorNode::onTestCloud(const sensor_msgs::msg::PointCloud2 & cloud) {
-  // TO DO 
+  
 }
