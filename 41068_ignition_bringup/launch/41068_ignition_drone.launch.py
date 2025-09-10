@@ -42,8 +42,8 @@ def generate_launch_description():
     robot_description_content = ParameterValue(
         Command(['xacro ',
                  PathJoinSubstitution([pkg_path,
-                                       'urdf',
-                                       'husky.urdf.xacro'])]),
+                                       'urdf_drone',
+                                       'parrot.urdf.xacro'])]),
         value_type=str)
     robot_state_publisher_node = Node(package='robot_state_publisher',
                                       executable='robot_state_publisher',
@@ -90,7 +90,7 @@ def generate_launch_description():
         executable='create',
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}],
-        arguments=['-topic', '/robot_description', '-z', '0.4']
+        arguments=['-topic', '/robot_description', '-z', '2.0'] # z is height above ground
     )
     ld.add_action(robot_spawner)
 
