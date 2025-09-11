@@ -17,31 +17,32 @@ SensorNode::SensorNode() : rclcpp::Node("sensor_node") {
 }
 
 void SensorNode::onTestCloud(const sensor_msgs::msg::PointCloud2 & cloud) {
-  // Expect fields: x, y, z, u, v (w optional/ignored)
-  // Iterate through points and publish point + velocity pairs.
+  using sensor_msgs::PointCloud2ConstIterator;
 
-  geometry_msgs::msg::PointStamped p_msg;
-  geometry_msgs::msg::Vector3Stamped v_msg;
-
+  geometry_msgs::msg::PointStamped    p_msg;
+  geometry_msgs::msg::Vector3Stamped  v_msg;
   p_msg.header.frame_id = "map";
   v_msg.header.frame_id = "map";
 
-  sensor_msgs::PointCloud2ConstIterator<float> it_x(cloud, "x");
-  sensor_msgs::PointCloud2ConstIterator<float> it_y(cloud, "y");
-  sensor_msgs::PointCloud2ConstIterator<float> it_z(cloud, "z");
-  sensor_msgs::PointCloud2ConstIterator<float> it_u(cloud, "u");
-  sensor_msgs::PointCloud2ConstIterator<float> it_v(cloud, "v");
+  PointCloud2ConstIterator<float> it_x(cloud, "x");
+  PointCloud2ConstIterator<float> it_y(cloud, "y");
+  PointCloud2ConstIterator<float> it_z(cloud, "z");
+  PointCloud2ConstIterator<float> it_u(cloud, "u");
+  PointCloud2ConstIterator<float> it_v(cloud, "v");
 
-  // Iterate all points
-  for (; it_x != it_x.end(); ++it_x, ++it_y, ++it_z, ++it_u, ++it_v) {
-    // stamp both with the SAME time for logical pairing
-    const auto stamp = this->now();
+  // NEW: unique stamp per sample
+  const rclcpp::Time base = this->now();
+  int64_t i = 0;
+
+  for (; it_x != it_x.end(); ++it_x, ++it_y, ++it_z, ++it_u, ++it_v, ++i) {
+    const rclcpp::Time stamp = base + rclcpp::Duration(0, i);  // add i nanoseconds
+
     p_msg.header.stamp = stamp;
     v_msg.header.stamp = stamp;
 
     p_msg.point.x = *it_x;
     p_msg.point.y = *it_y;
-    p_msg.point.z = *it_z;   // likely 0
+    p_msg.point.z = *it_z;
 
     v_msg.vector.x = *it_u;
     v_msg.vector.y = *it_v;
@@ -49,5 +50,11 @@ void SensorNode::onTestCloud(const sensor_msgs::msg::PointCloud2 & cloud) {
 
     point_pub_->publish(p_msg);
     w_vel_pub_->publish(v_msg);
+
+    RCLCPP_INFO(this->get_logger(), "Point: (%.2f, %.2f, %.2f)  Velocity: (%.2f, %.2f)", p_msg.point.x, p_msg.point.y, p_msg.point.z, v_msg.vector.x, v_msg.vector.y);
+
+    // delay between samples
+    std::this_thread::sleep_for(10ms); // uncomment to simulate slower sensor
+
   }
 }

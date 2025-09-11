@@ -52,77 +52,71 @@ MapperNode::MapperNode() : rclcpp::Node("mapper_node") {
 }
 
 void MapperNode::onPoint(const geometry_msgs::msg::PointStamped & msg) {
-  last_point_ = msg;
+  const int64_t key = rclcpp::Time(msg.header.stamp).nanoseconds();
+  point_cache_[key] = msg;
 }
 
 void MapperNode::onWind(const geometry_msgs::msg::Vector3Stamped & msg) {
-  if (!last_point_) return;
+  // 1) Find matching point by identical stamp (sensor publishes both with same stamp)
+  const int64_t key = rclcpp::Time(msg.header.stamp).nanoseconds();
+  auto it = point_cache_.find(key);
+  if (it == point_cache_.end()) {
+    return; // no matching point yet
+  }
+  const auto & p = it->second;
+  point_cache_.erase(it);
 
-  static int arrow_counter = 0;
-
+  // 2) Build arrow
   visualization_msgs::msg::Marker arrow;
   arrow.header.frame_id = "map";
   arrow.header.stamp    = this->now();
-  arrow.ns   = "wind_arrows";
-  arrow.id   = arrow_counter++;
-  arrow.type = visualization_msgs::msg::Marker::ARROW;
+  arrow.type   = visualization_msgs::msg::Marker::ARROW;
   arrow.action = visualization_msgs::msg::Marker::ADD;
 
-  // base at the sample point
-  arrow.pose.position = last_point_->point;
+  // Position at the sample point
+  arrow.pose.position = p.point;
 
-  // velocity -> yaw
+  // Velocity -> orientation (yaw about Z)
   const double u = msg.vector.x;
   const double v = msg.vector.y;
   const double speed = std::hypot(u, v);
   const double yaw = std::atan2(v, u);
-
-  // quaternion about Z
   arrow.pose.orientation.x = 0.0;
   arrow.pose.orientation.y = 0.0;
   arrow.pose.orientation.z = std::sin(yaw * 0.5);
   arrow.pose.orientation.w = std::cos(yaw * 0.5);
 
-  // ---- size from speed ----
-  // normalize 0..1 using speed_clip_max_ so big gusts don't explode sizes
+  // 3) Stable ID per grid cell (0.5 m grid => *2 and round)
+  const int xi = static_cast<int>(std::llround(p.point.x * 2.0));
+  const int yi = static_cast<int>(std::llround(p.point.y * 2.0));
+  arrow.ns = "wind_arrows";
+  arrow.id = yi * 10000 + xi;           // unique per cell; new publish updates the same marker
+  arrow.lifetime = rclcpp::Duration(0, 0); // keep visible; updated each tick
+
+  // 4) Size from speed (length + thickness)
+  const double t_clip = std::min(speed, speed_clip_max_);
+  const double L = std::max(t_clip * arrow_scale_base_, 0.05);
+  arrow.scale.x = L;                                   // shaft length
+  arrow.scale.y = std::max(arrow_diam_ * (0.6 + 0.8 * (t_clip / std::max(1e-6, speed_clip_max_))), 0.01);
+  arrow.scale.z = std::max(head_diam_  * (0.6 + 0.8 * (t_clip / std::max(1e-6, speed_clip_max_))), arrow.scale.y);
+
+  // 5) Colour from speed (blue→cyan→green→yellow→red)
   auto clamp01 = [](double x){ return std::max(0.0, std::min(1.0, x)); };
-  const double t = clamp01(speed / std::max(1e-6, speed_clip_max_));   // 0 (calm) … 1 (clipped max)
-
-  // shaft length scales with speed (you already have arrow_scale_base_)
-  const double L = std::max(std::min(speed, speed_clip_max_) * arrow_scale_base_, 0.05);
-  arrow.scale.x = L;
-
-  // also thicken arrow with speed (optional but nice)
-  arrow.scale.y = std::max(arrow_diam_ * (0.6 + 0.8 * t), 0.01); // shaft diameter
-  arrow.scale.z = std::max(head_diam_  * (0.6 + 0.8 * t), arrow.scale.y); // head diameter
-
-  // ---- colour from speed (blue->cyan->green->yellow->red) ----
+  const double t = clamp01(speed / std::max(1e-6, speed_clip_max_));
   auto speedToColor = [](double t01, float &r, float &g, float &b) {
     t01 = std::max(0.0, std::min(1.0, t01));
-    if (t01 < 0.25) {           // blue -> cyan
-      double k = t01 / 0.25; r = 0.0f;        g = static_cast<float>(k); b = 1.0f;
-    } else if (t01 < 0.5) {     // cyan -> green
-      double k = (t01-0.25)/0.25; r = 0.0f;   g = 1.0f;                  b = static_cast<float>(1.0 - k);
-    } else if (t01 < 0.75) {    // green -> yellow
-      double k = (t01-0.5)/0.25; r = static_cast<float>(k); g = 1.0f;     b = 0.0f;
-    } else {                    // yellow -> red
-      double k = (t01-0.75)/0.25; r = 1.0f;   g = static_cast<float>(1.0 - k); b = 0.0f;
-    }
+    if (t01 < 0.25) { double k=t01/0.25; r=0.0f; g=float(k); b=1.0f; }
+    else if (t01 < 0.5) { double k=(t01-0.25)/0.25; r=0.0f; g=1.0f; b=float(1.0-k); }
+    else if (t01 < 0.75){ double k=(t01-0.5)/0.25; r=float(k); g=1.0f; b=0.0f; }
+    else { double k=(t01-0.75)/0.25; r=1.0f; g=float(1.0-k); b=0.0f; }
   };
   float r, g, b;
   speedToColor(t, r, g, b);
-  arrow.color.r = r;
-  arrow.color.g = g;
-  arrow.color.b = b;
-  arrow.color.a = 1.0f;
+  arrow.color.r = r; arrow.color.g = g; arrow.color.b = b; arrow.color.a = 1.0f;
 
-  // keep visible while testing (set to finite later if you want fading)
-  arrow.lifetime = rclcpp::Duration(0, 0);
-
+  // 6) Publish
   visualization_msgs::msg::MarkerArray arr;
   arr.markers.push_back(arrow);
   marker_pub_->publish(arr);
-
-  last_point_.reset();
 }
 

@@ -6,6 +6,9 @@
 #include "visualization_msgs/msg/marker_array.hpp"  
 #include <optional>
 #include <vector>
+#include <unordered_map>
+#include <cstdint>
+
 
 class MapperNode : public rclcpp::Node {
 public:
@@ -23,7 +26,7 @@ private:
   rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_pub_;
 
   // state
-  std::optional<geometry_msgs::msg::PointStamped> last_point_;
+  std::unordered_map<int64_t, geometry_msgs::msg::PointStamped> point_cache_;
 
   // params for visuals
   double arrow_scale_base_;   // base shaft length (m per m/s)
