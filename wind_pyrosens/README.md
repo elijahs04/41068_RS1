@@ -1,81 +1,65 @@
 # wind_pyrosens
 
-ROS 2 package for simulating and visualising **wind vectors** in the PyroSENS project.  
-This test package has two nodes:
-- **SensorNode** – reads a test `PointCloud2` with wind data and republishes it as standard ROS messages.
-- **MapperNode** – subscribes to those messages and publishes RViz arrow markers showing wind direction and speed.
-
----
-
-## Package structure
-
-```
-wind_pyrosens/
-├── include/wind_pyrosens/
-│   ├── SensorNode.hpp
-│   └── MapperNode.hpp
-├── src/
-│   ├── sensorNode.cpp
-│   ├── mapperNode.cpp
-│   ├── main_sensor.cpp
-│   └── main_mapper.cpp
-├── CMakeLists.txt
-└── package.xml
-```
-
----
-
-## Nodes
-
-### `sensor_node`
-- **Subscribes**
-  - `/wind/test_cloud` (`sensor_msgs/PointCloud2`)  
-    Fields: `x, y, z=0, u, v, w=0` for position and velocity.
-- **Publishes**
-  - `/wind/point` (`geometry_msgs/PointStamped`) – wind sample position.  
-  - `/wind/velocity` (`geometry_msgs/Vector3Stamped`) – wind vector at that position.
-
-### `mapper_node`
-- **Subscribes**
-  - `/wind/point` (`geometry_msgs/PointStamped`)  
-  - `/wind/velocity` (`geometry_msgs/Vector3Stamped`)
-- **Publishes**
-  - `/wind/markers` (`visualization_msgs/MarkerArray`)  
-    - Each marker is an **arrow**.  
-    - **Direction** = wind direction.  
-    - **Length** = proportional to wind speed (capped).  
-    - **Colour** = constant (white/grey) for MVP.
+Wind sensing + visualization package for PyroSENS.  
+This package simulates wind vectors over a 2D grid and displays them in RViz as arrows whose **length, thickness, and color** vary with velocity.
 
 ---
 
 ## Build
 
-From your ROS 2 workspace root:
-
-```bash
+T1:
 colcon build --packages-select wind_pyrosens
 source install/setup.bash
-```
 
 ---
 
 ## Run
 
-Launch the nodes in separate terminals:
+Open 6 terminals and run the following commands:
 
-```bash
-ros2 run wind_pyrosens sensorNode
+T1: Build and source
+colcon build --packages-select wind_pyrosens
+source install/setup.bash
+
+T2: RViz (with config for wind markers)
+rviz2 -d ~/ros2_ws/src/wind_pyrosens/rviz/WindMarkerArray.rviz
+
+T3: Static transform (world → map)
+ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 world map
+
+T4: Mapper node (subscribes to wind points + velocities, publishes markers)
 ros2 run wind_pyrosens mapperNode
-```
 
-Open RViz:
+T5: Sensor node (publishes wind points + velocities from a test cloud)
+ros2 run wind_pyrosens sensorNode
 
-```bash
-rviz2
-```
-
-- Add a **MarkerArray** display.  
-- Topic: `/wind/markers`  
-- Fixed frame: `map`
+T6: Test cloud publisher (generates a 4×4 m grid of points with simulated wind)
+ros2 run wind_pyrosens testCloudPub
 
 ---
+
+## What You’ll See
+
+- **RViz** will display a 4 m × 4 m grid of arrows at 0.5 m spacing.
+- Arrow **length and thickness** scale with wind speed.
+- Arrow **color** transitions from **blue (slow)** → **red (fast)**.
+- Wind field combines a dominant background flow, a swirl around the origin, and small random variations.
+
+---
+
+## Parameters
+
+You can tune the test cloud publisher at runtime:
+
+ros2 param set /test_cloud_pub base_u 0.8
+ros2 param set /test_cloud_pub base_v 1.2
+ros2 param set /test_cloud_pub swirl_gamma 0.8
+ros2 param set /test_cloud_pub period_ms 200
+
+---
+
+## Notes
+
+- The static transform (T3) is required so RViz recognizes `map` in the TF tree.
+- Arrows update in place each tick (stable IDs per grid cell).
+- This package is meant as a **test harness**; when integrated into the full PyroSENS system, the `SensorNode` will subscribe to actual sensor data instead of the synthetic test cloud.

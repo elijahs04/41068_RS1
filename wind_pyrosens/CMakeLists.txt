@@ -35,6 +35,11 @@ target_link_libraries(sensorNode sensorNode_lib)
 add_executable(mapperNode src/main_mapper.cpp)
 target_link_libraries(mapperNode mapperNode_lib)
 
+add_executable(testCloudPub src/testCloudPub.cpp)
+ament_target_dependencies(testCloudPub rclcpp sensor_msgs)
+install(TARGETS testCloudPub RUNTIME DESTINATION lib/${PROJECT_NAME})
+
+
 install(TARGETS
   sensorNode_lib
   mapperNode_lib

@@ -67,6 +67,7 @@ all: CMakeFiles/sensorNode_lib.dir/all
 all: CMakeFiles/mapperNode_lib.dir/all
 all: CMakeFiles/sensorNode.dir/all
 all: CMakeFiles/mapperNode.dir/all
+all: CMakeFiles/testCloudPub.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -80,6 +81,7 @@ clean: CMakeFiles/sensorNode_lib.dir/clean
 clean: CMakeFiles/mapperNode_lib.dir/clean
 clean: CMakeFiles/sensorNode.dir/clean
 clean: CMakeFiles/mapperNode.dir/clean
+clean: CMakeFiles/testCloudPub.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -237,6 +239,32 @@ mapperNode: CMakeFiles/mapperNode.dir/rule
 CMakeFiles/mapperNode.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mapperNode.dir/build.make CMakeFiles/mapperNode.dir/clean
 .PHONY : CMakeFiles/mapperNode.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/testCloudPub.dir
+
+# All Build rule for target.
+CMakeFiles/testCloudPub.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/testCloudPub.dir/build.make CMakeFiles/testCloudPub.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/testCloudPub.dir/build.make CMakeFiles/testCloudPub.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/connorlindsel2204/git/41068_RS1/wind_pyrosens/build/CMakeFiles --progress-num=9,10 "Built target testCloudPub"
+.PHONY : CMakeFiles/testCloudPub.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/testCloudPub.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/connorlindsel2204/git/41068_RS1/wind_pyrosens/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/testCloudPub.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/connorlindsel2204/git/41068_RS1/wind_pyrosens/build/CMakeFiles 0
+.PHONY : CMakeFiles/testCloudPub.dir/rule
+
+# Convenience name for target.
+testCloudPub: CMakeFiles/testCloudPub.dir/rule
+.PHONY : testCloudPub
+
+# clean rule for target.
+CMakeFiles/testCloudPub.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/testCloudPub.dir/build.make CMakeFiles/testCloudPub.dir/clean
+.PHONY : CMakeFiles/testCloudPub.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

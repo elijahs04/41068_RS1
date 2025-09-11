@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Site BuildName="(empty)"
-	BuildStamp="20250910-0233-Experimental"
+	BuildStamp="20250911-0009-Experimental"
 	Name="Shaquille"
 	Generator="ctest-3.22.1"
 	CompilerName="/usr/bin/c++"
@@ -21,14 +21,14 @@
 	TotalVirtualMemory="2048"
 	TotalPhysicalMemory="7853"
 	LogicalProcessorsPerPhysical="2"
-	ProcessorClockFrequency="2611.21"
+	ProcessorClockFrequency="2611.31"
 	>
 	<Testing>
-		<StartDateTime>Sep 10 21:31 AEST</StartDateTime>
-		<StartTestTime>1757503879</StartTestTime>
+		<StartDateTime>Sep 11 10:09 AEST</StartDateTime>
+		<StartTestTime>1757549398</StartTestTime>
 		<TestList/>
-		<EndDateTime>Sep 10 21:31 AEST</EndDateTime>
-		<EndTestTime>1757503879</EndTestTime>
+		<EndDateTime>Sep 11 10:09 AEST</EndDateTime>
+		<EndTestTime>1757549398</EndTestTime>
 		<ElapsedMinutes>0</ElapsedMinutes>
 	</Testing>
 </Site>

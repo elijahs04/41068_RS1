@@ -4,6 +4,7 @@
 /home/connorlindsel2204/git/41068_RS1/wind_pyrosens/build/CMakeFiles/mapperNode_lib.dir
 /home/connorlindsel2204/git/41068_RS1/wind_pyrosens/build/CMakeFiles/sensorNode.dir
 /home/connorlindsel2204/git/41068_RS1/wind_pyrosens/build/CMakeFiles/mapperNode.dir
+/home/connorlindsel2204/git/41068_RS1/wind_pyrosens/build/CMakeFiles/testCloudPub.dir
 /home/connorlindsel2204/git/41068_RS1/wind_pyrosens/build/CMakeFiles/test.dir
 /home/connorlindsel2204/git/41068_RS1/wind_pyrosens/build/CMakeFiles/edit_cache.dir
 /home/connorlindsel2204/git/41068_RS1/wind_pyrosens/build/CMakeFiles/rebuild_cache.dir
