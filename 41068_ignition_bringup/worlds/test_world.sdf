@@ -4,7 +4,7 @@
       <max_step_size>0.001</max_step_size>
       <real_time_update_rate>1000</real_time_update_rate>
       <real_time_factor>1</real_time_factor>
-      <gravity>0 0 0</gravity>
+      <gravity>0 0 -9.81</gravity>
     </physics>
     <atmosphere type='adiabatic'/>
     <magnetic_field>6e-06 2e-06 -4e-05</magnetic_field>
@@ -56,7 +56,7 @@
         <falloff>0</falloff>
       </spot>
     </light>
-    <gravity>0 0 0</gravity>
+    <gravity>0 0 -9.8</gravity>
     <audio>
       <device>default</device>
     </audio>
@@ -74,21 +74,17 @@
         <visual name='Plane'>
           <geometry>
             <mesh>
-              <uri>../sim_env_models/world_env_model/meshes/model.dae</uri>
+              <uri> ../sim_env_models/world_env_model/meshes/model.dae</uri>
               <submesh>
                 <name>Plane</name>
               </submesh>
             </mesh>
           </geometry>
-          <material>
-            <diffuse>1 1 1 1</diffuse>
-            <specular>0 0 0 1</specular>
-          </material>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>../sim_env_models/world_env_model/meshes/model.dae</uri>
+              <uri> ../sim_env_models/world_env_model/meshes/model.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -110,7 +106,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>0.39358 -0.16434 0 0 -0 0</pose>
+      <pose>0 0 0 0 -0 0</pose>
     </model>
     <state world_name='default'>
       <sim_time>42 407000000</sim_time>
@@ -138,10 +134,10 @@
         </link>
       </model>
       <model name='test'>
-        <pose>0.39358 -0.16434 0 0 -0 0</pose>
+        <pose>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='testlink'>
-          <pose>0.39358 -0.16434 0 0 -0 0</pose>
+          <pose>0 0 0 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
