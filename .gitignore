@@ -1,0 +1,4 @@
+
+# IDE caches
+.vscode/
+*.vc.db
