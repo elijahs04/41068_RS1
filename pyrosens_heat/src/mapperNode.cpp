@@ -1,4 +1,4 @@
-#include "pyrosens_heat/mapperNode.hpp"
+#include "wind_pyrosens/mapperNode.hpp"
 
 #include <algorithm>
 #include <cmath>

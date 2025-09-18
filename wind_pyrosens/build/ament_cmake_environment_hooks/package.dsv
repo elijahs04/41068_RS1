@@ -1,4 +1,0 @@
-source;share/wind_pyrosens/local_setup.bash
-source;share/wind_pyrosens/local_setup.dsv
-source;share/wind_pyrosens/local_setup.sh
-source;share/wind_pyrosens/local_setup.zsh
