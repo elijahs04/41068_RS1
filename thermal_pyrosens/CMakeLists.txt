@@ -20,7 +20,7 @@ find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 
 # ---------------------- Libraries -------------------------
-# thermSens library (single-pixel IWU-style publisher)
+# Sensor / sim lib
 add_library(thermSens_lib src/thermSensNode.cpp)
 target_include_directories(thermSens_lib PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -28,13 +28,13 @@ target_include_directories(thermSens_lib PUBLIC
 ament_target_dependencies(thermSens_lib
   rclcpp sensor_msgs geometry_msgs tf2 tf2_ros)
 
-# thermInterpolation library (grid painter / OccupancyGrid or heatmap)
+# Interpolation lib (matches your camelCase files)
 add_library(thermInterpolation_lib src/thermInterpolationNode.cpp)
 target_include_directories(thermInterpolation_lib PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(thermInterpolation_lib
-  rclcpp sensor_msgs geometry_msgs nav_msgs tf2 tf2_ros)  # +geometry_msgs if using PointStamped
+  rclcpp sensor_msgs geometry_msgs nav_msgs)
 
 # ---------------------- Executables -----------------------
 add_executable(thermSensNode src/main_thermSens.cpp)
@@ -43,6 +43,7 @@ target_link_libraries(thermSensNode thermSens_lib)
 add_executable(thermInterpolationNode src/main_thermInterpolation.cpp)
 target_link_libraries(thermInterpolationNode thermInterpolation_lib)
 
+# Standalone sim executable (if you keep it)
 add_executable(thermalSimNode src/thermalSimNode.cpp)
 ament_target_dependencies(thermalSimNode rclcpp sensor_msgs geometry_msgs)
 
@@ -70,4 +71,5 @@ ament_export_dependencies(rclcpp sensor_msgs geometry_msgs nav_msgs tf2 tf2_ros)
 
 # ---------------------- Package ---------------------------
 ament_package()
+
 
