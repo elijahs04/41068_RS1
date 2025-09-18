@@ -20,35 +20,37 @@ find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 
 # ---------------------- Libraries -------------------------
-# thermSens library
+# thermSens library (single-pixel IWU-style publisher)
 add_library(thermSens_lib src/thermSensNode.cpp)
 target_include_directories(thermSens_lib PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(thermSens_lib
-  rclcpp sensor_msgs geometry_msgs)
+  rclcpp sensor_msgs geometry_msgs tf2 tf2_ros)
 
-# thermInterpolation library
+# thermInterpolation library (grid painter / OccupancyGrid or heatmap)
 add_library(thermInterpolation_lib src/thermInterpolationNode.cpp)
 target_include_directories(thermInterpolation_lib PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(thermInterpolation_lib
-  rclcpp sensor_msgs nav_msgs)
+  rclcpp sensor_msgs geometry_msgs nav_msgs tf2 tf2_ros)  # +geometry_msgs if using PointStamped
 
 # ---------------------- Executables -----------------------
 add_executable(thermSensNode src/main_thermSens.cpp)
 target_link_libraries(thermSensNode thermSens_lib)
-ament_target_dependencies(thermSensNode rclcpp)
 
 add_executable(thermInterpolationNode src/main_thermInterpolation.cpp)
 target_link_libraries(thermInterpolationNode thermInterpolation_lib)
-ament_target_dependencies(thermInterpolationNode rclcpp)
+
+add_executable(thermalSimNode src/thermalSimNode.cpp)
+ament_target_dependencies(thermalSimNode rclcpp sensor_msgs geometry_msgs)
 
 # ---------------------- Install ---------------------------
 install(TARGETS
   thermSensNode
   thermInterpolationNode
+  thermalSimNode
   RUNTIME DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS
@@ -61,10 +63,11 @@ install(TARGETS
 install(DIRECTORY include/
   DESTINATION include)
 
-# Export so other packages can use
+# ---------------------- Export ----------------------------
 ament_export_include_directories(include)
 ament_export_libraries(thermSens_lib thermInterpolation_lib)
 ament_export_dependencies(rclcpp sensor_msgs geometry_msgs nav_msgs tf2 tf2_ros)
 
 # ---------------------- Package ---------------------------
 ament_package()
+
