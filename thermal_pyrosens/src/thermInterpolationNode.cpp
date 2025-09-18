@@ -14,7 +14,7 @@ ThermInterpolationNode::ThermInterpolationNode()
   frame_id_    = this->declare_parameter<std::string>("frame_id", "map");
 
   // Map geometry
-  resolution_  = this->declare_parameter<double>("resolution", 0.5);
+  resolution_  = this->declare_parameter<double>("resolution", 0.25);
   extent_x_    = this->declare_parameter<double>("extent_x", 10.0);
   extent_y_    = this->declare_parameter<double>("extent_y", 10.0);
   origin_x_    = this->declare_parameter<double>("origin_x", -extent_x_);

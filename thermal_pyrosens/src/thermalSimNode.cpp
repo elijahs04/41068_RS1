@@ -25,10 +25,12 @@ public:
     // Starburst scan params (angle fixed -> radii 0..R, then next angle)
     center_x_   = declare_parameter<double>("center_x", 0.0);
     center_y_   = declare_parameter<double>("center_y", 0.0);
-    dr_         = declare_parameter<double>("dr", 0.5);              // [m] radial step
+    dr_         = declare_parameter<double>("dr", 0.25);              // [m] radial step
     dtheta_deg_ = declare_parameter<double>("dtheta_deg", 2.0);      // [deg] angle step per sweep
     omega_rps_  = declare_parameter<double>("omega_rps", 0.0);       // [rev/s] if >0, overrides dtheta
     scan_r_max_ = declare_parameter<double>("scan_r_max", 10.0);     // [m] max radius for each ray
+    samples_per_tick_ = declare_parameter<int>("samples_per_tick", 5); // publish N samples each tick
+
 
     // --- Superellipse blob spanning 4 points: (-5,6) (5,7) (-3,3) (4,2) ---
     // You can tune the "roundness" and edge sharpness at runtime:
@@ -96,43 +98,45 @@ private:
   }
 
   void tick_() {
-    // Current sample (polar -> Cartesian)
-    const double th = scan_theta_deg_ * M_PI / 180.0;
-    const double x  = center_x_ + r_ * std::cos(th);
-    const double y  = center_y_ + r_ * std::sin(th);
+    for (int n = 0; n < samples_per_tick_; ++n) {
+      // Current sample (polar -> Cartesian)
+      const double th = scan_theta_deg_ * M_PI / 180.0;
+      const double x  = center_x_ + r_ * std::cos(th);
+      const double y  = center_y_ + r_ * std::sin(th);
 
-    double T = temperature_at_(x, y) + distN_(rng_);
-    T = std::clamp(T, T_ambient_, T_peak_);
+      double T = temperature_at_(x, y) + distN_(rng_);
+      if (T < T_ambient_) T = T_ambient_;
+      if (T > T_peak_)    T = T_peak_;
 
-    // Publish point + temperature
-    geometry_msgs::msg::PointStamped pt;
-    pt.header.stamp = now();
-    pt.header.frame_id = frame_id_;
-    pt.point.x = x; pt.point.y = y; pt.point.z = z_height_;
-    point_pub_->publish(pt);
+      // Publish point + temperature
+      geometry_msgs::msg::PointStamped pt;
+      pt.header.stamp = now();
+      pt.header.frame_id = frame_id_;
+      pt.point.x = x; pt.point.y = y; pt.point.z = z_height_;
+      point_pub_->publish(pt);
 
-    sensor_msgs::msg::Temperature msg;
-    msg.header = pt.header;
-    msg.temperature = T;
-    msg.variance = noise_std_ * noise_std_;
-    temp_pub_->publish(msg);
+      sensor_msgs::msg::Temperature msg;
+      msg.header = pt.header;
+      msg.temperature = T;
+      msg.variance = noise_std_ * noise_std_;
+      temp_pub_->publish(msg);
 
-    // Advance radius first; when radius passes max, reset and bump angle
-    r_ += dr_;
-    if (r_ > scan_r_max_) {
-      r_ = 0.0;
-      double dtheta_now_deg = dtheta_deg_;
-      if (omega_rps_ > 0.0) {
-        const double dt = static_cast<double>(period_ms_) / 1000.0;
-        dtheta_now_deg = omega_rps_ * 360.0 * dt;
+      // Advance radius first; when radius passes max, reset and bump angle
+      r_ += dr_;
+      if (r_ > scan_r_max_) {
+        r_ = 0.0;
+        double dtheta_now_deg = dtheta_deg_;
+        if (omega_rps_ > 0.0) {
+          const double dt = static_cast<double>(period_ms_) / 1000.0;
+          dtheta_now_deg = omega_rps_ * 360.0 * dt;
+        }
+        scan_theta_deg_ += dtheta_now_deg;
+        if (scan_theta_deg_ >= 360.0) scan_theta_deg_ -= 360.0;
       }
-      scan_theta_deg_ += dtheta_now_deg;
-      if (scan_theta_deg_ >= 360.0) scan_theta_deg_ -= 360.0;
     }
 
-    RCLCPP_INFO_THROTTLE(get_logger(), *get_clock(), 2000,
-      "Starburst r=%.2f th=%.1f -> (%.2f,%.2f) T=%.1f°C",
-      r_, scan_theta_deg_, x, y, T);
+    RCLCPP_DEBUG_THROTTLE(get_logger(), *get_clock(), 2000,
+    "Starburst @ θ=%.1f r=%.2f (burst=%d)", scan_theta_deg_, r_, samples_per_tick_);
   }
 
   // ROS
@@ -165,6 +169,8 @@ private:
   double dtheta_deg_{2.0};
   double omega_rps_{0.0};
   double scan_r_max_{10.0};
+  int samples_per_tick_{5};
+
 
   double scan_theta_deg_{0.0};          // [deg]
   double r_{0.0};                        // [m]

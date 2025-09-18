@@ -25,7 +25,7 @@ private:
   // -------- Parameters (declared in ctor) --------
   std::string frame_id_;
   // Map geometry
-  double resolution_{0.5};   // m/cell
+  double resolution_{0.25};   // m/cell
   double extent_x_{10.0};    // half-width [m]
   double extent_y_{10.0};    // half-height [m]
   double origin_x_{-10.0};   // lower-left X [m]
