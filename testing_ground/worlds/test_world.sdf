@@ -4,7 +4,7 @@
       <max_step_size>0.001</max_step_size>
       <real_time_update_rate>1000</real_time_update_rate>
       <real_time_factor>1</real_time_factor>
-      <gravity>0 0 -9.81</gravity>
+      <gravity>0 0 0</gravity>
     </physics>
     <atmosphere type='adiabatic'/>
     <magnetic_field>6e-06 2e-06 -4e-05</magnetic_field>
@@ -20,7 +20,7 @@
         <projection_type>perspective</projection_type>
       </camera>
     </gui>
-    <gravity>0 0 -9.8</gravity>
+    <gravity>0 0 0</gravity>
     <audio>
       <device>default</device>
     </audio>
