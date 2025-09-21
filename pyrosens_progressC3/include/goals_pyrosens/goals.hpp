@@ -1,5 +1,4 @@
-#ifndef GOALS_H
-#define GOALS_H
+#pragma once
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
@@ -24,4 +23,3 @@ class Goals: public rclcpp::Node {
         rclcpp_action::Client<NavigateToPose>::SharedPtr client_;
 };
 
-#endif // GOALS_H

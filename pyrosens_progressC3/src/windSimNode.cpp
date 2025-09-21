@@ -3,9 +3,9 @@
 #include <sensor_msgs/point_cloud2_iterator.hpp>
 #include <cmath>
 
-class TestCloudPub : public rclcpp::Node {
+class WindSimNode : public rclcpp::Node {
 public:
-  TestCloudPub() : rclcpp::Node("test_cloud_pub"), t_(0.0) {
+  TestCloudPub() : rclcpp::Node("wind_sim_node"), t_(0.0) {
     // Tunable params (you can override via ros2 param set)
     grid_n_       = declare_parameter<int>("grid_n", 3);                // 3x3
     spacing_      = declare_parameter<double>("spacing", 0.5);          // meters

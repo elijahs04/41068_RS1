@@ -1,10 +1,10 @@
-#include "wind_pyrosens/sensorNode.hpp"
+#include "wind_pyrosens/windSensNode.hpp"
 #include <sensor_msgs/point_cloud2_iterator.hpp>
 #include <cmath>
 
 using namespace std::chrono_literals;
 
-SensorNode::SensorNode() : rclcpp::Node("sensor_node") {
+WindSensNode::WindSensNode() : rclcpp::Node("wind_sensor_node") {
     // pub
   w_vel_pub_  = create_publisher<geometry_msgs::msg::Vector3Stamped>("/wind/velocity", 10);
   point_pub_ = create_publisher<geometry_msgs::msg::PointStamped>("/wind/point", 10);
@@ -16,7 +16,7 @@ SensorNode::SensorNode() : rclcpp::Node("sensor_node") {
 
 }
 
-void SensorNode::onTestCloud(const sensor_msgs::msg::PointCloud2 & cloud) {
+void WindSensNode::onTestCloud(const sensor_msgs::msg::PointCloud2 & cloud) {
   using sensor_msgs::PointCloud2ConstIterator;
 
   geometry_msgs::msg::PointStamped    p_msg;
