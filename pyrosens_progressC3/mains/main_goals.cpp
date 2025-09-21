@@ -1,14 +1,11 @@
 #include <rclcpp/rclcpp.hpp>
-#include "goals.h"
+#include "include/goals_pyrosens/goals.hpp"
 
 
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
     auto node = std::make_shared<Goals>();
-
-
-
 
     // create an executor 
     rclcpp::executors::MultiThreadedExecutor executor;
