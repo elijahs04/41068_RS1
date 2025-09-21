@@ -128,6 +128,17 @@ def generate_launch_description():
     )
     ld.add_action(nav2)
 
-    
+        # Octomap server node
+    octomap_server_node = Node(
+        package='octomap_server',
+        executable='octomap_server_node',
+        name='octomap_server',
+        output='screen',
+        parameters=[PathJoinSubstitution([config_path, 'octomap_params.yaml'])],
+        remappings=[
+            ('cloud_in', '/camera/depth/points')
+        ]
+    )
+    ld.add_action(octomap_server_node)
 
     return ld

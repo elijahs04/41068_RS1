@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(pyrosens)
+project(pyrosens_movement)
 
 # Default to C++17
 if(NOT CMAKE_CXX_STANDARD)
