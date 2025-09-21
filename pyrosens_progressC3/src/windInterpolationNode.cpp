@@ -1,31 +1,8 @@
-#include "wind_pyrosens/mapperNode.hpp"
+#include "wind_pyrosens/windInterpolationNode.hpp"
 #include <algorithm>
 #include <cmath>
 
-// namespace {
-//   inline double clamp01(double x) { 
-//     return std::max(0.0, std::min(1.0, x)); 
-//   }
-
-//   inline float  f32(double x) { 
-//     return static_cast<float>(x); 
-//   }
-
-//   inline void speedToColor(double t01, float &r, float &g, float &b) {
-//     // 0..0.25: blue→cyan, 0.25..0.5: cyan→green, 0.5..0.75: green→yellow, 0.75..1: yellow→red
-//     if (t01 < 0.25) {
-//       double k = t01 / 0.25;        r = 0.0f;         g = f32(k);      b = 1.0f;
-//     } else if (t01 < 0.5) {
-//       double k = (t01-0.25)/0.25;   r = 0.0f;         g = 1.0f;        b = f32(1.0 - k);
-//     } else if (t01 < 0.75) {
-//       double k = (t01-0.5) /0.25;   r = f32(k);       g = 1.0f;        b = 0.0f;
-//     } else {
-//       double k = (t01-0.75)/0.25;   r = 1.0f;         g = f32(1.0 - k); b = 0.0f;
-//     }
-//   }
-// }
-
-MapperNode::MapperNode() : rclcpp::Node("mapper_node") {
+WindInterpolationNode::WindInterpolationNode() : rclcpp::Node("wind_interpolation_node") {
   // sub
   point_sub_ = create_subscription<geometry_msgs::msg::PointStamped>(
     "/wind/point", 10,
@@ -51,12 +28,12 @@ MapperNode::MapperNode() : rclcpp::Node("mapper_node") {
 
 }
 
-void MapperNode::onPoint(const geometry_msgs::msg::PointStamped & msg) {
+void WindInterpolationNode::onPoint(const geometry_msgs::msg::PointStamped & msg) {
   const int64_t key = rclcpp::Time(msg.header.stamp).nanoseconds();
   point_cache_[key] = msg;
 }
 
-void MapperNode::onWind(const geometry_msgs::msg::Vector3Stamped & msg) {
+void WindInterpolationNode::onWind(const geometry_msgs::msg::Vector3Stamped & msg) {
   // 1) Find matching point by identical stamp (sensor publishes both with same stamp)
   const int64_t key = rclcpp::Time(msg.header.stamp).nanoseconds();
   auto it = point_cache_.find(key);

@@ -1,4 +1,4 @@
-#include "goals.h"
+#include "include/goals_pyrosens/goals.hpp"
 
 Goals::Goals() : rclcpp::Node("goals_execution") {
     RCLCPP_INFO(this->get_logger(), "Goals action client started");

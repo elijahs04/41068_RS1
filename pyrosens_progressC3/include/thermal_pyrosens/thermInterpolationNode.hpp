@@ -1,26 +1,55 @@
 #pragma once
 
-#include <deque>
-#include <vector>
-#include <string>
-#include <cstdint>
-
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/point_stamped.hpp"
 #include "sensor_msgs/msg/temperature.hpp"
 #include "sensor_msgs/msg/point_cloud2.hpp"
 #include "nav_msgs/msg/occupancy_grid.hpp"
 
+#include <deque>
+#include <vector>
+#include <string>
+#include <cstdint>
+
 class ThermInterpolationNode : public rclcpp::Node {
 public:
-  /// Interpolates single-pixel thermal samples into a rolling cost map.
-  /// Subscribes: /heat/sample_point (PointStamped), /heat/temperature (Temperature)
-  /// Publishes : /heat/costmap (OccupancyGrid), /heat/samples (PointCloud2 with 'temp' field)
   ThermInterpolationNode();
 
 private:
-  // -------- Types --------
+  // -------- Callbacks --------
+  void onPoint(const geometry_msgs::msg::PointStamped::SharedPtr msg);
+  void onTemp(const sensor_msgs::msg::Temperature::SharedPtr msg);
+  void publishOutputs();          // publishes /heat/costmap and /heat/samples
+  void tryPair();                 // pair newest messages within tolerance and process
+
+  // Apply one matched measurement (x,y,T) to accumulators
+  void processMeasurement(const geometry_msgs::msg::PointStamped& pt,
+                          const sensor_msgs::msg::Temperature& temp);
+
+  // -------- Helpers --------
+  float  kernelWeight(double d) const;  // IDW or Gaussian weight
+  void   publishSampleCloud();          // builds PointCloud2 from samples_
+
+  int    worldToIndexX(double x) const;
+  int    worldToIndexY(double y) const;
+  double indexToWorldX(int i) const;
+  double indexToWorldY(int j) const;
+
+  void   trimPointsDeque(std::size_t max_keep = 200);
+  void   trimTempsDeque(std::size_t max_keep = 200);
+  
+  // -------- Data structures --------
+  // Single temperature sample (x,y,z,T)
   struct Sample { double x, y, z, T; };
+
+  // -------- Publishers / Subscribers / Timers --------
+  rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr grid_pub_;
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pc_pub_;
+
+  rclcpp::Subscription<geometry_msgs::msg::PointStamped>::SharedPtr sub_point_;
+  rclcpp::Subscription<sensor_msgs::msg::Temperature>::SharedPtr    sub_temp_;
+
+  rclcpp::TimerBase::SharedPtr pub_timer_;
 
   // -------- Parameters (declared in ctor) --------
   std::string frame_id_;
@@ -48,6 +77,7 @@ private:
   int pair_tol_ms_{50};        // point/temperature stamp pairing tolerance [ms]
   double decay_tau_s_{0.0};    // <=0 disables exponential time decay
 
+
   // -------- Map storage --------
   int width_{0}, height_{0};
   std::vector<float> wsum_;            // accumulated weights per cell
@@ -59,36 +89,6 @@ private:
   std::deque<geometry_msgs::msg::PointStamped> points_q_;
   std::deque<sensor_msgs::msg::Temperature>    temps_q_;
 
-  // -------- Publishers / Subscribers / Timers --------
-  rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr grid_pub_;
-  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pc_pub_;
-
-  rclcpp::Subscription<geometry_msgs::msg::PointStamped>::SharedPtr sub_point_;
-  rclcpp::Subscription<sensor_msgs::msg::Temperature>::SharedPtr    sub_temp_;
-
-  rclcpp::TimerBase::SharedPtr pub_timer_;
-
-  // -------- Callbacks --------
-  void onPoint(const geometry_msgs::msg::PointStamped::SharedPtr msg);
-  void onTemp(const sensor_msgs::msg::Temperature::SharedPtr msg);
-  void publishOutputs();          // publishes /heat/costmap and /heat/samples
-  void tryPair();                 // pair newest messages within tolerance and process
-
-  // Apply one matched measurement (x,y,T) to accumulators
-  void processMeasurement(const geometry_msgs::msg::PointStamped& pt,
-                          const sensor_msgs::msg::Temperature& temp);
-
-  // -------- Helpers (implemented in .cpp) --------
-  float  kernelWeight(double d) const;  // IDW or Gaussian weight
-  void   publishSampleCloud();          // builds PointCloud2 from samples_
-
-  int    worldToIndexX(double x) const;
-  int    worldToIndexY(double y) const;
-  double indexToWorldX(int i) const;
-  double indexToWorldY(int j) const;
-
-  void   trimPointsDeque(std::size_t max_keep = 200);
-  void   trimTempsDeque(std::size_t max_keep = 200);
 };
 
 
