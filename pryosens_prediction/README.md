@@ -1,6 +1,6 @@
 # thermal_pyrosens
 
-Simulates a single-pixel thermal sensor and builds a blended **heat costmap** in ROS 2.
+Uses Heatmap and Wind Marker Array Data and compares with threshold tables to output a predictive output on where the fire will move to **heat costmap** in ROS 2.
 
 > **Note:** `thermSensNode` is not used in this setup.
 
@@ -11,7 +11,7 @@ Simulates a single-pixel thermal sensor and builds a blended **heat costmap** in
 ### T1 — Build & RViz
 ```bash
 # From your workspace root
-colcon build --packages-select thermal_pyrosens
+colcon build --packages-select pyrosens_prediction
 source install/setup.bash
 
 # Open RViz with the provided config

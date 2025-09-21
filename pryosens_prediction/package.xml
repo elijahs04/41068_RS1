@@ -3,7 +3,7 @@
 <package format="3">
   <name>thermal_pyrosens</name>
   <version>0.0.1</version>
-  <description>Thermal Imaging and Data Interpolation (Heat Mapping) for PyroSENS.</description>
+  <description>Thermal and Wind Interpretation for fire prediction for PyroSENS.</description>
 
   <maintainer email="connor.lindsell@student.uts.edu.au">Connor Lindsell</maintainer>
   <license>Apache-2.0</license>
