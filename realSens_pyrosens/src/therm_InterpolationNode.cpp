@@ -1,4 +1,4 @@
-#include "thermal_pyrosens/thermInterpolationNode.hpp"
+#include "thermal_pyrosens/therm_InterpolationNode.hpp"
 
 #include <sensor_msgs/point_cloud2_iterator.hpp>
 #include <limits>

@@ -9,7 +9,7 @@
 
 class ThermalSimNode : public rclcpp::Node {
 public:
-  ThermalSimNode() : rclcpp::Node("thermal_sim_node") {
+  SimulationNode() : rclcpp::Node("thermal_sim_node") {
     // ----- Parameters (override via ros2 param set) -----
     frame_id_   = declare_parameter<std::string>("frame_id", "map");
     spacing_    = declare_parameter<double>("spacing", 0.5);         // [m] reference sampling step
