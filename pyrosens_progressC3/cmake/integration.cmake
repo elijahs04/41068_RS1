@@ -23,7 +23,7 @@ target_link_libraries(main_perception
 )
 ament_target_dependencies(main_perception rclcpp sensor_msgs geometry_msgs nav_msgs visualization_msgs tf2 tf2_ros)
 
-# Standalone mains (if you keep them)
+# Standalone mains for each node (for testing/debugging)
 add_executable(main_thermSens mains/main_thermSens.cpp)
 target_link_libraries(main_thermSens thermSens_lib)
 ament_target_dependencies(main_thermSens rclcpp sensor_msgs geometry_msgs tf2 tf2_ros)
@@ -40,14 +40,29 @@ add_executable(main_windInterpolation mains/main_windInterpolation.cpp)
 target_link_libraries(main_windInterpolation windInterpolation_lib)
 ament_target_dependencies(main_windInterpolation rclcpp geometry_msgs visualization_msgs)
 
+add_executable(main_thermalSim mains/main_thermalSim.cpp)
+target_link_libraries(main_thermalSim thermalSim_lib)
+ament_target_dependencies(main_thermalSim rclcpp sensor_msgs geometry_msgs)
+
+add_executable(main_windSim mains/main_windSim.cpp)
+target_link_libraries(main_windSim windSim_lib)
+ament_target_dependencies(main_windSim rclcpp sensor_msgs)
+
+
 install(TARGETS
+  # Runners
   main_thermal
   main_wind
   main_interpolation
   main_perception
+
+  # Standalone mains
   main_thermSens
   main_thermInterpolation
   main_windSens
   main_windInterpolation
+  main_thermalSim
+  main_windSim
+
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
