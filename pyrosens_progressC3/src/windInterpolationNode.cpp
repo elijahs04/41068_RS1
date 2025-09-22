@@ -6,11 +6,11 @@ WindInterpolationNode::WindInterpolationNode() : rclcpp::Node("wind_interpolatio
   // sub
   point_sub_ = create_subscription<geometry_msgs::msg::PointStamped>(
     "/wind/point", 10,
-    std::bind(&MapperNode::onPoint, this, std::placeholders::_1));
+    std::bind(&WindInterpolationNode::onPoint, this, std::placeholders::_1));
 
   w_vel_sub_ = create_subscription<geometry_msgs::msg::Vector3Stamped>(
     "/wind/velocity", 10,
-    std::bind(&MapperNode::onWind, this, std::placeholders::_1));
+    std::bind(&WindInterpolationNode::onWind, this, std::placeholders::_1));
 
   // pub
   auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).reliable();

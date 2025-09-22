@@ -6,7 +6,7 @@ int main(int argc, char **argv) {
   rclcpp::init(argc, argv);
 
   auto therm_interp = std::make_shared<ThermInterpolationNode>();
-  auto therm_sensor = std::make_shared<ThermSensorNode>();
+  auto therm_sensor = std::make_shared<ThermSensNode>();
 
   rclcpp::executors::MultiThreadedExecutor exec;
   exec.add_node(therm_interp);

@@ -1,21 +1,42 @@
 <?xml version="1.0"?>
-<package format="2">
-  <name>pyrosens_movement</name>
-  <version>0.0.1</version>
-  <description>pyrosens package</description>
-  <maintainer email="your@email.com">Your Name</maintainer>
+<package format="3">
+  <name>pyrosens_progress</name>
+  <version>0.1.0</version>
+  <description>Unified package combining thermal, wind, and goals nodes (sensors, interpolation, sims) plus multi-node runners for the progress demo.</description>
+
+   <!-- Maintainers: responsible for releases and long-term upkeep -->
+  <maintainer email="connor.lindsell@student.uts.edu.au">Connor Lindsell</maintainer>
+  <maintainer email="james.c.farrell@student.uts.edu.au">James Farrell</maintainer>
+
+  <!-- Authors/contributors -->
+  <author email="dev1@example.com">Dev One</author>
+
   <license>LGPLv3</license>
 
-
+  <!-- Build tool -->
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <!-- Core ROS 2 -->
   <depend>rclcpp</depend>
   <depend>rclcpp_action</depend>
+
+  <!-- Messages used across nodes -->
+  <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>visualization_msgs</depend>
+
+  <!-- TF (thermal nodes use tf2/tf2_ros) -->
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+
+  <!-- Nav2 action/messages for goals -->
   <depend>nav2_msgs</depend>
+
+  <!-- Tools (RViz configs, optional at runtime) -->
+  <exec_depend>rviz2</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
   </export>
-
 </package>

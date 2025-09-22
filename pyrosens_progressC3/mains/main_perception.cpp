@@ -8,9 +8,9 @@ int main(int argc, char **argv) {
   rclcpp::init(argc, argv);
 
   auto therm_interp = std::make_shared<ThermInterpolationNode>();
-  auto therm_sensor = std::make_shared<ThermSensorNode>();
+  auto therm_sensor = std::make_shared<ThermSensNode>();
   auto wind_interp  = std::make_shared<WindInterpolationNode>();
-  auto wind_sensor  = std::make_shared<WindSensorNode>();
+  auto wind_sensor  = std::make_shared<WindSensNode>();
 
   rclcpp::executors::MultiThreadedExecutor exec;
   exec.add_node(therm_interp);

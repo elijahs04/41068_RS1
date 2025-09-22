@@ -12,7 +12,7 @@ WindSensNode::WindSensNode() : rclcpp::Node("wind_sensor_node") {
     // test subscriber
   test_cloud_sub_ = create_subscription<sensor_msgs::msg::PointCloud2>(
     "/wind/test_cloud", 10,
-    std::bind(&SensorNode::onTestCloud, this, std::placeholders::_1));
+    std::bind(&WindSensNode::onTestCloud, this, std::placeholders::_1));
 
 }
 
