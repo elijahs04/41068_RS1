@@ -23,6 +23,11 @@ target_link_libraries(main_perception
 )
 ament_target_dependencies(main_perception rclcpp sensor_msgs geometry_msgs nav_msgs visualization_msgs tf2 tf2_ros)
 
+# Simulation-only runner (thermal + wind simulation, no sensors)
+add_executable(main_sim mains/main_sim.cpp)
+target_link_libraries(main_sim thermalSim_lib windSim_lib)
+ament_target_dependencies(main_sim rclcpp sensor_msgs geometry_msgs)
+
 # Standalone mains for each node (for testing/debugging)
 add_executable(main_thermSens mains/main_thermSens.cpp)
 target_link_libraries(main_thermSens thermSens_lib)
@@ -55,6 +60,7 @@ install(TARGETS
   main_wind
   main_interpolation
   main_perception
+  main_sim
 
   # Standalone mains
   main_thermSens
