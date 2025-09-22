@@ -83,24 +83,23 @@ Unified ROS 2 (Humble) package for **thermal** and **wind** perception:
 
 ## How to run
 
-### A) Full sim + perception + RViz (current setup, 4 terminals)
+### A) Full Sensor sim + perception models in RViz 
 
-Terminal 1 – simulator
+Terminal 1 – Perception (spins thermal+wind sensor+interpolation)
 
-    ros2 run pyrosens_progressC3 main_sim
+    ros2 run pyrosens_progress main_perception
 
+Terminal 2 – RViz Heatmap
 
-Terminal 3 – Perception (spins thermal+wind sensor+interpolation)
+    rviz2 -d ~/ros2_ws/src/pyrosens_progressC3/rviz/Heatmap.rviz
 
-    ros2 run pyrosens_progressC3 main_perception
+Terminal 3 – RViz Wind Marker Array
+    rviz2 -d ~/ros2_ws/src/pyrosens_progressC3/rviz/WindMarkerArray.rviz
 
-Terminal 4 – RViz (pick a config)
+Terminal 4 – Simulation Sensor values
+    ros2 run pyrosens_progress main_sim
 
-    rviz2 -d $(ros2 pkg prefix pyrosens_progressC3)/share/pyrosens_progressC3/rviz/Heatmap.rviz
-    # or
-    rviz2 -d $(ros2 pkg prefix pyrosens_progressC3)/share/pyrosens_progressC3/rviz/WindMarkerArray.rviz
-
-### B) Thermal-only or Wind-only bring-up (2–3 terminals)
+### B) Thermal-only or Wind-only bring-up
 
 Thermal stack
 
