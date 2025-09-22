@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(pyrosens_progressC3)
+project(pyrosens_progress)
 
 # Language + warnings
 set(CMAKE_CXX_STANDARD 17)

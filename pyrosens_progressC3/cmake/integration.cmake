@@ -1,9 +1,9 @@
 # Runners that spin multiple nodes in one process
 
 # Thermal-only runner
-add_executable(main_therm mains/main_therm.cpp)
-target_link_libraries(main_therm thermSens_lib thermInterpolation_lib)
-ament_target_dependencies(main_therm rclcpp sensor_msgs geometry_msgs nav_msgs tf2 tf2_ros)
+add_executable(main_thermal mains/main_thermal.cpp)
+target_link_libraries(main_thermal thermSens_lib thermInterpolation_lib)
+ament_target_dependencies(main_thermal rclcpp sensor_msgs geometry_msgs nav_msgs tf2 tf2_ros)
 
 # Wind-only runner
 add_executable(main_wind mains/main_wind.cpp)
@@ -41,7 +41,7 @@ target_link_libraries(main_windInterpolation windInterpolation_lib)
 ament_target_dependencies(main_windInterpolation rclcpp geometry_msgs visualization_msgs)
 
 install(TARGETS
-  main_therm
+  main_thermal
   main_wind
   main_interpolation
   main_perception

@@ -5,7 +5,7 @@
 
 class WindSimNode : public rclcpp::Node {
 public:
-  TestCloudPub() : rclcpp::Node("wind_sim_node"), t_(0.0) {
+  WindSimNode() : rclcpp::Node("wind_sim_node"), t_(0.0) {
     // Tunable params (you can override via ros2 param set)
     grid_n_       = declare_parameter<int>("grid_n", 3);                // 3x3
     spacing_      = declare_parameter<double>("spacing", 0.5);          // meters
@@ -19,7 +19,7 @@ public:
     period_ms_    = declare_parameter<int>("period_ms", 500);           // publish period
 
     pub_ = create_publisher<sensor_msgs::msg::PointCloud2>("/wind/test_cloud", 10);
-    timer_ = create_wall_timer(std::chrono::milliseconds(period_ms_), std::bind(&TestCloudPub::tick, this));
+    timer_ = create_wall_timer(std::chrono::milliseconds(period_ms_), std::bind(&WindSimNode::tick, this));
   }
 
 private:
@@ -106,7 +106,7 @@ private:
 
 int main(int argc, char **argv) {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<TestCloudPub>());
+  rclcpp::spin(std::make_shared<WindSimNode>());
   rclcpp::shutdown();
   return 0;
 }

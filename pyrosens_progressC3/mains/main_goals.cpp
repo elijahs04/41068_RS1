@@ -1,5 +1,5 @@
 #include <rclcpp/rclcpp.hpp>
-#include "include/goals_pyrosens/goals.hpp"
+#include "goals_pyrosens/goals.hpp"
 
 
 int main(int argc, char **argv)
