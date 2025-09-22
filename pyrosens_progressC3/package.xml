@@ -9,7 +9,8 @@
   <maintainer email="james.c.farrell@student.uts.edu.au">James Farrell</maintainer>
 
   <!-- Authors/contributors -->
-  <author email="dev1@example.com">Dev One</author>
+  <author email="dev1@student.uts.edu.au">Dev One</author>
+  <author email="dev3@student.uts.edu.au">Dev Two</author>
 
   <license>LGPLv3</license>
 
