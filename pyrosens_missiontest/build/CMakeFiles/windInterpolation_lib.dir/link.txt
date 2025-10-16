@@ -1,0 +1,2 @@
+/usr/bin/ar qc libwindInterpolation_lib.a CMakeFiles/windInterpolation_lib.dir/src/windInterpolationNode.cpp.o
+/usr/bin/ranlib libwindInterpolation_lib.a
