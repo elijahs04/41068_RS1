@@ -20,6 +20,34 @@ public:
   PredictionSim();
 private:
     void publish_data();
+
+    // publishers + timer
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr sim_cloud_pub_;
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr heat_cloud_pub_;
+    rclcpp::Publisher<geometry_msgs::msg::Vector3Stamped>::SharedPtr wind_pub_;
+    rclcpp::Publisher<geometry_msgs::msg::PointStamped>::SharedPtr point_pub_;
+    rclcpp::TimerBase::SharedPtr timer_;
+
+    // parameters
+    double period_s_{0.5};
+    std::string frame_id_{"map"};
+    int nx_{40}, ny_{40};
+    double res_{5.0}; 
+
+    // hotspot 
+    double heat_cx_{60.0}, heat_cy_{0};
+    double heat_sigma_{25.0}; // gaussian width (m)
+
+    // wind
+    double wind_base_x_{2.5}, wind_base_y_{0.8}, wind_base_z_{0.0};
+
+    // point 
+    double p0x_{0.0}, p0y_{0.0}, p0z_{0.0};
+
+    // timer
+    double t_{0.0};
+}; 
+
     
 
 

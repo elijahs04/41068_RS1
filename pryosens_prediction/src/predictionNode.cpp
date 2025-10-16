@@ -5,6 +5,10 @@ takes in predictionSim data, interpolates, and then outputs/publishes to the ter
 */
 
 #include "pyrosens_prediction/predictionNode.hpp"
+#include <sensor_msgs/point_cloud2_iterator.hpp>
+#include <limits>
+#include <cmath>
+
 
 using std::placeholders::_1;
 using namespace std::chrono_literals;
@@ -15,12 +19,12 @@ PredictionNode::PredictionNode() : Node("prediction_node")
   // Declare parameters
   this->declare_parameter("timer_period", 1.0);
   this->declare_parameter("predict_time", 10.0);
-  this->declare_parameter("predict_step", 1.0);
+  this->declare_parameter("dt", 1.0);
 
   // Get parameters
   this->get_parameter("timer_period", timer_period_);
   this->get_parameter("predict_time", predict_time_);
-  this->get_parameter("predict_step", predict_step_);
+  this->get_parameter("dt", predict_step_);
 
   // Initialize variables
   wind_x_ = 0.0;
