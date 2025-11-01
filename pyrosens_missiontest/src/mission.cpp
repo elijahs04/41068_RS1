@@ -399,7 +399,7 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
 bool Mission::waitForActionServer_(const rclcpp::Duration& timeout)
 {
   if (!nav_client_) return false;
-  bool ok = nav_client_->wait_for_action_server(timeout);
+  bool ok = nav_client_->wait_for_action_server(std::chrono::nanoseconds(timeout.nanoseconds()));
   if (!ok) {
     RCLCPP_ERROR(get_logger(), "Downstream NavigateToPose server not available at '%s'.",
                  downstream_nav_action_name_.c_str());
