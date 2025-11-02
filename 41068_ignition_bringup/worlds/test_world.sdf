@@ -7,6 +7,9 @@
       <gravity>0 0 0</gravity>
     </physics>
     <atmosphere type='adiabatic'/>
+      <temperature>295.15</temperature>   <!-- 22C -->
+      <temperature_gradient>0.1</temperature_gradient>
+    </atmosphere>
     <magnetic_field>6e-06 2e-06 -4e-05</magnetic_field>
     <scene>
       <ambient>0.4 0.4 0.4 1</ambient>
