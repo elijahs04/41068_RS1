@@ -176,6 +176,30 @@
       <topic>/model/husky/camera</topic>
       <gz_frame_id>camera_link</gz_frame_id>
     </sensor>
+
+    <!-- new thermal camera on the same link -->
+    <sensor name="thermal_camera" type="thermal">
+      <!-- 5 cm below the camera, pitched down 90 deg -->
+      <pose>0 0 -0.05 0 1.57 0</pose>
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <visualize>true</visualize>
+      <thermal_camera>
+        <image>
+          <width>320</width>
+          <height>240</height>
+          <format>L16</format>
+        </image>
+        <clip>
+          <near>0.1</near>
+          <far>20</far>
+        </clip>
+      </thermal_camera>
+      <topic>/model/parrot/thermal_camera/image</topic>
+      <gz_frame_id>camera_link</gz_frame_id>
+    </sensor>
+
   </gazebo>
 
 </robot>
+
