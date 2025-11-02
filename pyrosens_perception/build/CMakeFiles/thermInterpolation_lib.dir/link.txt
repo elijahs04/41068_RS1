@@ -1,0 +1,2 @@
+/usr/bin/ar qc libthermInterpolation_lib.a CMakeFiles/thermInterpolation_lib.dir/src/thermInterpolationNode.cpp.o
+/usr/bin/ranlib libthermInterpolation_lib.a

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libthermSens_lib.a CMakeFiles/thermSens_lib.dir/src/thermSensNode.cpp.o
+/usr/bin/ranlib libthermSens_lib.a
