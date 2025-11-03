@@ -168,18 +168,17 @@
       </light>
     </state>
 
-        <!-- === Simple thermal "fire" === -->
     <model name="fire_pit" canonical_link="fire_link">
       <static>true</static>
-      <pose>2 0 0 0 0 0</pose>
+      <pose>3 5 0 0 0 0</pose>
 
       <link name="fire_link">
-        <!-- Small collision -> can click/select it if needed -->
+        <!-- Collision (center at z=0.5 for length=1.0) -->
         <collision name="fire_collision">
           <pose>0 0 0.5 0 0 0</pose>
           <geometry>
             <cylinder>
-              <radius>0.35</radius>
+              <radius>5.05</radius>
               <length>1.0</length>
             </cylinder>
           </geometry>
@@ -187,10 +186,10 @@
 
         <!-- Hot inner core -->
         <visual name="fire_visual_core">
-          <pose>0 0 0.5 0 0 0</pose>
+          <pose>0 0 0.5 0 0 0</pose> <!-- length=1.0 => z=0.5 -->
           <geometry>
             <cylinder>
-              <radius>0.30</radius>
+              <radius>5.00</radius>
               <length>1.0</length>
             </cylinder>
           </geometry>
@@ -202,17 +201,17 @@
           </material>
           <plugin filename="libignition-gazebo-thermal-system.so"
                   name="ignition::gazebo::systems::Thermal">
-            <temperature>700.0</temperature>  <!-- Kelvin -->
+            <temperature>500.0</temperature>
           </plugin>
         </visual>
 
         <!-- Warm outer plume -->
         <visual name="fire_visual_outer">
-          <pose>0 0 0.6 0 0 0</pose>
+          <pose>0 0 0.625 0 0 0</pose> <!-- length=1.25 => z=0.625 -->
           <geometry>
             <cylinder>
-              <radius>0.45</radius>
-              <length>1.2</length>
+              <radius>6.00</radius>
+              <length>1.25</length>
             </cylinder>
           </geometry>
           <material>
@@ -222,25 +221,26 @@
           </material>
           <plugin filename="libignition-gazebo-thermal-system.so"
                   name="ignition::gazebo::systems::Thermal">
-            <temperature>480.0</temperature>
+            <temperature>380.0</temperature>
           </plugin>
         </visual>
 
-        <!-- Glow in RGB -->
+        <!-- Glow in RGB (scaled up) -->
         <light name="fire_light" type="point">
           <pose>0 0 1.0 0 0 0</pose>
           <diffuse>1.0 0.6 0.2 1.0</diffuse>
           <specular>0.2 0.2 0.2 1.0</specular>
           <attenuation>
-            <range>6.0</range>
-            <linear>0.6</linear>
-            <constant>0.2</constant>
-            <quadratic>0.1</quadratic>
+            <range>20.0</range>      <!-- was 6.0 -->
+            <linear>0.4</linear>     <!-- soften falloff -->
+            <constant>0.1</constant>
+            <quadratic>0.05</quadratic>
           </attenuation>
           <cast_shadows>false</cast_shadows>
         </light>
       </link>
     </model>
+
 
   
   </world>
