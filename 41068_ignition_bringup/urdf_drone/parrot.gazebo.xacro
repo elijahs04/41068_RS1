@@ -196,16 +196,17 @@
       <update_rate>30</update_rate>
       <visualize>true</visualize>
       <topic>/model/parrot/thermal_camera/image</topic>
-      <gz_frame_id>thermal_camera_link</gz_frame_id>
-      <plugin
-        filename="ignition-gazebo-thermal-sensor-system.so"
-        name="gz::sim::systems::ThermalSensor">
-        <min_temp>253.15</min_temp>   <!-- -20C -->
-        <max_temp>773.15</max_temp>   <!-- 500C -->
-        <resolution>3.0</resolution>
-      </plugin>
+      <gz_frame_id>thermal_camera_link</gz_frame_id>  
     </sensor>
   </gazebo>
 
 </robot>
 
+<!-- TODO: find the right path to this plugin -->
+<!-- <plugin>
+        filename="ignition-gazebo-thermal-sensor-system.so"
+        name="gz::sim::systems::ThermalSensor"
+        <min_temp>253.15</min_temp>   <!-- -20C -->
+        <max_temp>773.15</max_temp>   <!-- 500C -->
+        <resolution>3.0</resolution>
+      </plugin> -->

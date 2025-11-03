@@ -56,14 +56,21 @@
 
 # Camera: depth
 - ros_topic_name: "/camera/depth/image"
-  gz_topic_name: "/model/parrot/camera/depth_image"
+  gz_topic_name: "/model/husky/camera/depth_image"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "ignition.msgs.Image"
   direction: GZ_TO_ROS
 
 # Camera: depth pointcloud
 - ros_topic_name: "/camera/depth/points"
-  gz_topic_name: "/model/parrot/camera/points"
+  gz_topic_name: "/model/husky/camera/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "ignition.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS
+
+# Thermal Camera
+- ros_topic_name: "/thermal_camera/image"
+  gz_topic_name: "/model/parrot/thermal_camera/image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "ignition.msgs.Image"
   direction: GZ_TO_ROS
