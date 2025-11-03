@@ -167,6 +167,81 @@
         <pose>0 0 10 0 -0 0</pose>
       </light>
     </state>
+
+        <!-- === Simple thermal "fire" === -->
+    <model name="fire_pit" canonical_link="fire_link">
+      <static>true</static>
+      <pose>2 0 0 0 0 0</pose>
+
+      <link name="fire_link">
+        <!-- Small collision -> can click/select it if needed -->
+        <collision name="fire_collision">
+          <pose>0 0 0.5 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.35</radius>
+              <length>1.0</length>
+            </cylinder>
+          </geometry>
+        </collision>
+
+        <!-- Hot inner core -->
+        <visual name="fire_visual_core">
+          <pose>0 0 0.5 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.30</radius>
+              <length>1.0</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>1.0 0.5 0.0 1.0</ambient>
+            <diffuse>1.0 0.4 0.0 1.0</diffuse>
+            <specular>0.2 0.2 0.2 1.0</specular>
+            <emissive>1.0 0.6 0.1 1.0</emissive>
+          </material>
+          <plugin filename="libignition-gazebo-thermal-system.so"
+                  name="ignition::gazebo::systems::Thermal">
+            <temperature>700.0</temperature>  <!-- Kelvin -->
+          </plugin>
+        </visual>
+
+        <!-- Warm outer plume -->
+        <visual name="fire_visual_outer">
+          <pose>0 0 0.6 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.45</radius>
+              <length>1.2</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>1.0 0.3 0.0 0.5</ambient>
+            <diffuse>1.0 0.3 0.0 0.5</diffuse>
+            <emissive>1.0 0.3 0.0 0.5</emissive>
+          </material>
+          <plugin filename="libignition-gazebo-thermal-system.so"
+                  name="ignition::gazebo::systems::Thermal">
+            <temperature>480.0</temperature>
+          </plugin>
+        </visual>
+
+        <!-- Glow in RGB -->
+        <light name="fire_light" type="point">
+          <pose>0 0 1.0 0 0 0</pose>
+          <diffuse>1.0 0.6 0.2 1.0</diffuse>
+          <specular>0.2 0.2 0.2 1.0</specular>
+          <attenuation>
+            <range>6.0</range>
+            <linear>0.6</linear>
+            <constant>0.2</constant>
+            <quadratic>0.1</quadratic>
+          </attenuation>
+          <cast_shadows>false</cast_shadows>
+        </light>
+      </link>
+    </model>
+
   
   </world>
 </sdf>
