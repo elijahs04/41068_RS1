@@ -176,35 +176,29 @@
       <topic>/model/husky/camera</topic>
       <gz_frame_id>camera_link</gz_frame_id>
     </sensor>
-  </gazebo>
 
-  <gazebo reference="thermal_camera_link">
+    <!-- new thermal camera on the same link -->
     <sensor name="thermal_camera" type="thermal">
-      <camera>
-        <horizontal_fov>1.047</horizontal_fov>
+      <!-- 5 cm below the camera, pitched down 90 deg -->
+      <pose>0 0 -0.05 0 1.57 0</pose>
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <visualize>true</visualize>
+      <thermal_camera>
         <image>
           <width>320</width>
           <height>240</height>
-          <format>L8</format>   <!-- L8 = 8 Bit, L16 = 16 bit thermal cam -->
+          <format>L16</format>
         </image>
         <clip>
           <near>0.1</near>
           <far>20</far>
         </clip>
-      </camera>
-      <always_on>1</always_on>
-      <update_rate>30</update_rate>
-      <visualize>true</visualize>
+      </thermal_camera>
       <topic>/model/parrot/thermal_camera/image</topic>
-      <gz_frame_id>thermal_camera_link</gz_frame_id>
-      <plugin
-        filename="ignition-gazebo-thermal-sensor-system"
-        name="gz::sim::systems::ThermalSensor">
-        <min_temp>253.15</min_temp>   <!-- -20C -->
-        <max_temp>773.15</max_temp>   <!-- 500C -->
-        <resolution>3.0</resolution>
-      </plugin>
+      <gz_frame_id>camera_link</gz_frame_id>
     </sensor>
+
   </gazebo>
 
 </robot>
