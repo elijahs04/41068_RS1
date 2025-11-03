@@ -120,3 +120,4 @@ I found [this thread](https://robotics.stackexchange.com/questions/111547/gazebo
 ```bash
 export QT_QPA_PLATFORM=xcb
 ```
+
