@@ -181,10 +181,10 @@
   <gazebo reference="thermal_camera_link">
     <sensor name="thermal_camera" type="thermal">
       <camera>
-        <horizontal_fov>1.047</horizontal_fov>
+        <horizontal_fov>2.0944</horizontal_fov>
         <image>
-          <width>320</width>
-          <height>240</height>
+          <width>720</width>    <!-- originally 320 -->
+          <height>480</height>  <!-- originally 240 -->
           <format>L8</format>   <!-- L8 = 8 Bit, L16 = 16 bit thermal cam -->
         </image>
         <clip>

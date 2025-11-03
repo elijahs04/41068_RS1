@@ -205,7 +205,7 @@
           </plugin>
         </visual>
 
-        <!-- Warm outer plume -->
+        <!-- Warm outer plume - Visual (due to thermal limitations) -->
         <visual name="fire_visual_outer">
           <pose>0 0 0.625 0 0 0</pose> <!-- length=1.25 => z=0.625 -->
           <geometry>
@@ -221,7 +221,7 @@
           </material>
           <plugin filename="libignition-gazebo-thermal-system.so"
                   name="ignition::gazebo::systems::Thermal">
-            <temperature>380.0</temperature>
+            <temperature>499.0</temperature>
           </plugin>
         </visual>
 
