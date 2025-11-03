@@ -170,7 +170,7 @@
 
     <model name="fire_pit" canonical_link="fire_link">
       <static>true</static>
-      <pose>3 5 0 0 0 0</pose>
+      <pose>3 -5 0 0 0 0</pose>
 
       <link name="fire_link">
         <!-- Collision (center at z=0.5 for length=1.0) -->
@@ -178,8 +178,8 @@
           <pose>0 0 0.5 0 0 0</pose>
           <geometry>
             <cylinder>
-              <radius>5.05</radius>
-              <length>1.0</length>
+              <radius>1.05</radius>
+              <length>1.10</length>
             </cylinder>
           </geometry>
         </collision>
@@ -189,7 +189,7 @@
           <pose>0 0 0.5 0 0 0</pose> <!-- length=1.0 => z=0.5 -->
           <geometry>
             <cylinder>
-              <radius>5.00</radius>
+              <radius>1.00</radius>
               <length>1.0</length>
             </cylinder>
           </geometry>
@@ -201,7 +201,7 @@
           </material>
           <plugin filename="libignition-gazebo-thermal-system.so"
                   name="ignition::gazebo::systems::Thermal">
-            <temperature>500.0</temperature>
+            <temperature>499.0</temperature>
           </plugin>
         </visual>
 
@@ -210,7 +210,7 @@
           <pose>0 0 0.625 0 0 0</pose> <!-- length=1.25 => z=0.625 -->
           <geometry>
             <cylinder>
-              <radius>6.00</radius>
+              <radius>1.20</radius>
               <length>1.25</length>
             </cylinder>
           </geometry>
