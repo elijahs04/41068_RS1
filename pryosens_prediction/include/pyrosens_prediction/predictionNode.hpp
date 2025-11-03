@@ -19,10 +19,10 @@ private:
 
 // -------- Callbacks --------
     void onTimer();
-    void onSimCloud(); // needs to break down the point cloud into usable data
-    void onWind(); // breaks wind down
-    void onHeat(); // breaks heat down
-    void onPoint();
+    void onSimCloud(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
+    void onWind(const geometry_msgs::msg::Vector3Stamped::SharedPtr msg);
+    void onHeat(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
+    void onPoint(const geometry_msgs::msg::PointStamped::SharedPtr msg);
     void onPredict();
 
 // -------- Publishers / Subscribers --------
