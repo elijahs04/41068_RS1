@@ -141,11 +141,10 @@
 
   <!-- Thermal camera link mounted off the main camera boom -->
   <joint name="thermal_camera_joint" type="fixed">
-    <joint name="thermal_camera_joint" type="fixed">
-      <origin xyz="0 0 0" rpy="0 0.785398 0"/>
-      <parent link="camera_link"/>
-      <child link="thermal_camera_link"/>
-    </joint>
+    <origin xyz="0 0 0" rpy="0 0.785398 0"/>
+    <parent link="camera_link"/>
+    <child link="thermal_camera_link"/>
+  </joint>
   
   <link name="thermal_camera_link">
     <!-- tiny visual just so we can see it in Gazebo/rviz if needed -->
