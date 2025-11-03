@@ -139,32 +139,4 @@
   </joint>
   <link name="camera_depth_optical_frame"/>
 
-    <!-- Thermal camera link mounted off the main camera boom -->
-  <joint name="thermal_camera_joint" type="fixed">
-    <!-- offset from camera_link: 5 cm down, rotated to look down -->
-    <origin xyz="0 0 -0.05" rpy="0 1.57 0"/>
-    <parent link="camera_link"/>
-    <child link="thermal_camera_link"/>
-  </joint>
-  
-  <link name="thermal_camera_link">
-    <!-- tiny visual just so we can see it in Gazebo/rviz if needed -->
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="0.02 0.02 0.02"/>
-      </geometry>
-      <material name="dark"/>
-    </visual>
-    <!-- light inertial so URDF is happy -->
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="0.001"/>
-      <inertia ixx="1e-6" ixy="0" ixz="0"
-               iyy="1e-6" iyz="0"
-               izz="1e-6"/>
-    </inertial>
-  </link>
-
-
 </robot>
