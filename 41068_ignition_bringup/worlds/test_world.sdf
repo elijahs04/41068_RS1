@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <sdf version='1.7'>
   <world name='default'>
-    
+  
     <physics name='ode' type='ode'>
       <max_step_size>0.001</max_step_size>
       <real_time_update_rate>1000</real_time_update_rate>
@@ -9,11 +9,7 @@
       <gravity>0 0 0</gravity>
     
     </physics>
-    <atmosphere type='adiabatic'>
-      <temperature>295.15</temperature>   <!-- 22C -->
-      <temperature_gradient>0.1</temperature_gradient>
-    </atmosphere>
-    
+    <atmosphere type='adiabatic'/>
     <magnetic_field>6e-06 2e-06 -4e-05</magnetic_field>
     
     <scene>
