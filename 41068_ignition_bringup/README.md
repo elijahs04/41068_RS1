@@ -121,3 +121,18 @@ I found [this thread](https://robotics.stackexchange.com/questions/111547/gazebo
 export QT_QPA_PLATFORM=xcb
 ```
 
+
+
+
+```bash
+source /opt/ros/humble/setup.bash
+colcon build --symlink-install 
+source ~/ros2_ws/install/setup.bash
+ros2 launch 41068_ignition_bringup 41068_ignition_drone.launch.py slam:=true nav2:=true rviz:=true world:=test_world
+```
+```bash
+source /opt/ros/humble/setup.bash
+colcon build --symlink-install 
+source ~/41068_ws/install/setup.bash
+ros2 launch 41068_ignition_bringup 41068_ignition_drone.launch.py slam:=true nav2:=true rviz:=true world:=test_world
+```
