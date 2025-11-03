@@ -6,7 +6,7 @@
       <real_time_factor>1</real_time_factor>
       <gravity>0 0 0</gravity>
     </physics>
-    <atmosphere type='adiabatic'/>
+    <atmosphere type='adiabatic'>
       <temperature>295.15</temperature>   <!-- 22C -->
       <temperature_gradient>0.1</temperature_gradient>
     </atmosphere>
