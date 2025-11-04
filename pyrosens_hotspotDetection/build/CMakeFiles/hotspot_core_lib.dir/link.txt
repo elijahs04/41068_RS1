@@ -1,0 +1,2 @@
+/usr/bin/ar qc libhotspot_core_lib.a CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o CMakeFiles/hotspot_core_lib.dir/src/hotspotDetector.cpp.o
+/usr/bin/ranlib libhotspot_core_lib.a
