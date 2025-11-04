@@ -1,4 +1,5 @@
 #include "goals_pyrosens/goals.hpp"
+#include <cmath>
 
 Goals::Goals() : rclcpp::Node("goals_execution") {
     RCLCPP_INFO(this->get_logger(), "Goals action client started");
@@ -49,9 +50,13 @@ bool Goals::sendGoalAndWait(double x, double y, double theta)
     goal_msg.pose.header.stamp = this->get_clock()->now();
     goal_msg.pose.pose.position.x = x;
     goal_msg.pose.pose.position.y = y;
-    goal_msg.pose.pose.orientation.w = 1.0;
+    const double half_yaw = theta * 0.5;
+    goal_msg.pose.pose.orientation.x = 0.0;
+    goal_msg.pose.pose.orientation.y = 0.0;
+    goal_msg.pose.pose.orientation.z = std::sin(half_yaw);
+    goal_msg.pose.pose.orientation.w = std::cos(half_yaw);
 
-    RCLCPP_INFO(this->get_logger(), "Sending goal to [%.2f, %.2f]", x, y);
+    RCLCPP_INFO(this->get_logger(), "Sending goal to [%.2f, %.2f] heading %.2f rad", x, y, theta);
 
     auto send_goal_options = rclcpp_action::Client<NavigateToPose>::SendGoalOptions();
 

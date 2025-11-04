@@ -4,6 +4,7 @@
 #include "geometry_msgs/msg/vector3_stamped.hpp"
 #include "geometry_msgs/msg/point_stamped.hpp"
 #include "visualization_msgs/msg/marker_array.hpp"  
+#include "std_msgs/msg/string.hpp"
 #include <optional>
 #include <vector>
 #include <unordered_map>
@@ -21,6 +22,7 @@ private:
 
   // -------- Publishers / Subscribers --------
   rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_pub_;
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr wind_text_pub_;
 
   rclcpp::Subscription<geometry_msgs::msg::PointStamped>::SharedPtr point_sub_;
   rclcpp::Subscription<geometry_msgs::msg::Vector3Stamped>::SharedPtr w_vel_sub_;

@@ -16,6 +16,7 @@ ThermSensNode::ThermSensNode()
 
 void ThermSensNode::onSimPoints(const sensor_msgs::msg::PointCloud & msg)
 {
+  (void)msg;
   // TODO: handle incoming sim data
 }
 

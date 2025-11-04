@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(pyrosens_progress)
+project(pyrosens_mission)
 
 # Language + warnings
 set(CMAKE_CXX_STANDARD 17)
@@ -19,6 +19,8 @@ find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(rclcpp_action REQUIRED)   # for goals
 find_package(nav2_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 
 # Public headers for all targets
 include_directories(
@@ -31,9 +33,12 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/thermal.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/wind.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/movement.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/integration.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/mission.cmake)
 
 # Shared data
 install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY config/ DESTINATION share/${PROJECT_NAME}/config)
+install(DIRECTORY launch/ DESTINATION share/${PROJECT_NAME}/launch)
 install(DIRECTORY rviz/ DESTINATION share/${PROJECT_NAME}/rviz FILES_MATCHING PATTERN "*.rviz")
 
 ament_package()

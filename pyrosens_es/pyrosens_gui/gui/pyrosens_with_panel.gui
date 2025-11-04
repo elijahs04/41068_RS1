@@ -264,8 +264,8 @@
     <property type="double" key="width">360</property>
     <property type="double" key="height">420</property>
   </ignition-gui>
-  <status_topic>/pyrosens/mission/status</status_topic>
-  <goals_topic>/pyrosens/mission/goals</goals_topic>
-  <cmd_topic>/pyrosens/mission/cmd</cmd_topic>
+  <status_topic>/mission/status</status_topic>
+  <goals_topic>/mission/goals</goals_topic>
+  <cmd_topic>/mission/cmd</cmd_topic>
   <wind_topic>/sim/wind</wind_topic>
 </plugin>

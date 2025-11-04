@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>pyrosens_progress</name>
+  <name>pyrosens_mission</name>
   <version>0.1.0</version>
-  <description>Unified package combining thermal, wind, and goals nodes (sensors, interpolation, sims) plus multi-node runners for the progress demo.</description>
+  <description>Unified package combining thermal, wind, and goals nodes (sensors, interpolation, sims) plus multi-node runners for the demo, along with the mission functionality included.</description>
 
    <!-- Maintainers: responsible for releases and long-term upkeep -->
   <maintainer email="connor.lindsell@student.uts.edu.au">Connor Lindsell</maintainer>
@@ -26,6 +26,8 @@
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>visualization_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
 
   <!-- TF (thermal nodes use tf2/tf2_ros) -->
   <depend>tf2</depend>
@@ -36,6 +38,7 @@
 
   <!-- Tools (RViz configs, optional at runtime) -->
   <exec_depend>rviz2</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

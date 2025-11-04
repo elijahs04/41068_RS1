@@ -1,6 +1,8 @@
 #include "wind_pyrosens/windInterpolationNode.hpp"
 #include <algorithm>
 #include <cmath>
+#include <iomanip>
+#include <sstream>
 
 WindInterpolationNode::WindInterpolationNode() : rclcpp::Node("wind_interpolation_node") {
   // sub
@@ -15,6 +17,7 @@ WindInterpolationNode::WindInterpolationNode() : rclcpp::Node("wind_interpolatio
   // pub
   auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).reliable();
   marker_pub_ = create_publisher<visualization_msgs::msg::MarkerArray>("/wind/markers", qos);
+  wind_text_pub_ = create_publisher<std_msgs::msg::String>("/sim/wind", 10);
 
   // Params (with sensible defaults)
   arrow_scale_base_ = declare_parameter<double>("arrow_scale_base", 0.3); // m per (m/s)
@@ -95,5 +98,21 @@ void WindInterpolationNode::onWind(const geometry_msgs::msg::Vector3Stamped & ms
   visualization_msgs::msg::MarkerArray arr;
   arr.markers.push_back(arrow);
   marker_pub_->publish(arr);
-}
 
+  if (wind_text_pub_) {
+    constexpr double kRadToDeg = 57.29577951308232;
+    double heading_deg = yaw * kRadToDeg;
+    if (heading_deg < 0.0) {
+      heading_deg += 360.0;
+    }
+
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(2)
+        << "Wind @ (" << p.point.x << ", " << p.point.y << ") => "
+        << speed << " m/s heading " << std::setprecision(1) << heading_deg << " deg";
+
+    std_msgs::msg::String out;
+    out.data = oss.str();
+    wind_text_pub_->publish(out);
+  }
+}

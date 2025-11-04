@@ -88,6 +88,7 @@ private:
   void publishStatus_(const std::optional<std::string>& extra = std::nullopt);
   void publishProgress_();
   void publishCurrentGoal_();
+  void publishGoalList_();
   void safeDisarm_();
 
 private:
@@ -112,6 +113,7 @@ private:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_status_;
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr pub_progress_;
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pub_current_goal_;
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_goal_list_;
 
   rclcpp::Subscription<geometry_msgs::msg::PoseArray>::SharedPtr sub_goals_;
   rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr sub_path_;
