@@ -1,0 +1,11 @@
+/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_gui/build/CMakeFiles/uninstall.dir
+/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_gui/build/CMakeFiles/pyrosens_gui_uninstall.dir
+/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_gui/build/CMakeFiles/pyrosens_gui.dir
+/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_gui/build/CMakeFiles/test.dir
+/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_gui/build/CMakeFiles/edit_cache.dir
+/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_gui/build/CMakeFiles/rebuild_cache.dir
+/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_gui/build/CMakeFiles/list_install_components.dir
+/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_gui/build/CMakeFiles/install.dir
+/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_gui/build/CMakeFiles/install/local.dir
+/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_gui/build/CMakeFiles/install/strip.dir
+/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_gui/build/CMakeFiles/pyrosens_gui_autogen.dir

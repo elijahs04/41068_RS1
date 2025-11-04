@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<sdf version="1.7">
+  <model name="test">
+    <static>true</static>
+    <link name="testlink">
+      <visual name="mesh_visual">
+        <geometry>
+          <mesh>
+            <uri>model.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry><mesh><uri>model.dae</uri></mesh></geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

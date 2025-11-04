@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/libpyrosens_gui.so">
+    <file alias="libpyrosens_gui.so.qml">pyrosens_gui.qml</file>
+  </qresource>
+</RCC>
