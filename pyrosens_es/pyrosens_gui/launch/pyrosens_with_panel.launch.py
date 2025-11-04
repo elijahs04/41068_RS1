@@ -11,8 +11,10 @@ def generate_launch_description():
     pyrosens_gui_prefix = get_package_prefix('pyrosens_gui')
 
     gui_config = os.path.join(pyrosens_gui_share, 'gui', 'pyrosens_with_panel.gui')
-    pyrosens_world_share = get_package_share_directory('pyrosens_world')
-    default_world = os.path.join(pyrosens_world_share, 'test_world.sdf')
+    default_world = os.path.join(
+        get_package_share_directory('pyrosens_world'),
+        'test_world.sdf',
+    )
 
     world_arg = DeclareLaunchArgument(
         'world',
