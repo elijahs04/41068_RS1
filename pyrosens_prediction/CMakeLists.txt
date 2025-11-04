@@ -13,6 +13,7 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 
 add_library(pyrosens_prediction_nodes
   src/predictionNode.cpp
@@ -25,7 +26,8 @@ ament_target_dependencies(pyrosens_prediction_nodes
   rclcpp
   sensor_msgs
   geometry_msgs
-  visualization_msgs)
+  visualization_msgs
+  std_msgs)
 
 add_executable(prediction_main main/main_prediction.cpp)
 target_link_libraries(prediction_main pyrosens_prediction_nodes)
@@ -45,7 +47,7 @@ install(DIRECTORY include/
 
 ament_export_include_directories(include)
 ament_export_libraries(pyrosens_prediction_nodes)
-ament_export_dependencies(rclcpp sensor_msgs geometry_msgs visualization_msgs)
+ament_export_dependencies(rclcpp sensor_msgs geometry_msgs visualization_msgs std_msgs)
 
 ament_package()
 
