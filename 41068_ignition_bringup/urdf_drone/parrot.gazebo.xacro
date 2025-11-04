@@ -196,7 +196,7 @@
       <update_rate>30</update_rate>
       <visualize>true</visualize>
       <topic>/model/parrot/thermal_camera/image</topic>
-      <gz_frame_id>thermal_camera_link</gz_frame_id>  
+      <gz_frame_id>thermal_camera_optical_frame</gz_frame_id>  
       <plugin filename="libignition-gazebo-thermal-sensor-system.so"
               name="ignition::gazebo::systems::ThermalSensor">
         <render_engine>ogre2</render_engine>

@@ -19,6 +19,7 @@ find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(message_filters REQUIRED)
 
 # ---------------------- Library ---------------------------
 # Core implementation (node + detector in a lib), like your other package
@@ -47,6 +48,7 @@ target_link_libraries(hotspot_core_lib
   tf2::tf2
   tf2_ros::tf2_ros
   tf2_geometry_msgs::tf2_geometry_msgs
+  message_filters::message_filters
 )
 
 # ---------------------- Executable ------------------------
