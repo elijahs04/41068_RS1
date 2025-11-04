@@ -15,12 +15,17 @@ find_package(sensor_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(vision_msgs REQUIRED)
 find_package(OpenCV REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 # ---------------------- Library ---------------------------
 # Core implementation (node + detector in a lib), like your other package
 add_library(hotspot_core_lib
   src/thermalHotspotNode.cpp
   src/hotspotDetector.cpp
+  src/hotspotTransform.cpp
 )
 
 target_include_directories(hotspot_core_lib PUBLIC
@@ -34,10 +39,14 @@ ament_target_dependencies(hotspot_core_lib
   sensor_msgs
   cv_bridge
   vision_msgs
+  Eigen3
 )
 
 target_link_libraries(hotspot_core_lib
   ${OpenCV_LIBS}
+  tf2::tf2
+  tf2_ros::tf2_ros
+  tf2_geometry_msgs::tf2_geometry_msgs
 )
 
 # ---------------------- Executable ------------------------
