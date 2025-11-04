@@ -119,29 +119,29 @@ std::vector<HotspotRegion> HotspotDetector::detectHotspots(const cv::Mat& therma
               return a.area_px > b.area_px;
             });
 
-  return out;
-}
-
-double percentileRawMono8(const cv::Mat& img_u8, double pct /*0..100*/) {
-  // Build histogram (256 bins)
-  int histSize = 256;
-  float range[] = {0.f, 256.f};
-  const float* ranges[] = { range };
-  cv::Mat hist;
-  cv::calcHist(&img_u8, 1, 0, cv::Mat(), hist, 1, &histSize, ranges, true, false);
-
-  // Cumulative from low to high
-  double total = static_cast<double>(img_u8.total());
-  double target = std::clamp(pct, 0.0, 100.0) * 0.01 * total;
-
-  double cum = 0.0;
-  for (int v = 0; v < 256; ++v) {
-    cum += hist.at<float>(v);
-    if (cum >= target) {
-      return static_cast<double>(v);
-    }
+    return out;
   }
-  return 255.0; // fallback
-}
+
+  double percentileRawMono8(const cv::Mat& img_u8, double pct /*0..100*/) {
+    // Build histogram (256 bins)
+    int histSize = 256;
+    float range[] = {0.f, 256.f};
+    const float* ranges[] = { range };
+    cv::Mat hist;
+    cv::calcHist(&img_u8, 1, 0, cv::Mat(), hist, 1, &histSize, ranges, true, false);
+
+    // Cumulative from low to high
+    double total = static_cast<double>(img_u8.total());
+    double target = std::clamp(pct, 0.0, 100.0) * 0.01 * total;
+
+    double cum = 0.0;
+    for (int v = 0; v < 256; ++v) {
+      cum += hist.at<float>(v);
+      if (cum >= target) {
+        return static_cast<double>(v);
+      }
+    }
+    return 255.0; // fallback
+  }
 
 } // namespace thermdetect
