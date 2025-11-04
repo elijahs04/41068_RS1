@@ -16,6 +16,9 @@ ThermalHotspotNode::ThermalHotspotNode() : rclcpp::Node("thermal_hotspot_node")
   // Declare parameters
   this->declare_parameter<std::string>("thermal_topic", thermal_topic_);
   this->declare_parameter<std::string>("frame_id", frame_id_);
+  this->declare_parameter<std::string>("camera_frame", camera_frame_);
+  this->declare_parameter<std::string>("target_frame", target_frame_);
+
   this->declare_parameter<double>("temp_gain", temp_gain_);
   this->declare_parameter<double>("temp_offset", temp_offset_);
   this->declare_parameter<bool>("publish_overlay", publish_overlay_);
@@ -26,10 +29,15 @@ ThermalHotspotNode::ThermalHotspotNode() : rclcpp::Node("thermal_hotspot_node")
   this->declare_parameter<int>("min_area_px", min_area_px_);
   this->declare_parameter<int>("max_area_px", max_area_px_);
   this->declare_parameter<int>("max_regions_draw", max_regions_draw_);
+  this->declare_parameter<double>("plane_z", plane_z_);
+  this->declare_parameter<double>("hfov_rad", hfov_rad_);
 
   // Get initial parameter values
   this->get_parameter("thermal_topic", thermal_topic_);
   this->get_parameter("frame_id", frame_id_);
+  this->get_parameter("camera_frame", camera_frame_);
+  this->get_parameter("target_frame", target_frame_);
+
   this->get_parameter("temp_gain", temp_gain_);
   this->get_parameter("temp_offset", temp_offset_);
   this->get_parameter("publish_overlay", publish_overlay_);
@@ -40,6 +48,8 @@ ThermalHotspotNode::ThermalHotspotNode() : rclcpp::Node("thermal_hotspot_node")
   this->get_parameter("min_area_px", min_area_px_);
   this->get_parameter("max_area_px", max_area_px_);
   this->get_parameter("max_regions_draw", max_regions_draw_);
+  this->get_parameter("plane_z", plane_z_);  
+  this->get_parameter("hfov_rad", hfov_rad_);
 
   // Configure detector
   thermdetect::DetectorConfig cfg;
@@ -53,15 +63,28 @@ ThermalHotspotNode::ThermalHotspotNode() : rclcpp::Node("thermal_hotspot_node")
   cfg.max_area_px = max_area_px_;
   detector_ = thermdetect::HotspotDetector(cfg);
 
+  // TF
+  tf_buffer_   = std::make_shared<tf2_ros::Buffer>(this->get_clock());
+  tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+  projector_.setTFBuffer(tf_buffer_);
+  projector_.setFrames(camera_frame_, target_frame_);
+  projector_.setPlaneZ(plane_z_); // world plane z
+
   // Subscribe to thermal image topic
   thermalImage_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
       thermal_topic_, rclcpp::SensorDataQoS(),
       std::bind(&ThermalHotspotNode::imageCallback, this, std::placeholders::_1));
 
+  // Publish overlay image outlining hotspots
   if (publish_overlay_) {
     thermalOverlay_pub_ = this->create_publisher<sensor_msgs::msg::Image>(
       "thermal_overlay", rclcpp::SystemDefaultsQoS());
   }
+
+  // Publish world-frame hotspot points each frame
+  hotspots_world_pub_ = this->create_publisher<geometry_msgs::msg::PoseArray>(
+      "hotspots/world_points", rclcpp::SystemDefaultsQoS());
+
   RCLCPP_INFO(get_logger(),
               "ThermalHotspotNode initalised, Subscribing to: %s (frame_id=%s, gain=%.6f, offset=%.6f)",
               thermal_topic_.c_str(), frame_id_.c_str(), temp_gain_, temp_offset_);
@@ -76,6 +99,15 @@ void ThermalHotspotNode::imageCallback(const sensor_msgs::msg::Image::ConstShare
   // Cache geometry
   img_width_  = static_cast<int>(img_msg->width);
   img_height_ = static_cast<int>(img_msg->height);
+
+  // One-time intrinsics from hfov + size (sim-perfect)
+  if (!intrinsics_ready_) {
+    projector_.setIntrinsicsFromHFOV(img_width_, img_height_, hfov_rad_);
+    intrinsics_ready_ = true;
+    RCLCPP_INFO(get_logger(),
+      "Hotspot projector intrinsics set from hfov=%.4f rad, size=%dx%d",
+      hfov_rad_, img_width_, img_height_);
+  }
 
   // Convert to cv::Mat (no forced encoding; we accept mono8 or mono16)
   cv_bridge::CvImageConstPtr cv_ptr;
@@ -113,6 +145,29 @@ void ThermalHotspotNode::imageCallback(const sensor_msgs::msg::Image::ConstShare
       r0.area_px, r0.max_temp_c, r0.mean_temp_c);
   } else {
     RCLCPP_DEBUG_THROTTLE(get_logger(), *this->get_clock(), 2000, "No hotspots above threshold.");
+  }
+
+  // Project to world and publish PoseArray
+  geometry_msgs::msg::PoseArray pa;
+  pa.header.stamp = img_msg->header.stamp;
+  pa.header.frame_id = target_frame_;
+  for (const auto& r : regions) {
+    double x, y;
+    if (projector_.pixelToWorldXY(r.centroid_px.x, r.centroid_px.y,
+                                  img_msg->header.stamp, x, y)) {
+      geometry_msgs::msg::Pose p;
+      p.position.x = x;
+      p.position.y = y;
+      p.position.z = plane_z_;
+      // orientation unused; leave identity
+      p.orientation.w = 1.0;
+      pa.poses.push_back(p);
+    }
+    RCLCPP_INFO_THROTTLE(get_logger(), *get_clock(), 2000,
+     "Center pixel projects to (%.2f, %.2f) in %s", x, y, target_frame_.c_str());
+  }
+  if (!pa.poses.empty()) {
+    hotspots_world_pub_->publish(pa);
   }
 
   if (publish_overlay_ && thermalOverlay_pub_) {
