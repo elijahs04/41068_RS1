@@ -51,6 +51,14 @@ install(DIRECTORY qml/
   DESTINATION share/${PROJECT_NAME}/qml
 )
 
+install(DIRECTORY gui/
+  DESTINATION share/${PROJECT_NAME}/gui
+)
+
+install(DIRECTORY launch/
+  DESTINATION share/${PROJECT_NAME}/launch
+)
+
 
 target_link_libraries(pyrosens_gui
   Qt5::Core
