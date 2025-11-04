@@ -48,6 +48,8 @@ private:
     geometry_msgs::msg::PointStamped::SharedPtr point_;
 
 // -------- Functions --------
+    // TODO(prediction_math): implement fire spread step that integrates wind vector,
+    // sampled thermal gradient, and configurable fuel coefficients to update point_.
     void predict_step();
     float interpolate_heat(float x, float y, float z);
     float interpolate_wind_x(float x, float y, float z);

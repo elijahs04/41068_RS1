@@ -112,6 +112,22 @@ void PredictionNode::predict_step()
     return;
   }
 
+  // NOTE(prediction_math): expected workflow for real implementation
+  //  1. Extract local wind vector by interpolating simulation grid (sim_cloud_). Should
+  //     convert PointCloud2 fields `wind_x|y|z` into per-voxel components before calling
+  //     interpolate_wind_* to return m/s in map frame.
+  //  2. Sample thermal intensity via interpolate_heat() which should read `temperature`
+  //     or `intensity` fields from heat_cloud_ and return degC / kW/m^2. Preserve last
+  //     known value if interpolation fails.
+  //  3. Combine wind vector + thermal gradient to derive ROS (rate of spread) using
+  //     semi-empirical Rothermel model or custom coefficients. Suggest exposing
+  //     parameters:
+  //       - `fuel_load`, `fuel_moisture`, `wind_weight`, `slope_weight`.
+  //     The final predicted delta should be: ROS_dir = normalize(wind + k * grad(heat))
+  //     and ROS_mag = base_rate * f(thermal, wind, fuel).
+  //  4. Update `point_` position using ROS_dir * ROS_mag * predict_step_ (seconds).
+  //  5. Consider publishing auxiliary debug topics (marker, vector3) for visualization.
+
   // Interpolate wind at current point
   float wind_x = interpolate_wind_x(point_->point.x, point_->point.y, point_->point.z);
   float wind_y = interpolate_wind_y(point_->point.x, point_->point.y, point_->point.z);
@@ -164,29 +180,29 @@ float PredictionNode::trilinear_interpolation(float x, float y, float z,
 // Interpolate heat at a given point
 float PredictionNode::interpolate_heat(float x, float y, float z)
 {
-  // Placeholder implementation
-  // In a real implementation, you would extract the relevant points from heat_cloud_ and perform trilinear interpolation
+  // TODO(prediction_math): convert heat_cloud_ PointCloud2 into structured grid (e.g. via
+  // sensor_msgs::PointCloud2Iterator) sampling `temperature` field, then perform
+  // trilinear_interpolation. Should return temperature (degC) or energy density used in
+  // ROS calculation above. Implement clamp for out-of-bounds queries.
   return 25.0; // Dummy value
 }
 // Interpolate wind x component at a given point
 float PredictionNode::interpolate_wind_x(float x, float y, float z)
 {
-  // Placeholder implementation
-  // In a real implementation, you would extract the relevant points from sim_cloud_ and perform trilinear interpolation
+  // TODO(prediction_math): parse `sim_cloud_` for field "wind_x" and interpolate via
+  // trilinear_interpolation(). Return component in m/s. Cache a voxel grid for reuse.
   return wind_x_; // Using the last received wind value as a dummy
 }
 // Interpolate wind y component at a given point
 float PredictionNode::interpolate_wind_y(float x, float y, float z)
 {
-  // Placeholder implementation
-  // In a real implementation, you would extract the relevant points from sim_cloud_ and perform trilinear interpolation
+  // TODO(prediction_math): same as interpolate_wind_x but for field "wind_y".
   return wind_y_; // Using the last received wind value as a dummy
 }
 // Interpolate wind z component at a given point
 float PredictionNode::interpolate_wind_z(float x, float y, float z)
 {
-  // Placeholder implementation
-  // In a real implementation, you would extract the relevant points from sim_cloud_ and perform trilinear interpolation
+  // TODO(prediction_math): same as interpolate_wind_x but for field "wind_z".
   return wind_z_; // Using the last received wind value as a dummy
 }
 /*

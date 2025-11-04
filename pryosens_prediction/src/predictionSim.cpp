@@ -9,6 +9,15 @@ PredictionSim::PredictionSim() : Node("prediction_sim"), publish_period_(1.0), s
   this->declare_parameter("publish_period", publish_period_);
   this->get_parameter("publish_period", publish_period_);
 
+  // NOTE(sim_data_contract): replace dummy publishers with realistic sample grid.
+  // Suggested fields per PointCloud2:
+  //   - XYZ: lattice center (meters, map frame)
+  //   - wind_x|wind_y|wind_z: local wind vector (m/s)
+  //   - temperature: degrees Celsius or Kelvin
+  //   - fuel_coeff (optional): local fuel load scaling factor.
+  // When ready, this node should iterate through analytical/simulation outputs and fill
+  // the PointCloud2 binary buffer so PredictionNode can interpolate meaningful values.
+
   sim_cloud_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("sim_cloud", 10);
   wind_pub_ = this->create_publisher<geometry_msgs::msg::Vector3Stamped>("wind", 10);
   heat_cloud_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("heat_cloud", 10);
@@ -25,6 +34,9 @@ void PredictionSim::publish_data()
 {
   const auto stamp = this->now();
 
+  // TODO(sim_data_contract): populate cloud with structured grid data. Consider storing
+  // metadata (resolution, bounds) on parameters so PredictionNode can reconstruct
+  // neighbouring voxels for interpolation.
   sensor_msgs::msg::PointCloud2 sim_cloud_msg;
   sim_cloud_msg.header.stamp = stamp;
   sim_cloud_msg.header.frame_id = "map";
@@ -57,6 +69,8 @@ void PredictionSim::publish_data()
   point_msg.point.x = 1.0 + 0.5 * static_cast<double>(sample_index_);
   point_msg.point.y = -1.0 + 0.25 * static_cast<double>(sample_index_);
   point_msg.point.z = 0.5;
+  // NOTE(prediction_math): eventually drive this ignition point from mission planner
+  // or observation data. Keep history so prediction node can emit marker trail.
   point_pub_->publish(point_msg);
   RCLCPP_INFO(this->get_logger(), "Published dummy point (%.2f, %.2f, %.2f)",
               point_msg.point.x, point_msg.point.y, point_msg.point.z);
