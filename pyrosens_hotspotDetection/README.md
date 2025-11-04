@@ -1,4 +1,4 @@
-pyrosens_hotspotDetection
+## pyrosens_hotspotDetection
 
 Hotspot detection from thermal images in Ignition Gazebo, with ROS 2 (Humble).
 Step 1 focuses on: subscribe to thermal image → find hottest pixel → log (u, v) and °C.
