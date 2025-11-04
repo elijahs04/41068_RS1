@@ -19,6 +19,13 @@ ThermalHotspotNode::ThermalHotspotNode() : rclcpp::Node("thermal_hotspot_node")
   this->declare_parameter<double>("temp_gain", temp_gain_);
   this->declare_parameter<double>("temp_offset", temp_offset_);
   this->declare_parameter<bool>("publish_overlay", publish_overlay_);
+  this->declare_parameter<double>("hot_temp_c", hot_temp_c_);
+  this->declare_parameter<bool>("use_percentile", use_percentile_);
+  this->declare_parameter<double>("hot_percentile", hot_percentile_);
+  this->declare_parameter<int>("morphology_kernel", morphology_kernel_);
+  this->declare_parameter<int>("min_area_px", min_area_px_);
+  this->declare_parameter<int>("max_area_px", max_area_px_);
+  this->declare_parameter<int>("max_regions_draw", max_regions_draw_);
 
   // Get initial parameter values
   this->get_parameter("thermal_topic", thermal_topic_);
@@ -26,11 +33,24 @@ ThermalHotspotNode::ThermalHotspotNode() : rclcpp::Node("thermal_hotspot_node")
   this->get_parameter("temp_gain", temp_gain_);
   this->get_parameter("temp_offset", temp_offset_);
   this->get_parameter("publish_overlay", publish_overlay_);
+  this->get_parameter("hot_temp_c", hot_temp_c_);
+  this->get_parameter("use_percentile", use_percentile_);
+  this->get_parameter("hot_percentile", hot_percentile_);
+  this->get_parameter("morphology_kernel", morphology_kernel_);
+  this->get_parameter("min_area_px", min_area_px_);
+  this->get_parameter("max_area_px", max_area_px_);
+  this->get_parameter("max_regions_draw", max_regions_draw_);
 
   // Configure detector
   thermdetect::DetectorConfig cfg;
   cfg.temp_gain = temp_gain_;
   cfg.temp_offset = temp_offset_;
+  cfg.hot_temp_c = hot_temp_c_;
+  cfg.use_percentile = use_percentile_;
+  cfg.hot_percentile = hot_percentile_;
+  cfg.morphology_kernel = morphology_kernel_;
+  cfg.min_area_px = min_area_px_;
+  cfg.max_area_px = max_area_px_;
   detector_ = thermdetect::HotspotDetector(cfg);
 
   // Subscribe to thermal image topic
@@ -83,49 +103,37 @@ void ThermalHotspotNode::imageCallback(const sensor_msgs::msg::Image::ConstShare
     return;
   }
 
-  // Use detector to find the hottest pixel
-  const thermdetect::HotspotResult result = detector_.detectHottestPixel(mat);
-
-  if (publish_overlay_ && thermalOverlay_pub_ && result.u >= 0 && result.v >= 0) {
-  // mat is mono8 → convert to BGR for colored drawing
-  cv::Mat bgr;
-  cv::cvtColor(cv_ptr->image, bgr, cv::COLOR_GRAY2BGR);
-
-  // Clamp a 7x7 box around (u,v) to image bounds
-  const int x = result.u;
-  const int y = result.v;
-  const int half = 3; // 7x7
-  const int x0 = std::max(0, x - half);
-  const int y0 = std::max(0, y - half);
-  const int x1 = std::min(img_width_  - 1, x + half);
-  const int y1 = std::min(img_height_ - 1, y + half);
-
-  // Draw red rectangle
-  cv::rectangle(bgr, cv::Point(x0, y0), cv::Point(x1, y1), cv::Scalar(0, 0, 255), 2);
-
-  // Optional: label temperature above the box
-  const std::string label = (std::ostringstream{} << std::fixed << std::setprecision(1)
-                          << result.temp_c << "C").str();
-  int baseline = 0;
-  cv::Size textSize = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.4, 1, &baseline);
-  cv::Point textOrg(std::max(0, x0), std::max(0, y0 - 4));
-  cv::putText(bgr, label, textOrg, cv::FONT_HERSHEY_SIMPLEX, 0.4, cv::Scalar(0,0,255), 1, cv::LINE_AA);
-
-  // Publish as bgr8
-  cv_bridge::CvImage out;
-  out.header = img_msg->header;
-  out.header.frame_id = frame_id_;
-  out.encoding = sensor_msgs::image_encodings::BGR8;
-  out.image = bgr;
-  thermalOverlay_pub_->publish(*out.toImageMsg());
-}
-
-  if (result.u >= 0 && result.v >= 0) {
-    RCLCPP_INFO_THROTTLE(get_logger(), *this->get_clock(), 500,
-                         "Hotspot: (u=%d, v=%d) raw=%.1f temp=%.2f°C (img %dx%d, %s)",
-                         result.u, result.v, result.raw, result.temp_c, img_width_, img_height_, enc.c_str());
+  const auto regions = detector_.detectHotspots(mat);
+  if (!regions.empty()) {
+    // Log the main region (largest) for quick sanity
+    const auto& r0 = regions.front();
+    RCLCPP_INFO_THROTTLE(get_logger(), *this->get_clock(), 1000,
+      "Hotspot region: bbox=(%d,%d,%d,%d) area=%d max=%.1fC mean=%.1fC",
+      r0.bbox_px.x, r0.bbox_px.y, r0.bbox_px.width, r0.bbox_px.height,
+      r0.area_px, r0.max_temp_c, r0.mean_temp_c);
   } else {
-    RCLCPP_DEBUG_THROTTLE(get_logger(), *this->get_clock(), 2000,
-                          "No hotspot found in current frame.");
+    RCLCPP_DEBUG_THROTTLE(get_logger(), *this->get_clock(), 2000, "No hotspots above threshold.");
   }
+
+  if (publish_overlay_ && thermalOverlay_pub_) {
+    // mat is mono8 → convert to BGR for colored drawing
+    cv::Mat bgr;
+    cv::cvtColor(cv_ptr->image, bgr, cv::COLOR_GRAY2BGR);
+
+    const int K = std::min<int>(max_regions_draw_, regions.size());
+    for (int i = 0; i < K; ++i) {
+      const auto& r = regions[i];
+      const auto& b = r.bbox_px;
+      cv::rectangle(bgr, b, cv::Scalar(0,0,255), 2);
+      // label: max temp
+      std::ostringstream oss; oss.setf(std::ios::fixed); oss<<std::setprecision(1)<<r.max_temp_c<<"C";
+      auto org = cv::Point(b.x, std::max(0, b.y - 4));
+      cv::putText(bgr, oss.str(), org, cv::FONT_HERSHEY_SIMPLEX, 0.45, cv::Scalar(0,0,255), 1, cv::LINE_AA);
+    }
+    cv_bridge::CvImage out;
+    out.header = img_msg->header; out.header.frame_id = frame_id_;
+    out.encoding = sensor_msgs::image_encodings::BGR8; out.image = bgr;
+    thermalOverlay_pub_->publish(*out.toImageMsg());
+  }
+
 }

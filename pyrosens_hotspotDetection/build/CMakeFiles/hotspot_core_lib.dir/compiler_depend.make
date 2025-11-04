@@ -310,7 +310,11 @@ CMakeFiles/hotspot_core_lib.dir/src/hotspotDetector.cpp.o: ../src/hotspotDetecto
   /usr/include/opencv4/opencv2/core/ovx.hpp \
   /usr/include/opencv4/opencv2/core/cvdef.h \
   /usr/include/opencv4/opencv2/imgproc.hpp \
-  /usr/include/opencv4/opencv2/imgproc/segmentation.hpp
+  /usr/include/opencv4/opencv2/imgproc/segmentation.hpp \
+  /usr/include/opencv4/opencv2/imgcodecs.hpp \
+  /usr/include/c++/11/numeric \
+  /usr/include/c++/11/bits/stl_numeric.h \
+  /usr/include/c++/11/pstl/glue_numeric_defs.h
 
 CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHotspotNode.cpp \
   /usr/include/stdc-predef.h \
@@ -1004,6 +1008,7 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
   /opt/ros/humble/include/std_msgs/std_msgs/msg/detail/header__traits.hpp \
   /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/image__type_support.hpp \
   /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/rosidl_generator_cpp__visibility_control.hpp \
+  /opt/ros/humble/include/sensor_msgs/sensor_msgs/image_encodings.hpp \
   ../include/hotspotDetection_pyrosens/hotspotDetector.hpp \
   /usr/include/opencv4/opencv2/core.hpp \
   /usr/include/opencv4/opencv2/core/cvdef.h \
@@ -1056,7 +1061,6 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
   /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/compressed_image__builder.hpp \
   /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/compressed_image__traits.hpp \
   /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/compressed_image__type_support.hpp \
-  /opt/ros/humble/include/sensor_msgs/sensor_msgs/image_encodings.hpp \
   /usr/include/opencv4/opencv2/core/core.hpp \
   /usr/include/opencv4/opencv2/imgproc/imgproc.hpp \
   /usr/include/opencv4/opencv2/imgproc.hpp \
@@ -1064,20 +1068,21 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
   /usr/include/opencv4/opencv2/imgproc/types_c.h \
   /usr/include/opencv4/opencv2/core/core_c.h \
   /usr/include/opencv4/opencv2/core/types_c.h \
-  /opt/ros/humble/include/cv_bridge/cv_bridge/cv_bridge_export.h
+  /opt/ros/humble/include/cv_bridge/cv_bridge/cv_bridge_export.h \
+  /usr/include/opencv4/opencv2/imgcodecs.hpp
 
 
 /opt/ros/humble/include/cv_bridge/cv_bridge/cv_bridge_export.h:
 
 /usr/include/opencv4/opencv2/imgproc/imgproc.hpp:
 
-/opt/ros/humble/include/sensor_msgs/sensor_msgs/image_encodings.hpp:
-
 /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/compressed_image__builder.hpp:
 
 /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/compressed_image__struct.hpp:
 
 /opt/ros/humble/include/cv_bridge/cv_bridge/cv_bridge.h:
+
+/opt/ros/humble/include/sensor_msgs/sensor_msgs/image_encodings.hpp:
 
 /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/image__type_support.hpp:
 
@@ -1241,8 +1246,6 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
 
 /opt/ros/humble/include/rcpputils/rcpputils/thread_safety_annotations.hpp:
 
-/usr/include/c++/11/pstl/glue_numeric_defs.h:
-
 /opt/ros/humble/include/rclcpp/rclcpp/node_interfaces/node_timers_interface_traits.hpp:
 
 /opt/ros/humble/include/libstatistics_collector/libstatistics_collector/collector/collector.hpp:
@@ -1324,6 +1327,14 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
 /opt/ros/humble/include/rclcpp/rclcpp/experimental/subscription_intra_process_buffer.hpp:
 
 /opt/ros/humble/include/rclcpp/rclcpp/experimental/buffers/buffer_implementation_base.hpp:
+
+/opt/ros/humble/include/rclcpp/rclcpp/experimental/subscription_intra_process.hpp:
+
+/opt/ros/humble/include/rclcpp/rclcpp/experimental/subscription_intra_process_base.hpp:
+
+/opt/ros/humble/include/rclcpp/rclcpp/create_generic_subscription.hpp:
+
+/usr/include/c++/11/shared_mutex:
 
 /usr/include/opencv4/opencv2/core/vsx_utils.hpp:
 
@@ -1407,12 +1418,6 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
 
-/opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/compressed_image__traits.hpp:
-
-/usr/include/c++/11/numeric:
-
-/opt/ros/humble/include/builtin_interfaces/builtin_interfaces/msg/detail/duration__traits.hpp:
-
 /usr/include/c++/11/bits/basic_string.tcc:
 
 /opt/ros/humble/include/rcutils/rcutils/logging_macros.h:
@@ -1494,6 +1499,8 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
 /usr/include/c++/11/iosfwd:
 
 /usr/include/c++/11/initializer_list:
+
+/usr/include/c++/11/pstl/glue_numeric_defs.h:
 
 /usr/include/c++/11/tr1/hypergeometric.tcc:
 
@@ -1831,6 +1838,12 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
 
 /usr/include/opencv4/opencv2/core/ovx.hpp:
 
+/opt/ros/humble/include/rclcpp/rclcpp/experimental/ros_message_intra_process_buffer.hpp:
+
+/opt/ros/humble/include/rcutils/rcutils/logging.h:
+
+/opt/ros/humble/include/rosidl_runtime_c/rosidl_runtime_c/message_initialization.h:
+
 /opt/ros/humble/include/rcl_interfaces/rcl_interfaces/msg/detail/parameter_event__traits.hpp:
 
 /usr/include/opencv4/opencv2/core/types.hpp:
@@ -2139,6 +2152,16 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
 
 /usr/include/opencv4/opencv2/imgproc/segmentation.hpp:
 
+/usr/include/opencv4/opencv2/imgcodecs.hpp:
+
+/usr/include/x86_64-linux-gnu/sys/ucontext.h:
+
+/opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/compressed_image__traits.hpp:
+
+/opt/ros/humble/include/builtin_interfaces/builtin_interfaces/msg/detail/duration__traits.hpp:
+
+/usr/include/c++/11/numeric:
+
 /usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
 
 ../src/thermalHotspotNode.cpp:
@@ -2184,8 +2207,6 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
 /usr/include/x86_64-linux-gnu/bits/sigcontext.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/stack_t.h:
-
-/usr/include/x86_64-linux-gnu/sys/ucontext.h:
 
 /usr/include/x86_64-linux-gnu/bits/posix_opt.h:
 
@@ -2369,8 +2390,6 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
 
 /opt/ros/humble/include/rcl/rcl/node_options.h:
 
-/opt/ros/humble/include/rclcpp/rclcpp/experimental/subscription_intra_process_base.hpp:
-
 /opt/ros/humble/include/rcl/rcl/domain_id.h:
 
 /opt/ros/humble/include/rcl/rcl/service.h:
@@ -2481,12 +2500,6 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
 
 /opt/ros/humble/include/builtin_interfaces/builtin_interfaces/msg/detail/duration__struct.hpp:
 
-/opt/ros/humble/include/rcutils/rcutils/logging.h:
-
-/opt/ros/humble/include/rosidl_runtime_c/rosidl_runtime_c/message_initialization.h:
-
-/opt/ros/humble/include/rclcpp/rclcpp/experimental/ros_message_intra_process_buffer.hpp:
-
 /opt/ros/humble/include/rosidl_runtime_cpp/rosidl_runtime_cpp/bounded_vector.hpp:
 
 /opt/ros/humble/include/rcl_interfaces/rcl_interfaces/srv/describe_parameters.hpp:
@@ -2562,9 +2575,3 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: ../src/thermalHots
 /opt/ros/humble/include/rcl_interfaces/rcl_interfaces/msg/detail/set_parameters_result__struct.hpp:
 
 /opt/ros/humble/include/rclcpp/rclcpp/experimental/intra_process_manager.hpp:
-
-/opt/ros/humble/include/rclcpp/rclcpp/create_generic_subscription.hpp:
-
-/usr/include/c++/11/shared_mutex:
-
-/opt/ros/humble/include/rclcpp/rclcpp/experimental/subscription_intra_process.hpp:
