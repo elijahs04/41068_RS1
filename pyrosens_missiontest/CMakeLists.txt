@@ -18,7 +18,6 @@ find_package(visualization_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(rclcpp_action REQUIRED)   # for goals
-find_package(rclcpp_components REQUIRED) # for components
 find_package(nav2_msgs REQUIRED)
 
 # Public headers for all targets

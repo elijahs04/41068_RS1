@@ -1,0 +1,4 @@
+source;share/pyrosens_bringup/local_setup.bash
+source;share/pyrosens_bringup/local_setup.dsv
+source;share/pyrosens_bringup/local_setup.sh
+source;share/pyrosens_bringup/local_setup.zsh
