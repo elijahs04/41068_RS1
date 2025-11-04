@@ -1,10 +1,12 @@
 #include "pyrosens_prediction/predictionNode.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <limits>
 #include <utility>
 
 #include "sensor_msgs/point_cloud2_iterator.hpp"
+#include "std_msgs/msg/color_rgba.hpp"
 
 using std::placeholders::_1;
 
@@ -16,6 +18,13 @@ PredictionNode::PredictionNode() : Node("prediction_node")
   predict_time_ = this->declare_parameter("predict_time", 10.0);
   predict_step_ = this->declare_parameter("predict_step", 1.0);
   wind_sample_retention_sec_ = this->declare_parameter("wind_sample_retention_sec", 5.0);
+  wind_idw_radius_ = this->declare_parameter("wind_idw_radius", 2.0);
+  heat_idw_radius_ = this->declare_parameter("heat_idw_radius", 2.5);
+  idw_power_ = this->declare_parameter("idw_power", 2.0);
+  idw_min_neighbors_ = static_cast<std::size_t>(this->declare_parameter<int>("idw_min_neighbors", 3));
+  gradient_arrow_scale_ = this->declare_parameter("gradient_arrow_scale", 0.5);
+  heat_color_min_ = this->declare_parameter("heat_color_min", 25.0);
+  heat_color_max_ = this->declare_parameter("heat_color_max", 600.0);
   wind_sample_limit_ = static_cast<std::size_t>(this->declare_parameter<int>("wind_sample_limit", 500));
   path_visualization_limit_ = static_cast<std::size_t>(this->declare_parameter<int>("path_visualization_limit", 200));
   wind_point_topic_ = this->declare_parameter<std::string>("wind_point_topic", "/wind/point");
@@ -149,47 +158,96 @@ void PredictionNode::publish_visualization()
     return;
   }
 
-  std::vector<geometry_msgs::msg::Point> path_copy;
-  geometry_msgs::msg::Point tail;
+  std::vector<PredictionSample> history;
   {
     std::lock_guard<std::mutex> lock(data_mutex_);
-    if (predicted_path_.empty()) {
+    if (prediction_history_.empty()) {
       return;
     }
-    path_copy = predicted_path_;
-    tail = predicted_path_.back();
+    history = prediction_history_;
   }
 
   visualization_msgs::msg::MarkerArray markers;
+  const auto stamp = this->now();
+
   visualization_msgs::msg::Marker path_marker;
   path_marker.header.frame_id = frame_id_;
-  path_marker.header.stamp = this->now();
+  path_marker.header.stamp = stamp;
   path_marker.ns = "prediction";
   path_marker.id = 0;
   path_marker.type = visualization_msgs::msg::Marker::LINE_STRIP;
   path_marker.action = visualization_msgs::msg::Marker::ADD;
-  path_marker.scale.x = 0.05;
-  path_marker.color.r = 0.1f;
-  path_marker.color.g = 0.8f;
-  path_marker.color.b = 0.2f;
-  path_marker.color.a = 1.0f;
-  path_marker.points = path_copy;
+  path_marker.scale.x = 0.04;
+  path_marker.color.r = 0.15f;
+  path_marker.color.g = 0.9f;
+  path_marker.color.b = 0.3f;
+  path_marker.color.a = 0.8f;
+  path_marker.points.reserve(history.size());
+  for (const auto & sample : history) {
+    path_marker.points.push_back(sample.point);
+  }
   markers.markers.push_back(path_marker);
 
-  visualization_msgs::msg::Marker head_marker = path_marker;
-  head_marker.id = 1;
+  visualization_msgs::msg::Marker heat_marker;
+  heat_marker.header = path_marker.header;
+  heat_marker.ns = "prediction";
+  heat_marker.id = 1;
+  heat_marker.type = visualization_msgs::msg::Marker::SPHERE_LIST;
+  heat_marker.action = visualization_msgs::msg::Marker::ADD;
+  heat_marker.scale.x = 0.15;
+  heat_marker.scale.y = 0.15;
+  heat_marker.scale.z = 0.15;
+  heat_marker.points.reserve(history.size());
+  heat_marker.colors.reserve(history.size());
+  for (const auto & sample : history) {
+    heat_marker.points.push_back(sample.point);
+    heat_marker.colors.push_back(heat_to_color(sample.heat));
+  }
+  markers.markers.push_back(heat_marker);
+
+  const auto & tail = history.back();
+
+  visualization_msgs::msg::Marker head_marker;
+  head_marker.header = path_marker.header;
+  head_marker.ns = "prediction";
+  head_marker.id = 2;
   head_marker.type = visualization_msgs::msg::Marker::SPHERE;
-  head_marker.scale.x = 0.2;
-  head_marker.scale.y = 0.2;
-  head_marker.scale.z = 0.2;
+  head_marker.action = visualization_msgs::msg::Marker::ADD;
   head_marker.pose.orientation.w = 1.0;
-  head_marker.points.clear();
-  head_marker.pose.position = tail;
-  head_marker.color.r = 0.9f;
-  head_marker.color.g = 0.2f;
-  head_marker.color.b = 0.1f;
-  head_marker.color.a = 0.9f;
+  head_marker.pose.position = tail.point;
+  head_marker.scale.x = 0.24;
+  head_marker.scale.y = 0.24;
+  head_marker.scale.z = 0.24;
+  head_marker.color = heat_to_color(tail.heat);
+  head_marker.color.a = 1.0f;
   markers.markers.push_back(head_marker);
+
+  if (gradient_arrow_scale_ > 0.0 && tail.gradient_magnitude > 1e-3) {
+    visualization_msgs::msg::Marker gradient_marker;
+    gradient_marker.header = path_marker.header;
+    gradient_marker.ns = "prediction";
+    gradient_marker.id = 3;
+    gradient_marker.type = visualization_msgs::msg::Marker::ARROW;
+    gradient_marker.action = visualization_msgs::msg::Marker::ADD;
+
+    geometry_msgs::msg::Point start = tail.point;
+    geometry_msgs::msg::Point end = tail.point;
+    const double scale = gradient_arrow_scale_ / std::max(tail.gradient_magnitude, 1e-6);
+    end.x += tail.gradient.x * scale;
+    end.y += tail.gradient.y * scale;
+    end.z += tail.gradient.z * scale;
+
+    gradient_marker.points.push_back(start);
+    gradient_marker.points.push_back(end);
+    gradient_marker.scale.x = 0.05;
+    gradient_marker.scale.y = 0.1;
+    gradient_marker.scale.z = 0.1;
+    gradient_marker.color.r = 1.0f;
+    gradient_marker.color.g = 0.5f;
+    gradient_marker.color.b = 0.0f;
+    gradient_marker.color.a = 0.85f;
+    markers.markers.push_back(gradient_marker);
+  }
 
   viz_pub_->publish(markers);
 }
@@ -198,6 +256,8 @@ void PredictionNode::publish_visualization()
 void PredictionNode::predict_step()
 {
   geometry_msgs::msg::Point current_point;
+  std::vector<WindSample> wind_samples_copy;
+  std::vector<HeatSample> heat_samples_copy;
   {
     std::lock_guard<std::mutex> lock(data_mutex_);
     if (!point_) {
@@ -205,45 +265,80 @@ void PredictionNode::predict_step()
       return;
     }
     current_point = point_->point;
+    wind_samples_copy.assign(wind_samples_.begin(), wind_samples_.end());
+    heat_samples_copy = heat_samples_;
   }
 
-  auto wind_sample = nearest_wind_sample(current_point);
-  if (!wind_sample) {
-    RCLCPP_WARN(this->get_logger(), "No wind samples available for interpolation.");
+  auto wind_result = interpolate_wind_idw(current_point, wind_samples_copy);
+  if (!wind_result) {
+    RCLCPP_WARN(this->get_logger(), "Insufficient wind samples for interpolation.");
     return;
   }
 
-  geometry_msgs::msg::Point predicted_point;
+  geometry_msgs::msg::Point predicted_point = current_point;
+  predicted_point.x += wind_result->velocity.x * predict_step_;
+  predicted_point.y += wind_result->velocity.y * predict_step_;
+  predicted_point.z += wind_result->velocity.z * predict_step_;
+
+  const double wind_speed = std::sqrt(
+    wind_result->velocity.x * wind_result->velocity.x +
+    wind_result->velocity.y * wind_result->velocity.y +
+    wind_result->velocity.z * wind_result->velocity.z);
+
+  auto heat_result = interpolate_heat_idw(predicted_point, heat_samples_copy);
+
+  float heat_value = 25.0f;
+  geometry_msgs::msg::Vector3 heat_gradient{};
+  std::size_t heat_neighbors = 0;
+  if (heat_result) {
+    heat_value = heat_result->temperature;
+    heat_gradient = heat_result->gradient;
+    heat_neighbors = heat_result->neighbor_count;
+  } else {
+    RCLCPP_WARN(this->get_logger(), "Using ambient temperature estimate due to sparse heat data.");
+  }
+
+  const double grad_mag = std::sqrt(
+    heat_gradient.x * heat_gradient.x +
+    heat_gradient.y * heat_gradient.y +
+    heat_gradient.z * heat_gradient.z);
+
   {
     std::lock_guard<std::mutex> lock(data_mutex_);
     if (!point_) {
       return;
     }
-    point_->point.x += wind_sample->velocity.x * predict_step_;
-    point_->point.y += wind_sample->velocity.y * predict_step_;
-    point_->point.z += wind_sample->velocity.z * predict_step_;
-    predicted_point = point_->point;
+    point_->point = predicted_point;
+    wind_x_ = wind_result->velocity.x;
+    wind_y_ = wind_result->velocity.y;
+    wind_z_ = wind_result->velocity.z;
 
-    wind_x_ = wind_sample->velocity.x;
-    wind_y_ = wind_sample->velocity.y;
-    wind_z_ = wind_sample->velocity.z;
+    PredictionSample sample;
+    sample.point = predicted_point;
+    sample.heat = heat_value;
+    sample.wind_speed = wind_speed;
+    sample.gradient = heat_gradient;
+    sample.gradient_magnitude = grad_mag;
+    sample.wind_neighbors = wind_result->neighbor_count;
+    sample.heat_neighbors = heat_neighbors;
 
-    predicted_path_.push_back(predicted_point);
-    if (predicted_path_.size() > path_visualization_limit_) {
-      predicted_path_.erase(predicted_path_.begin());
+    prediction_history_.push_back(sample);
+    if (prediction_history_.size() > path_visualization_limit_) {
+      prediction_history_.erase(prediction_history_.begin());
     }
   }
 
-  // Interpolate heat at new position
-  float heat = interpolate_heat(predicted_point.x, predicted_point.y, predicted_point.z);
+  publish_visualization();
 
   RCLCPP_INFO(this->get_logger(),
-              "Predicted Point: (%.2f, %.2f, %.2f)  Wind: (%.2f, %.2f, %.2f)  Heat: %.2f",
+              "Predict step -> point(%.2f, %.2f, %.2f) wind(%.2f, %.2f, %.2f | %.2f m/s, %zu samples) "
+              "heat=%.2f degC (grad=%.3f degC/m, dir=(%.2f, %.2f, %.2f), %zu samples)",
               predicted_point.x, predicted_point.y, predicted_point.z,
-              wind_sample->velocity.x, wind_sample->velocity.y, wind_sample->velocity.z,
-              heat);
-
-  publish_visualization();
+              wind_result->velocity.x, wind_result->velocity.y, wind_result->velocity.z,
+              wind_speed, wind_result->neighbor_count,
+              heat_value, grad_mag,
+              heat_gradient.x, heat_gradient.y, heat_gradient.z,
+              heat_neighbors);
 
   // Publish prediction as a PointCloud2 message
   auto prediction_msg = sensor_msgs::msg::PointCloud2();
@@ -276,115 +371,219 @@ float PredictionNode::trilinear_interpolation(float x, float y, float z,
     
     return c0 * (1 - zd) + c1 * zd;
     }
-// Interpolate heat at a given point
-float PredictionNode::interpolate_heat(float x, float y, float z)
+std::optional<PredictionNode::WindInterpolationResult> PredictionNode::interpolate_wind_idw(
+  const geometry_msgs::msg::Point & point,
+  const std::vector<WindSample> & samples) const
 {
-  geometry_msgs::msg::Point query;
-  query.x = x;
-  query.y = y;
-  query.z = z;
-
-  auto heat = nearest_heat_sample(query);
-  if (heat) {
-    return *heat;
-  }
-
-  // Fallback to ambient temperature assumption
-  return 25.0f;
-}
-// Interpolate wind x component at a given point
-float PredictionNode::interpolate_wind_x(float x, float y, float z)
-{
-  geometry_msgs::msg::Point query;
-  query.x = x;
-  query.y = y;
-  query.z = z;
-
-  auto wind = nearest_wind_sample(query);
-  if (wind) {
-    return static_cast<float>(wind->velocity.x);
-  }
-  return static_cast<float>(wind_x_);
-}
-// Interpolate wind y component at a given point
-float PredictionNode::interpolate_wind_y(float x, float y, float z)
-{
-  geometry_msgs::msg::Point query;
-  query.x = x;
-  query.y = y;
-  query.z = z;
-
-  auto wind = nearest_wind_sample(query);
-  if (wind) {
-    return static_cast<float>(wind->velocity.y);
-  }
-  return static_cast<float>(wind_y_);
-}
-// Interpolate wind z component at a given point
-float PredictionNode::interpolate_wind_z(float x, float y, float z)
-{
-  geometry_msgs::msg::Point query;
-  query.x = x;
-  query.y = y;
-  query.z = z;
-
-  auto wind = nearest_wind_sample(query);
-  if (wind) {
-    return static_cast<float>(wind->velocity.z);
-  }
-  return static_cast<float>(wind_z_);
-}
-
-std::optional<PredictionNode::WindSample> PredictionNode::nearest_wind_sample(const geometry_msgs::msg::Point & point) const
-{
-  std::lock_guard<std::mutex> lock(data_mutex_);
-  if (wind_samples_.empty()) {
+  if (samples.empty()) {
     return std::nullopt;
   }
 
-  const WindSample * closest = nullptr;
-  double best_dist = std::numeric_limits<double>::max();
-  for (const auto & sample : wind_samples_) {
+  const double eps = 1e-6;
+  const WindSample * nearest = nullptr;
+  double nearest_dist2 = std::numeric_limits<double>::max();
+
+  double sum_weight = 0.0;
+  double accum_x = 0.0;
+  double accum_y = 0.0;
+  double accum_z = 0.0;
+  double max_dist = 0.0;
+  std::size_t used = 0;
+
+  for (const auto & sample : samples) {
     const double dx = sample.point.x - point.x;
     const double dy = sample.point.y - point.y;
     const double dz = sample.point.z - point.z;
-    const double dist = dx * dx + dy * dy + dz * dz;
-    if (dist < best_dist) {
-      best_dist = dist;
-      closest = &sample;
+    const double dist2 = dx * dx + dy * dy + dz * dz;
+    if (dist2 < nearest_dist2) {
+      nearest = &sample;
+      nearest_dist2 = dist2;
+    }
+
+    const double dist = std::sqrt(dist2);
+    if (wind_idw_radius_ > 0.0 && dist > wind_idw_radius_) {
+      continue;
+    }
+
+    if (dist < eps) {
+      WindInterpolationResult result;
+      result.velocity = sample.velocity;
+      result.neighbor_count = 1;
+      result.total_weight = std::numeric_limits<double>::infinity();
+      result.max_distance = 0.0;
+      return result;
+    }
+
+    const double weight = 1.0 / std::pow(dist, idw_power_);
+    accum_x += weight * sample.velocity.x;
+    accum_y += weight * sample.velocity.y;
+    accum_z += weight * sample.velocity.z;
+    sum_weight += weight;
+    ++used;
+    if (dist > max_dist) {
+      max_dist = dist;
     }
   }
 
-  if (!closest) {
-    return std::nullopt;
+  if (used >= idw_min_neighbors_ && sum_weight > 0.0) {
+    WindInterpolationResult result;
+    result.velocity.x = accum_x / sum_weight;
+    result.velocity.y = accum_y / sum_weight;
+    result.velocity.z = accum_z / sum_weight;
+    result.neighbor_count = used;
+    result.total_weight = sum_weight;
+    result.max_distance = max_dist;
+    return result;
   }
-  return *closest;
+
+  if (nearest) {
+    WindInterpolationResult result;
+    result.velocity = nearest->velocity;
+    result.neighbor_count = (nearest_dist2 < std::numeric_limits<double>::infinity()) ? 1 : 0;
+    result.total_weight = 0.0;
+    result.max_distance = std::sqrt(nearest_dist2);
+    return result;
+  }
+
+  return std::nullopt;
 }
 
-std::optional<float> PredictionNode::nearest_heat_sample(const geometry_msgs::msg::Point & point) const
+std::optional<PredictionNode::HeatInterpolationResult> PredictionNode::interpolate_heat_idw(
+  const geometry_msgs::msg::Point & point,
+  const std::vector<HeatSample> & samples) const
 {
-  std::lock_guard<std::mutex> lock(data_mutex_);
-  if (heat_samples_.empty()) {
+  if (samples.empty()) {
     return std::nullopt;
   }
 
-  const HeatSample * closest = nullptr;
-  double best_dist = std::numeric_limits<double>::max();
-  for (const auto & sample : heat_samples_) {
+  struct Neighbor {
+    double dx;
+    double dy;
+    double dz;
+    double dist;
+    double weight;
+    float temperature;
+  };
+
+  const double eps = 1e-6;
+  const HeatSample * nearest = nullptr;
+  double nearest_dist2 = std::numeric_limits<double>::max();
+
+  std::vector<Neighbor> neighbors;
+  neighbors.reserve(samples.size());
+  double sum_weight = 0.0;
+  double weighted_temp = 0.0;
+  double max_dist = 0.0;
+
+  for (const auto & sample : samples) {
     const double dx = sample.point.x - point.x;
     const double dy = sample.point.y - point.y;
     const double dz = sample.point.z - point.z;
-    const double dist = dx * dx + dy * dy + dz * dz;
-    if (dist < best_dist) {
-      best_dist = dist;
-      closest = &sample;
+    const double dist2 = dx * dx + dy * dy + dz * dz;
+    if (dist2 < nearest_dist2) {
+      nearest = &sample;
+      nearest_dist2 = dist2;
+    }
+
+    const double dist = std::sqrt(dist2);
+    if (heat_idw_radius_ > 0.0 && dist > heat_idw_radius_) {
+      continue;
+    }
+
+    if (dist < eps) {
+      HeatInterpolationResult result;
+      result.temperature = sample.temperature;
+      result.gradient.x = 0.0;
+      result.gradient.y = 0.0;
+      result.gradient.z = 0.0;
+      result.neighbor_count = 1;
+      result.total_weight = std::numeric_limits<double>::infinity();
+      result.max_distance = 0.0;
+      return result;
+    }
+
+    const double weight = 1.0 / std::pow(dist, idw_power_);
+    neighbors.push_back({dx, dy, dz, dist, weight, sample.temperature});
+    weighted_temp += weight * sample.temperature;
+    sum_weight += weight;
+    if (dist > max_dist) {
+      max_dist = dist;
     }
   }
 
-  if (!closest) {
-    return std::nullopt;
+  if (neighbors.size() >= idw_min_neighbors_ && sum_weight > 0.0) {
+    const float temperature = static_cast<float>(weighted_temp / sum_weight);
+    geometry_msgs::msg::Vector3 gradient{};
+    const double inv_sum_weight = 1.0 / sum_weight;
+
+    for (const auto & n : neighbors) {
+      const double unit_x = n.dx / n.dist;
+      const double unit_y = n.dy / n.dist;
+      const double unit_z = n.dz / n.dist;
+      const double diff = static_cast<double>(n.temperature) - temperature;
+      const double scaled_weight = (n.weight * inv_sum_weight);
+      const double scale = scaled_weight * diff / std::max(n.dist, eps);
+      gradient.x += scale * unit_x;
+      gradient.y += scale * unit_y;
+      gradient.z += scale * unit_z;
+    }
+
+    HeatInterpolationResult result;
+    result.temperature = temperature;
+    result.gradient = gradient;
+    result.neighbor_count = neighbors.size();
+    result.total_weight = sum_weight;
+    result.max_distance = max_dist;
+    return result;
   }
-  return closest->temperature;
+
+  if (nearest) {
+    HeatInterpolationResult result;
+    result.temperature = nearest->temperature;
+    result.gradient.x = 0.0;
+    result.gradient.y = 0.0;
+    result.gradient.z = 0.0;
+    result.neighbor_count = 1;
+    result.total_weight = 0.0;
+    result.max_distance = std::sqrt(nearest_dist2);
+    return result;
+  }
+
+  return std::nullopt;
+}
+
+std_msgs::msg::ColorRGBA PredictionNode::heat_to_color(float heat) const
+{
+  std_msgs::msg::ColorRGBA color;
+  color.a = 0.85f;
+
+  const double range = std::max(1e-3, heat_color_max_ - heat_color_min_);
+  double t = (static_cast<double>(heat) - heat_color_min_) / range;
+  t = std::clamp(t, 0.0, 1.0);
+
+  if (t < 0.25) {
+    const double k = t / 0.25;
+    color.r = 0.0f;
+    color.g = static_cast<float>(k);
+    color.b = 1.0f;
+  } else if (t < 0.5) {
+    const double k = (t - 0.25) / 0.25;
+    color.r = 0.0f;
+    color.g = 1.0f;
+    color.b = static_cast<float>(1.0 - k);
+  } else if (t < 0.75) {
+    const double k = (t - 0.5) / 0.25;
+    color.r = static_cast<float>(k);
+    color.g = 1.0f;
+    color.b = 0.0f;
+  } else {
+    const double k = (t - 0.75) / 0.25;
+    color.r = 1.0f;
+    color.g = static_cast<float>(1.0 - k);
+    color.b = 0.0f;
+  }
+
+  return color;
 }
 
 void PredictionNode::prune_wind_samples(const rclcpp::Time & now)
