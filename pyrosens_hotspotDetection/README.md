@@ -1,192 +1,122 @@
-# pyrosens_progressC3
+pyrosens_hotspotDetection
 
-Unified ROS 2 (Humble) package for **thermal** and **wind** perception:
+Hotspot detection from thermal images in Ignition Gazebo, with ROS 2 (Humble).
+Step 1 focuses on: subscribe to thermal image → find hottest pixel → log (u, v) and °C.
+Later steps can extend to blob detection, tracking, overlays, and 2D thermal point sets.
 
-- Thermal & wind **simulators** (publish synthetic data)
-- Thermal **interpolation** → `nav_msgs/OccupancyGrid` heatmap + sample cloud
-- Wind **interpolation / visualization** → `visualization_msgs/MarkerArray`
-- **Goals / movement** helper (Nav2 action client)
-- Multiple **runners (mains)** to spin subsystems together or individually
+Prerequisites
 
-> Target: Ubuntu 22.04 • ROS 2 Humble
+Ubuntu 22.04 + ROS 2 Humble
 
----
+Ignition/Gazebo (Fortress/Garden/Harmonic – whichever you use with your sim)
 
-## Repository layout
+Packages:
 
-    pyrosens_progressC3/
-    ├─ cmake/                         # CMake fragments (included by root CMakeLists)
-    │  ├─ integration.cmake
-    │  ├─ movement.cmake
-    │  ├─ thermal.cmake
-    │  └─ wind.cmake
-    ├─ include/
-    │  ├─ goals_pyrosens/
-    │  │  └─ goals.hpp
-    │  ├─ thermal_pyrosens/
-    │  │  ├─ thermalSimNode.hpp
-    │  │  ├─ thermInterpolationNode.hpp
-    │  │  └─ thermSensNode.hpp
-    │  └─ wind_pyrosens/
-    │     ├─ windInterpolationNode.hpp
-    │     ├─ windSensNode.hpp
-    │     └─ windSimNode.hpp
-    ├─ mains/                         # entry points (each contains a main())
-    │  ├─ main_perception.cpp         # thermal + wind sensors + interpolations (all four)
-    │  ├─ main_interpolation.cpp      # thermal + wind interpolation only
-    │  ├─ main_thermal.cpp            # thermal sensor + interpolation
-    │  ├─ main_wind.cpp               # wind sensor + interpolation
-    │  ├─ main_thermalSim.cpp         # thermal simulator
-    │  └─ main_windSim.cpp            # wind simulator
-    ├─ rviz/
-    │  ├─ Heatmap.rviz
-    │  └─ WindMarkerArray.rviz
-    ├─ src/                           # node implementations (no mains here)
-    │  ├─ goals.cpp
-    │  ├─ thermalSimNode.cpp
-    │  ├─ thermInterpolationNode.cpp
-    │  ├─ thermSensNode.cpp
-    │  ├─ windInterpolationNode.cpp
-    │  ├─ windSensNode.cpp
-    │  └─ windSimNode.cpp
-    ├─ CMakeLists.txt                 # root (the only one that calls ament_package)
-    └─ package.xml
+rclcpp, sensor_msgs, cv_bridge, vision_msgs
 
----
+OpenCV (installed via system + ROS cv_bridge)
 
-## Build
+A Gazebo–ROS bridge mapping your thermal topic to ROS:
 
-    cd ~/ros2_ws
-    source /opt/ros/humble/setup.bash
-    colcon build --packages-select pyrosens_progressC3
-    source install/setup.bash
+- ros_topic_name: "/thermal_camera/image"
+  gz_topic_name:  "/model/parrot/thermal_camera/image"   # adjust to your world
+  ros_type_name:  "sensor_msgs/msg/Image"
+  gz_type_name:   "gz.msgs.Image"                        # confirm with `gz topic -i`
+  direction:      GZ_TO_ROS
 
-    colcon build --packages-select pyrosens_progressC3 --cmake-clean-cache
-    source install/setup.bash
 
----
+✅ Confirm the thermal image encoding is mono8 or mono16:
 
-## Runners / binaries
+ros2 topic echo /thermal_camera/image --once
 
-| Binary                 | Spins (nodes)                                                                  | Typical use                                 |
-|------------------------|--------------------------------------------------------------------------------|---------------------------------------------|
-| `main_perception`      | Thermal **Sensor + Interpolation**; Wind **Sensor + Interpolation**            | Full perception from sensors/sims           |
-| `main_interpolation`   | Thermal **Interpolation** + Wind **Interpolation** only                        | If sensors are external                     |
-| `main_thermal`         | Thermal **Sensor + Interpolation**                                             | Debug thermal stack                         |
-| `main_wind`            | Wind **Sensor + Interpolation**                                                | Debug wind stack                            |
-| `main_thermalSim`      | Thermal **Simulator** (Temperature + PointStamped)                             | Drive thermal pipeline without hardware     |
-| `main_windSim`         | Wind **Simulator** (PointCloud2 with fields `x,y,z,u,v`)                       | Drive wind pipeline without hardware        |
 
-> Optional single-node mains (only if present in your repo): `main_thermSens`, `main_thermInterpolation`, `main_windSens`, `main_windInterpolation`.
+Look for encoding: mono8 or mono16 and correct width/height.
 
----
+Build
 
-## How to run
+From the workspace root (e.g. ~/41068_ws or your project’s git root that contains this package):
 
-### A) Full Sensor sim + perception models in RViz 
+# (optional) clean
+rm -rf build install log
 
-Terminal 1 – Perception (spins thermal+wind sensor+interpolation)
+colcon build --packages-select pyrosens_hotspotDetection
+source install/setup.bash
 
-    ros2 run pyrosens_progress main_perception
 
-Terminal 2 – RViz Heatmap
+⚠️ Naming warning: ROS suggests lowercase-with-underscores.
+This package is named pyrosens_hotspotDetection. It’s fine to use as-is, but you can rename to pyrosens_hotspot_detection later if you want to silence warnings.
 
-    rviz2 -d ~/ros2_ws/src/pyrosens_progressC3/rviz/Heatmap.rviz
+Run the simulation & RViz
 
-Terminal 3 – RViz Wind Marker Array
-    rviz2 -d ~/ros2_ws/src/pyrosens_progressC3/rviz/WindMarkerArray.rviz
+Start your sim stack (as you already do):
 
-Terminal 4 – Simulation Sensor values
-    ros2 run pyrosens_progress main_sim
+ros2 launch 41068_ignition_bringup 41068_ignition_drone.launch.py \
+  slam:=true nav2:=true rviz:=true world:=test_world
 
-### B) Thermal-only or Wind-only bring-up
 
-Thermal stack
+Ensure the thermal bridge is active and /thermal_camera/image is publishing.
 
-    ros2 run pyrosens_progressC3 main_thermalSim
-    ros2 run pyrosens_progressC3 main_thermal
+Run the hotspot detector (Step 1)
+# Terminal with the same workspace sourced
+ros2 run pyrosens_hotspotDetection thermalHotspotNode \
+  --ros-args \
+  -p thermal_topic:=/thermal_camera/image \
+  -p frame_id:=thermal_camera_frame \
+  -p temp_gain:=0.3921568627 \
+  -p temp_offset:=0.0
 
-Wind stack
 
-    ros2 run pyrosens_progressC3 main_windSim
-    ros2 run pyrosens_progressC3 main_wind
+temp_gain and temp_offset linearly map raw pixel → °C:
+temp_c = temp_gain * raw + temp_offset
+Example above maps 0–255 → 0–100 °C (adjust for your sim).
 
-### C) Interpolation only (sensors are external)
+You should see periodic logs like:
 
-    ros2 run pyrosens_progressC3 main_interpolation
+[INFO] Hotspot: (u=..., v=...) raw=... temp=...°C (img WxH, mono8/mono16)
 
-> Later, you can add a combined `main_sim` to reduce to 3 terminals: `main_sim` (both sims) + `main_perception` + RViz.
+Parameters
+Name	Type	Default	Description
+thermal_topic	string	/thermal_camera/image	ROS topic for the thermal image.
+frame_id	string	thermal_camera_frame	Frame stamped in any outputs (used later).
+temp_gain	double	1.0	Linear map gain from raw → °C.
+temp_offset	double	0.0	Linear map offset from raw → °C.
 
----
+If you don’t know the mapping yet, set temp_gain=1.0, temp_offset=0.0 and treat logs as raw counts.
 
-## Topics (defaults)
+Topics
 
-**ThermalSimNode**
-- Publishes: `/heat/sample_point` (`geometry_msgs/PointStamped`)
-- Publishes: `/heat/temperature`  (`sensor_msgs/Temperature`)
+Input
 
-**ThermInterpolationNode**
-- Subscribes: `/heat/sample_point`, `/heat/temperature`
-- Publishes: `/heat/costmap` (`nav_msgs/OccupancyGrid`)
-- Publishes: `/heat/samples` (`sensor_msgs/PointCloud2`)
+/thermal_camera/image (sensor_msgs/Image, mono8 or mono16)
 
-**WindSimNode**
-- Publishes: `/wind/test_cloud` (`sensor_msgs/PointCloud2` with fields `x,y,z,u,v`)
+Output (Step 1)
 
-**WindInterpolationNode**
-- Subscribes: `/wind/test_cloud`
-- Publishes: `/wind/markers` (`visualization_msgs/MarkerArray`)
+No published topics yet; the node logs the hottest pixel location and °C.
 
----
+(Next steps will add /thermal_hotspots, /thermal_overlay, /thermal_points2d.)
 
-## Parameters (high-value)
+Troubleshooting
 
-**ThermalSimNode**
-- `frame_id` (string, `"map"`)
-- `period_ms` (int, 60)
-- `T_ambient` (double, 25.0), `T_peak` (double, 550.0), `noise_std` (double, 1.5)
-- Starburst scan: `center_x`, `center_y`, `dr`, `dtheta_deg`, `omega_rps`, `scan_r_max`, `samples_per_tick`
-- Blob shape: `blob_n` (2.6), `blob_beta` (8.0)
+I still see RGB, not thermal
+You’re likely bridging the RGB camera. Fix the bridge to point to the thermal sensor’s Gazebo topic. Confirm with:
 
-**WindSimNode**
-- `spacing` (double, 0.5), `extent` (double, 2.0)
-- Base flow: `base_u`, `base_v`
-- Swirl: `swirl_gamma`, `swirl_core2`
-- `noise_amp` (double, 0.2)
-- `period_ms` (int, 500)
+gz topic -l
+gz topic -i /world/<world>/model/parrot/thermal_camera/image
 
-Examples (at runtime):
 
-    ros2 param set /thermal_sim_node T_peak 650.0
-    ros2 param set /wind_sim_node swirl_gamma 0.6
+Encoding is not mono8/mono16
+Update your sensor SDF:
+<image><format>L8</format></image> or <format>L16</format>, and adjust your bridge.
 
----
+No messages on /thermal_camera/image
+Check the bridge is running and namespaces match your world & model names.
 
-## Troubleshooting
+Build errors about missing files
+Verify source names in CMakeLists.txt match your actual files:
 
-- **Unknown package in `--packages-select`**  
-  Build name must match `<name>` in `package.xml`. Check with `colcon list`.
+src/thermal_hotspot_node.cpp
 
-- **`package.xml` name ≠ `project(...)` name**  
-  Make them identical; clean build:  
-      rm -rf build/ install/ log/  
-      colcon build --packages-select pyrosens_progressC3 --cmake-clean-cache
+src/hotspot_detector.cpp
 
-- **`undefined reference to 'main'`**  
-  You are linking sources without a `main()` as an executable. Build nodes as **libraries** and create executables from files in `mains/`.
-
-- **Header not found**  
-  Don’t prefix includes with `include/`. Use installed include paths, e.g.:  
-      #include "thermal_pyrosens/thermalSimNode.hpp"
-
-- **Stale environment warnings (AMENT_PREFIX_PATH / CMAKE_PREFIX_PATH)**  
-  Open a fresh terminal and `source /opt/ros/humble/setup.bash` then `source install/setup.bash`.
-
----
-
-## License & maintainers
-
-- License: **LGPLv3** (see `package.xml`)
-- Maintainers: update `<maintainer>` entries in `package.xml` (multiple allowed)
-- Contributors: add `<author>` entries as desired
-- README generated by Chat GPT
+src/main.cpp
+And headers under include/thermal_hotspot_detector/.
