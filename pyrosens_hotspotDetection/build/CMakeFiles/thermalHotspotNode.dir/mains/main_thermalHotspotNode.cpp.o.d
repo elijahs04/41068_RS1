@@ -626,6 +626,7 @@ CMakeFiles/thermalHotspotNode.dir/mains/main_thermalHotspotNode.cpp.o: \
  /opt/ros/humble/include/std_msgs/std_msgs/msg/detail/header__traits.hpp \
  /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/image__type_support.hpp \
  /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/rosidl_generator_cpp__visibility_control.hpp \
+ /opt/ros/humble/include/sensor_msgs/sensor_msgs/image_encodings.hpp \
  /home/connorlindsel2204/git/41068_RS1/pyrosens_hotspotDetection/include/hotspotDetection_pyrosens/hotspotDetector.hpp \
  /usr/include/opencv4/opencv2/core.hpp \
  /usr/include/opencv4/opencv2/core/cvdef.h \

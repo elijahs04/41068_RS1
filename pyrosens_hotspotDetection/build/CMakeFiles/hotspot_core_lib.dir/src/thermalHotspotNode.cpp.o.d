@@ -626,6 +626,7 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: \
  /opt/ros/humble/include/std_msgs/std_msgs/msg/detail/header__traits.hpp \
  /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/image__type_support.hpp \
  /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/rosidl_generator_cpp__visibility_control.hpp \
+ /opt/ros/humble/include/sensor_msgs/sensor_msgs/image_encodings.hpp \
  /home/connorlindsel2204/git/41068_RS1/pyrosens_hotspotDetection/include/hotspotDetection_pyrosens/hotspotDetector.hpp \
  /usr/include/opencv4/opencv2/core.hpp \
  /usr/include/opencv4/opencv2/core/cvdef.h \
@@ -676,7 +677,6 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: \
  /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/compressed_image__builder.hpp \
  /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/compressed_image__traits.hpp \
  /opt/ros/humble/include/sensor_msgs/sensor_msgs/msg/detail/compressed_image__type_support.hpp \
- /opt/ros/humble/include/sensor_msgs/sensor_msgs/image_encodings.hpp \
  /usr/include/opencv4/opencv2/core/core.hpp \
  /usr/include/opencv4/opencv2/imgproc/imgproc.hpp \
  /usr/include/opencv4/opencv2/imgproc.hpp \
@@ -684,4 +684,5 @@ CMakeFiles/hotspot_core_lib.dir/src/thermalHotspotNode.cpp.o: \
  /usr/include/opencv4/opencv2/imgproc/types_c.h \
  /usr/include/opencv4/opencv2/core/core_c.h \
  /usr/include/opencv4/opencv2/core/types_c.h \
- /opt/ros/humble/include/cv_bridge/cv_bridge/cv_bridge_export.h
+ /opt/ros/humble/include/cv_bridge/cv_bridge/cv_bridge_export.h \
+ /usr/include/opencv4/opencv2/imgcodecs.hpp
