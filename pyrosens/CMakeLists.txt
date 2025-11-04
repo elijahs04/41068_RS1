@@ -18,6 +18,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav2_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 
 ##################################################################################
 
@@ -27,6 +28,7 @@ ament_target_dependencies(goals
   rclcpp_action
   geometry_msgs
   nav2_msgs
+  std_srvs
 )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -37,6 +39,7 @@ ament_target_dependencies(runner
   rclcpp_action
   geometry_msgs
   nav2_msgs
+  std_srvs
 )
 target_link_libraries(runner goals)
 
@@ -47,6 +50,7 @@ ament_target_dependencies(runner
   rclcpp_action
   geometry_msgs
   nav2_msgs
+  std_srvs
 ) 
 
 
