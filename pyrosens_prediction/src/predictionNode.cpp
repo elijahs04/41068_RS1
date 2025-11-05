@@ -31,7 +31,7 @@ PredictionNode::PredictionNode() : Node("prediction_node")
   wind_velocity_topic_ = this->declare_parameter<std::string>("wind_velocity_topic", "/wind/velocity");
   heat_samples_topic_ = this->declare_parameter<std::string>("heat_samples_topic", "/hotspots/points_cloud");
   heat_value_field_ = this->declare_parameter<std::string>("heat_value_field", "temp");
-  default_heat_temperature_ = this->declare_parameter("default_heat_temperature", 200.0);
+  default_heat_temperature_ = this->declare_parameter("default_heat_temperature", 160.0);
   prediction_marker_topic_ = this->declare_parameter<std::string>("prediction_marker_topic", "prediction_markers");
   point_topic_ = this->declare_parameter<std::string>("prediction_point_topic", "point");
   frame_id_ = this->declare_parameter<std::string>("frame_id", "map");
