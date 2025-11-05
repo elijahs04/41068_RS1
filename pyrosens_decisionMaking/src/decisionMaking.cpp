@@ -21,7 +21,7 @@ DecisionMaking::DecisionMaking() : rclcpp::Node("planning_execution") {
         std::bind(&DecisionMaking::pointCloudCallback, this, std::placeholders::_1));
     
     goalsPublisher_ = this->create_publisher<geometry_msgs::msg::PoseStamped>(
-        "/send_goal /mission/navigate_to_pose", 10);
+        "/send_goal/mission/navigate_to_pose", 10);
     
     
 
