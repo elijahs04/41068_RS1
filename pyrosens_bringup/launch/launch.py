@@ -52,6 +52,11 @@ def generate_launch_description() -> LaunchDescription:
         default_value="false",
         description="Forward to 41068 bringup to launch RViz2 with their config.",
     )
+    nav2_namespace = DeclareLaunchArgument(
+        "nav2_namespace",
+        default_value="",
+        description="Namespace used to launch Nav2 (leave empty for default).",
+    )
     nav_action = DeclareLaunchArgument(
         "nav_action",
         default_value="/navigate_to_pose",
@@ -67,6 +72,7 @@ def generate_launch_description() -> LaunchDescription:
     ld.add_action(world_file)
     ld.add_action(launch_nav2)
     ld.add_action(launch_rviz)
+    ld.add_action(nav2_namespace)
     ld.add_action(nav_action)
     ld.add_action(launch_bridge)
 
@@ -200,6 +206,8 @@ def generate_launch_description() -> LaunchDescription:
         ),
         launch_arguments={
             "use_sim_time": LaunchConfiguration("use_sim_time"),
+            "namespace": LaunchConfiguration("nav2_namespace"),
+            "use_namespace": "true",
         }.items(),
         condition=IfCondition(LaunchConfiguration("launch_nav2")),
     )
@@ -226,7 +234,8 @@ def generate_launch_description() -> LaunchDescription:
         parameters=[
             mission_params,
             {"use_sim_time": LaunchConfiguration("use_sim_time")},
-            {"downstream_nav_action_name": LaunchConfiguration("nav_action")},
+            {"downstream_nav_action_name": LaunchConfiguration("nav_action"),
+             "upstream_nav_action_name": "/mission/navigate_to_pose"},
         ],
     )
     mission_cmd_bridge = Node(

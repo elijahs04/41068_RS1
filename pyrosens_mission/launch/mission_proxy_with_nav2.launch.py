@@ -21,8 +21,8 @@ def generate_launch_description():
         description="Path to a map YAML (leave empty if using SLAM)"
     )
 
-    # ---- Include Nav2 bringup under namespace 'nav2' ----
-    nav2_namespace = "nav2_downstream"
+    # ---- Include Nav2 bringup (un-namespaced) ----
+    nav2_namespace = ""
 
     nav2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -30,7 +30,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             "namespace": nav2_namespace,
-            "use_namespace": "true",
+            "use_namespace": "false",
             "use_sim_time": LaunchConfiguration("use_sim_time"),
             "autostart": "true",
             "params_file": LaunchConfiguration("nav2_params"),
@@ -47,8 +47,8 @@ def generate_launch_description():
         output="screen",
         parameters=[
             # Proxy forwards to Nav2 running under dedicated namespace
-            {"downstream_nav_action_name": "/nav2_downstream/navigate_to_pose",
-             "upstream_nav_action_name": "/nav2/navigate_to_pose"},
+            {"downstream_nav_action_name": "/navigate_to_pose",
+             "upstream_nav_action_name": "/mission/navigate_to_pose"},
             # Optional: load other mission params from YAML (below)
             PathJoinSubstitution([FindPackageShare("mission_pyrosens"), "config", "mission_params.yaml"]),
         ],
