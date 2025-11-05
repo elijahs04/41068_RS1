@@ -22,12 +22,14 @@ def generate_launch_description():
     )
 
     # ---- Include Nav2 bringup under namespace 'nav2' ----
+    nav2_namespace = "nav2_downstream"
+
     nav2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([FindPackageShare("nav2_bringup"), "launch", "bringup_launch.py"])
         ),
         launch_arguments={
-            "namespace": "nav2",
+            "namespace": nav2_namespace,
             "use_namespace": "true",
             "use_sim_time": LaunchConfiguration("use_sim_time"),
             "autostart": "true",
@@ -44,8 +46,9 @@ def generate_launch_description():
         name="mission_manager",
         output="screen",
         parameters=[
-            # Proxy forwards to Nav2 in namespace 'nav2'
-            {"downstream_nav_action_name": "/nav2/navigate_to_pose"},
+            # Proxy forwards to Nav2 running under dedicated namespace
+            {"downstream_nav_action_name": "/nav2_downstream/navigate_to_pose",
+             "upstream_nav_action_name": "/nav2/navigate_to_pose"},
             # Optional: load other mission params from YAML (below)
             PathJoinSubstitution([FindPackageShare("mission_pyrosens"), "config", "mission_params.yaml"]),
         ],

@@ -141,6 +141,8 @@ private:
 
   // Downstream Nav2 NavigateToPose action name (client forwards to this)
   std::string downstream_nav_action_name_{"/nav2/navigate_to_pose"};
+  // Upstream action server name exposed to external clients (RViz, teammates)
+  std::string upstream_nav_action_name_{"navigate_to_pose"};
 
   // Optional tracking for server-side goal (not strictly required)
   std::mutex navsrv_mtx_;
