@@ -8,6 +8,11 @@
 #include <sstream>
 #include <string>
 
+// Mission node acts as a NavigateToPose proxy: it ingests waypoints from
+// topics/services/action clients, keeps a local queue with state tracking,
+// and forwards one goal at a time to the downstream Nav2 action server
+// exposed under `downstream_nav_action_name_`.
+
 using namespace std::chrono_literals;
 using mission_pyrosens::MissionState;
 
