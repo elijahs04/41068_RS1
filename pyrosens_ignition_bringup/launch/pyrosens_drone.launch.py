@@ -149,6 +149,16 @@ def generate_launch_description():
     )
     ld.add_action(nav2)
 
+    sensors = IncludeLaunchDescription(
+        PathJoinSubstitution([FindPackageShare('pyrosens_integrated_sensors'),
+                              'launch',
+                              'integrated_sensors.launch.py']),
+        launch_arguments={
+            'use_sim_time': use_sim_time
+        }.items()
+    )
+    ld.add_action(sensors)
+
     # Mission management stack (proxy + command bridge)
     mission_params = PathJoinSubstitution(
         [FindPackageShare("pyrosens_mission"), "config", "mission_params.yaml"]
