@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <limits>
 #include <utility>
 
@@ -252,6 +253,79 @@ void PredictionNode::publish_visualization()
   viz_pub_->publish(markers);
 }
 
+void PredictionNode::publish_prediction_cloud()
+{
+  if (!predict_pub_) {
+    return;
+  }
+
+  std::vector<PredictionSample> history;
+  {
+    std::lock_guard<std::mutex> lock(data_mutex_);
+    if (prediction_history_.empty()) {
+      return;
+    }
+    history = prediction_history_;
+  }
+
+  sensor_msgs::msg::PointCloud2 cloud_msg;
+  cloud_msg.header.stamp = this->now();
+  cloud_msg.header.frame_id = frame_id_;
+
+  sensor_msgs::PointCloud2Modifier modifier(cloud_msg);
+  modifier.setPointCloud2Fields(
+    10,
+    "x", 1, sensor_msgs::msg::PointField::FLOAT32,
+    "y", 1, sensor_msgs::msg::PointField::FLOAT32,
+    "z", 1, sensor_msgs::msg::PointField::FLOAT32,
+    "heat", 1, sensor_msgs::msg::PointField::FLOAT32,
+    "wind_speed", 1, sensor_msgs::msg::PointField::FLOAT32,
+    "grad_x", 1, sensor_msgs::msg::PointField::FLOAT32,
+    "grad_y", 1, sensor_msgs::msg::PointField::FLOAT32,
+    "grad_z", 1, sensor_msgs::msg::PointField::FLOAT32,
+    "wind_neighbors", 1, sensor_msgs::msg::PointField::UINT32,
+    "heat_neighbors", 1, sensor_msgs::msg::PointField::UINT32);
+  modifier.resize(history.size());
+
+  sensor_msgs::PointCloud2Iterator<float> iter_x(cloud_msg, "x");
+  sensor_msgs::PointCloud2Iterator<float> iter_y(cloud_msg, "y");
+  sensor_msgs::PointCloud2Iterator<float> iter_z(cloud_msg, "z");
+  sensor_msgs::PointCloud2Iterator<float> iter_heat(cloud_msg, "heat");
+  sensor_msgs::PointCloud2Iterator<float> iter_wind_speed(cloud_msg, "wind_speed");
+  sensor_msgs::PointCloud2Iterator<float> iter_grad_x(cloud_msg, "grad_x");
+  sensor_msgs::PointCloud2Iterator<float> iter_grad_y(cloud_msg, "grad_y");
+  sensor_msgs::PointCloud2Iterator<float> iter_grad_z(cloud_msg, "grad_z");
+  sensor_msgs::PointCloud2Iterator<uint32_t> iter_wind_neighbors(cloud_msg, "wind_neighbors");
+  sensor_msgs::PointCloud2Iterator<uint32_t> iter_heat_neighbors(cloud_msg, "heat_neighbors");
+
+  for (const auto & sample : history) {
+    *iter_x = static_cast<float>(sample.point.x);
+    *iter_y = static_cast<float>(sample.point.y);
+    *iter_z = static_cast<float>(sample.point.z);
+    *iter_heat = sample.heat;
+    *iter_wind_speed = static_cast<float>(sample.wind_speed);
+    *iter_grad_x = static_cast<float>(sample.gradient.x);
+    *iter_grad_y = static_cast<float>(sample.gradient.y);
+    *iter_grad_z = static_cast<float>(sample.gradient.z);
+    *iter_wind_neighbors = static_cast<uint32_t>(sample.wind_neighbors);
+    *iter_heat_neighbors = static_cast<uint32_t>(sample.heat_neighbors);
+
+    ++iter_x;
+    ++iter_y;
+    ++iter_z;
+    ++iter_heat;
+    ++iter_wind_speed;
+    ++iter_grad_x;
+    ++iter_grad_y;
+    ++iter_grad_z;
+    ++iter_wind_neighbors;
+    ++iter_heat_neighbors;
+  }
+
+  cloud_msg.is_dense = true;
+  predict_pub_->publish(cloud_msg);
+}
+
 // Perform a single prediction step
 void PredictionNode::predict_step()
 {
@@ -329,6 +403,7 @@ void PredictionNode::predict_step()
   }
 
   publish_visualization();
+  publish_prediction_cloud();
 
   RCLCPP_INFO(this->get_logger(),
               "Predict step -> point(%.2f, %.2f, %.2f) wind(%.2f, %.2f, %.2f | %.2f m/s, %zu samples) "
@@ -339,13 +414,6 @@ void PredictionNode::predict_step()
               heat_value, grad_mag,
               heat_gradient.x, heat_gradient.y, heat_gradient.z,
               heat_neighbors);
-
-  // Publish prediction as a PointCloud2 message
-  auto prediction_msg = sensor_msgs::msg::PointCloud2();
-  prediction_msg.header.stamp = this->now();
-  prediction_msg.header.frame_id = frame_id_;
-
-  predict_pub_->publish(prediction_msg);
 }
 // Trilinear interpolation function
 float PredictionNode::trilinear_interpolation(float x, float y, float z,

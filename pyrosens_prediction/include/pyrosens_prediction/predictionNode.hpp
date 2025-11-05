@@ -35,6 +35,7 @@ private:
     void onPoint(const geometry_msgs::msg::PointStamped::SharedPtr msg);
     void onPredict();
     void publish_visualization();
+    void publish_prediction_cloud();
 
 // -------- Publishers / Subscribers --------
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr predict_pub_;
