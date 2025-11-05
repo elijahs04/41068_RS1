@@ -98,7 +98,7 @@ def generate_launch_description() -> LaunchDescription:
     # --- Core 41068 bringup components (robot, Gazebo, Nav2) ---
     pkg_41068 = FindPackageShare("41068_ignition_bringup")
     config_path = PathJoinSubstitution([pkg_41068, "config"])
-    urdf_file = PathJoinSubstitution([pkg_41068, "urdf", "husky.urdf.xacro"])
+    urdf_file = PathJoinSubstitution([pkg_41068, "urdf_drone", "parrot.urdf.xacro"])
     world_default_path = PathJoinSubstitution(
         [pkg_41068, "worlds", [LaunchConfiguration("world"), ".sdf"]]
     )
