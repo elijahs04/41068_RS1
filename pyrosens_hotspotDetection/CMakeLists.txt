@@ -99,6 +99,11 @@ install(DIRECTORY launch/
   DESTINATION share/${PROJECT_NAME}/launch
 )
 
+install(
+  FILES rviz/hotspot_detect_n_map.rviz
+  DESTINATION share/${PROJECT_NAME}/rviz
+)
+
 # ---------------------- Export ----------------------------
 ament_export_include_directories(include)
 ament_export_libraries(hotspot_core_lib)
