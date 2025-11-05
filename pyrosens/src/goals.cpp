@@ -14,6 +14,11 @@ Goals::Goals() : rclcpp::Node("goals_execution") {
     plan_sub_ = this->create_subscription<nav_msgs::msg::Path>(
         "/plan", 10, std::bind(&Goals::planCallback, this, std::placeholders::_1));
 
+    // Subscribe to odometry
+    odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
+        "/odom", 10, std::bind(&Goals::odomCallback, this, std::placeholders::_1));
+
+
     // Wait for the action server
     if (!client_->wait_for_action_server(std::chrono::seconds(10))) {
         RCLCPP_ERROR(this->get_logger(), "Action server not available!");
@@ -52,6 +57,7 @@ void Goals::runGoals()
 {
     std::vector<std::tuple<double,double,double,double,double>> goals = {
         {1.56, 1.26, 0.30, 0.95, 0.0},
+        {-3, -3, 0.30, 0.95, 0.0},
         {9, 8, 0.45, 0.89, 0.0}
     };
 
@@ -158,10 +164,16 @@ void Goals::moveUpward(double meters){
 
     rclcpp::Rate rate(10);
     while ((this->now() - start).seconds() < duration && rclcpp::ok()) {
-    vel_pub_->publish(cmd);
-    rclcpp::spin_some(this->get_node_base_interface());
-    rate.sleep();
-}
+        vel_pub_->publish(cmd);
+        rclcpp::spin_some(this->get_node_base_interface());
+        rate.sleep(); 
+    }
+
+    geometry_msgs::msg::Twist stop_cmd;
+    vel_pub_->publish(stop_cmd);
+    rclcpp::sleep_for(std::chrono::seconds(2));
+
+
 }
 
 bool Goals::checkGoalReachable(){

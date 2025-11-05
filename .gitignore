@@ -3,4 +3,19 @@
 .vscode/
 *.vc.db
 .vscode/
+/.vscode
 .vscode/
+
+# VSCode caches
+.vscode/*.db
+.vscode/*.db-shm
+.vscode/*.db-wal
+
+# Ignore build and log outputs
+build/
+install/
+log/
+**/build/
+**/install/
+**/log/
+**/COLCON_IGNORE
