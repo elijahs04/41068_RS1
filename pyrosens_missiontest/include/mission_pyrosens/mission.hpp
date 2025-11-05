@@ -9,7 +9,6 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
-#include "rclcpp/service_options.hpp"
 
 #include "std_msgs/msg/string.hpp"
 #include "std_msgs/msg/float32.hpp"
@@ -20,6 +19,8 @@
 #include "nav_msgs/msg/path.hpp"
 
 #include "nav2_msgs/action/navigate_to_pose.hpp"
+
+#include <rmw/qos_profiles.h>  // for rmw_qos_profile_services_default
 
 namespace mission_pyrosens
 {
