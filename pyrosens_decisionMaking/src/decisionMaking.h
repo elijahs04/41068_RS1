@@ -20,6 +20,7 @@ class DecisionMaking: public rclcpp::Node {
     public:
 
         using NavigateToPose = nav2_msgs::action::NavigateToPose;
+        using GoalHandleNavigateToPose = rclcpp_action::ClientGoalHandle<NavigateToPose>;
 
         DecisionMaking();
         ~DecisionMaking();      
