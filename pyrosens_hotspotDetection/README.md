@@ -72,3 +72,45 @@ This will:
 1. Start the thermalHotspotNode (detects and publishes hotspots)
 2. Start the hotspotMapperNode (builds and publishes the heatmap)
 3. Launch RViz2 with the preset configuration rviz/hotspot_detection.rviz
+
+Topics
+#thermalHotspotNode
+Topic	Type	Direction	Description
+/thermal_camera/image	    sensor_msgs/Image	        Subscribed	    Grayscale thermal image (mono8 or mono16)
+/camera/depth/image	        sensor_msgs/Image	        Subscribed	    Depth image aligned with thermal camera
+/hotspots/points_stamped	geometry_msgs/PointStamped	Published	    Individual 3D hotspot points projected to world
+/hotspots/points_cloud	    sensor_msgs/PointCloud2	    Published	    Point cloud of current detected hotspots
+/hotspots/world_points	    geometry_msgs/PoseArray	    Published	    Centroids of detected hotspot regions
+/thermal_overlay	        sensor_msgs/Image	        Published	    RGB overlay of detected hotspots for debugging
+
+#hotspotMapperNode
+Topic	Type	Direction	Description
+/hotspots/points_stamped	geometry_msgs/PointStamped	Subscribed	    Input from thermalHotspotNode
+/hotspots/points_cloud	    sensor_msgs/PointCloud2	    Subscribed	    Input from thermalHotspotNode
+/hotspots/heatmap	        nav_msgs/OccupancyGrid	    Published	    2D decaying occupancy-style heatmap
+/hotspots/heatmap_image	    sensor_msgs/Image	        Published	    Colorized heatmap (Jet colormap) for RViz
+
+
+#Display	Topic	Notes
+PointCloud2	        /hotspots/points_cloud	    View live hotspot detections
+Image	            /hotspots/heatmap_image	    Colorized heatmap (Jet)
+OccupancyGrid	    /hotspots/heatmap	        Map-based hotspot density
+TF	—	Visualize transforms between camera and map
+
+
+#System Flow
+[ Thermal Camera + Depth Camera ]
+             │
+             ▼
+   [ thermalHotspotNode ]
+   ├── publishes /hotspots/points_stamped
+   ├── publishes /hotspots/points_cloud
+   └── publishes /thermal_overlay
+             │
+             ▼
+   [ hotspotMapperNode ]
+   ├── publishes /hotspots/heatmap
+   └── publishes /hotspots/heatmap_image
+             │
+             ▼
+           [ RViz2 ]
