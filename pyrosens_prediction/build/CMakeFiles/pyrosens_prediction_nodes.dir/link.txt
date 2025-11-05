@@ -1,0 +1,2 @@
+/usr/bin/ar qc libpyrosens_prediction_nodes.a CMakeFiles/pyrosens_prediction_nodes.dir/src/predictionNode.cpp.o CMakeFiles/pyrosens_prediction_nodes.dir/src/predictionSim.cpp.o
+/usr/bin/ranlib libpyrosens_prediction_nodes.a

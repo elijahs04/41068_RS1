@@ -1,0 +1,2 @@
+/usr/bin/ar qc libwindSensor_lib.a CMakeFiles/windSensor_lib.dir/src/windSensNode.cpp.o
+/usr/bin/ranlib libwindSensor_lib.a
