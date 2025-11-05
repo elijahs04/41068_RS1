@@ -1,2 +1,0 @@
-/usr/bin/ar qc libwindSim_lib.a CMakeFiles/windSim_lib.dir/src/windSimNode.cpp.o
-/usr/bin/ranlib libwindSim_lib.a
