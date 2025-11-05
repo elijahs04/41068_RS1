@@ -125,10 +125,10 @@ def generate_launch_description():
         name="mission_manager",
         output="screen",
         parameters=[
-            {"use_sim_time": LaunchConfiguration("use_sim_time")},
-            {"downstream_nav_action_name": "/nav2_downstream/navigate_to_pose",
-             "upstream_nav_action_name": "/nav2/navigate_to_pose"},
             mission_params,
+            {"use_sim_time": LaunchConfiguration("use_sim_time")},
+            {"downstream_nav_action_name": "/navigate_to_pose",
+             "upstream_nav_action_name": "/mission/navigate_to_pose"},
         ],
     )
 

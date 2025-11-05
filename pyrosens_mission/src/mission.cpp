@@ -39,9 +39,11 @@ Mission::Mission() : rclcpp::Node("mission_manager")
   allow_pose_stream_  = this->declare_parameter<bool>("allow_pose_stream", false);
   pose_stream_topic_  = this->declare_parameter<std::string>("pose_stream_topic", "/goals/pose_stream");
   downstream_nav_action_name_ = this->declare_parameter<std::string>(
-      "downstream_nav_action_name", "/nav2/navigate_to_pose");
+      "downstream_nav_action_name", "/navigate_to_pose");
   upstream_nav_action_name_ = this->declare_parameter<std::string>(
-      "upstream_nav_action_name", "navigate_to_pose");
+      "upstream_nav_action_name", "/mission/navigate_to_pose");
+  downstream_wait_timeout_sec_ = this->declare_parameter<double>(
+      "downstream_wait_timeout_sec", 15.0);
 
   // ---- Subscriptions ----
   {
@@ -526,15 +528,17 @@ bool Mission::waitForActionServer_(const rclcpp::Duration& timeout)
   if (!nav_client_) return false;
   bool ok = nav_client_->wait_for_action_server(std::chrono::nanoseconds(timeout.nanoseconds()));
   if (!ok) {
-    RCLCPP_ERROR(get_logger(), "Downstream NavigateToPose server not available at '%s'.",
-                 downstream_nav_action_name_.c_str());
+    RCLCPP_ERROR(get_logger(),
+                 "Downstream NavigateToPose server not available at '%s' after waiting %.1f s.",
+                 downstream_nav_action_name_.c_str(), downstream_wait_timeout_sec_);
   }
   return ok;
 }
 
 bool Mission::sendGoal_(const geometry_msgs::msg::PoseStamped& goal_pose)
 {
-  if (!waitForActionServer_(2s)) {
+  const auto wait_timeout = rclcpp::Duration::from_seconds(downstream_wait_timeout_sec_);
+  if (!waitForActionServer_(wait_timeout)) {
     return false;
   }
 
@@ -788,10 +792,18 @@ void Mission::startWorker_()
 
 void Mission::stopWorker_()
 {
-  if (!worker_running_.exchange(false)) return;
+  const bool was_running = worker_running_.exchange(false);
   cancel_requested_ = true;
   cancelActiveGoalNoThrow_();
-  if (worker_.joinable()) worker_.join();
+
+  if (worker_.joinable()) {
+    if (!was_running) {
+      // Worker already finished; just join to reclaim resources.
+      worker_.join();
+    } else {
+      worker_.join();
+    }
+  }
 }
 
 void Mission::runLoop_()

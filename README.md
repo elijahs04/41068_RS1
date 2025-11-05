@@ -34,8 +34,10 @@ Key launch arguments (all optional):
 - `world_file:=/abs/path/to/world.sdf` &mdash; override with a custom SDF (e.g. `${share.pyrosens_world}/test_world.sdf`)
 - `launch_nav2:=true|false` &mdash; toggle the Nav2 stack configured by 41068
 - `launch_rviz:=true|false` &mdash; bring up the 41068 RViz layout
-- `nav_action:=/navigate_to_pose` &mdash; NavigateToPose action name the mission proxies to
+- `nav_action:=/navigate_to_pose` &mdash; NavigateToPose action name forwarded to Nav2
 - `launch_bridge:=true|false` &mdash; enable the auxiliary ros_gz bridge for mission-related topics
+
+When using RViz’s Navigation 2 panel, set the `Navigate To Pose` action name to `/mission/navigate_to_pose` so goals route through the MissionManager proxy.
 
 Example using the PyroSENS world:
 
