@@ -80,6 +80,7 @@ add_sensor_executable(wind_sensor_node mains/main_windSens.cpp)
 add_sensor_executable(wind_interpolation_node mains/main_windInterpolation.cpp)
 
 install(TARGETS ${PROJECT_NAME}_lib
+  EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
@@ -89,5 +90,22 @@ install(DIRECTORY include/ DESTINATION include)
 install(DIRECTORY rviz/ DESTINATION share/${PROJECT_NAME}/rviz FILES_MATCHING PATTERN "*.rviz")
 
 install(DIRECTORY launch/ DESTINATION share/${PROJECT_NAME}/launch)
+
+ament_export_include_directories(include)
+ament_export_dependencies(
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+  nav_msgs
+  visualization_msgs
+  tf2
+  tf2_ros
+  tf2_geometry_msgs
+  message_filters
+  cv_bridge
+  std_srvs
+)
+ament_export_libraries(${PROJECT_NAME}_lib)
+ament_export_targets(export_${PROJECT_NAME})
 
 ament_package()
