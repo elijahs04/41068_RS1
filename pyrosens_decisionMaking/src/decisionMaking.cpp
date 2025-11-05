@@ -8,7 +8,7 @@ DecisionMaking::DecisionMaking() : rclcpp::Node("planning_execution") {
     RCLCPP_INFO(this->get_logger(), "Planning action client started");
 
     // Create action client
-    client_ = rclcpp_action::create_client<NavigateToPose>(this, "navigate_to_pose");
+    client_ = rclcpp_action::create_client<NavigateToPose>(this, "/mission/navigate_to_pose");
     
     
     // Subscribe to odometry
@@ -80,10 +80,16 @@ void DecisionMaking::pointCloudCallback(const sensor_msgs::msg::PointCloud2::Con
 }
 
 void DecisionMaking::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg){
-    std::lock_guard<std::mutex> lock(dataMutex_);
-    currentPose_ = msg->pose.pose;
+    geometry_msgs::msg::Pose current_pose_copy;
+    geometry_msgs::msg::PoseStamped current_goal_copy;
+    {
+        std::lock_guard<std::mutex> lock(dataMutex_);
+        currentPose_ = msg->pose.pose;
+        current_pose_copy = currentPose_;
+        current_goal_copy = currentGoalPose_;
+    }
 
-    if (isCloseEnough(currentPose_, currentGoalPose_)){
+    if (isCloseEnough(current_pose_copy, current_goal_copy)){
         findNextFire();
     }
 }
@@ -137,19 +143,25 @@ void DecisionMaking::findNextFire(){
     tf2::Quaternion q;
     q.setRPY(0.0, 0.0, yaw);
 
-    currentGoalPose_.header.stamp = this->now();
-    currentGoalPose_.header.frame_id = "map";
-    currentGoalPose_.pose.position.x = goal_x;
-    currentGoalPose_.pose.position.y = goal_y;
-    currentGoalPose_.pose.position.z = 0.0;
-    currentGoalPose_.pose.orientation.x = q.x();
-    currentGoalPose_.pose.orientation.y = q.y();
-    currentGoalPose_.pose.orientation.z = q.z();
-    currentGoalPose_.pose.orientation.w = q.w();
+    geometry_msgs::msg::PoseStamped next_goal;
+    next_goal.header.stamp = this->now();
+    next_goal.header.frame_id = "map";
+    next_goal.pose.position.x = goal_x;
+    next_goal.pose.position.y = goal_y;
+    next_goal.pose.position.z = 0.0;
+    next_goal.pose.orientation.x = q.x();
+    next_goal.pose.orientation.y = q.y();
+    next_goal.pose.orientation.z = q.z();
+    next_goal.pose.orientation.w = q.w();
 
     int numberFires = Fires_.size();
 
     Fires_.push_back({numberFires + 1, static_cast<int>(goal_x), static_cast<int>(goal_y), 2});
+
+    {
+        std::lock_guard<std::mutex> lock(dataMutex_);
+        currentGoalPose_ = next_goal;
+    }
 
     RCLCPP_INFO(
         this->get_logger(),
@@ -158,6 +170,8 @@ void DecisionMaking::findNextFire(){
         static_cast<double>(closest_point.second),
         goal_x,
         goal_y);
+
+    sendNextGoal();
 }
 
 
@@ -242,9 +256,61 @@ bool isCloseEnough(const geometry_msgs::msg::Pose& a,
 
 
 void DecisionMaking::sendNextGoal(){
-   
+    geometry_msgs::msg::PoseStamped goal;
+    {
+        std::lock_guard<std::mutex> lock(dataMutex_);
+        goal = currentGoalPose_;
+    }
 
-//please make this work xx, send current goal pose to your mission thing
+    if (goal.header.frame_id.empty()) {
+        RCLCPP_WARN(this->get_logger(), "No goal available to send yet; waiting for next computation.");
+        return;
+    }
 
-     
+    if (!client_) {
+        RCLCPP_ERROR(this->get_logger(), "NavigateToPose client not initialized; cannot send goal.");
+        return;
+    }
+
+    if (!client_->action_server_is_ready()) {
+        RCLCPP_WARN(this->get_logger(), "Mission manager NavigateToPose server not ready; deferring goal dispatch.");
+        return;
+    }
+
+    NavigateToPose::Goal goal_msg;
+    goal_msg.pose = goal;
+
+    rclcpp_action::Client<NavigateToPose>::SendGoalOptions options;
+    options.goal_response_callback =
+        [this](const GoalHandleNavigateToPose::SharedPtr &goal_handle) {
+            if (!goal_handle) {
+                RCLCPP_WARN(this->get_logger(), "Mission manager rejected NavigateToPose goal.");
+            } else {
+                RCLCPP_INFO(this->get_logger(), "Mission manager accepted NavigateToPose goal.");
+            }
+        };
+
+    options.result_callback =
+        [this](const GoalHandleNavigateToPose::WrappedResult &result) {
+            switch (result.code) {
+                case rclcpp_action::ResultCode::SUCCEEDED:
+                    RCLCPP_INFO(this->get_logger(), "Mission manager reports dispatched goal completed.");
+                    break;
+                case rclcpp_action::ResultCode::ABORTED:
+                    RCLCPP_WARN(this->get_logger(), "Mission manager aborted goal.");
+                    break;
+                case rclcpp_action::ResultCode::CANCELED:
+                    RCLCPP_WARN(this->get_logger(), "Mission manager canceled goal.");
+                    break;
+                default:
+                    RCLCPP_ERROR(this->get_logger(), "Mission manager returned unknown result code.");
+                    break;
+            }
+        };
+
+    try {
+        client_->async_send_goal(goal_msg, options);
+    } catch (const std::exception &ex) {
+        RCLCPP_ERROR(this->get_logger(), "Failed to send NavigateToPose goal: %s", ex.what());
+    }
 }
