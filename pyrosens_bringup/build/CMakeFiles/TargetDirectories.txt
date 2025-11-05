@@ -1,9 +1,0 @@
-/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_bringup/build/CMakeFiles/uninstall.dir
-/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_bringup/build/CMakeFiles/pyrosens_bringup_uninstall.dir
-/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_bringup/build/CMakeFiles/test.dir
-/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_bringup/build/CMakeFiles/edit_cache.dir
-/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_bringup/build/CMakeFiles/rebuild_cache.dir
-/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_bringup/build/CMakeFiles/list_install_components.dir
-/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_bringup/build/CMakeFiles/install.dir
-/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_bringup/build/CMakeFiles/install/local.dir
-/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_bringup/build/CMakeFiles/install/strip.dir

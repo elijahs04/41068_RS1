@@ -1,11 +1,14 @@
+import os
+
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
 from launch.conditions import IfCondition
 from launch.substitutions import (Command, LaunchConfiguration,
                                   PathJoinSubstitution)
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
+from ament_index_python.packages import get_package_prefix, get_package_share_directory
 
 
 def generate_launch_description():
@@ -16,6 +19,22 @@ def generate_launch_description():
     pkg_path = FindPackageShare('pyrosens_ignition_bringup')
     config_path = PathJoinSubstitution([pkg_path,
                                        'config'])
+    pkg_share = get_package_share_directory('pyrosens_ignition_bringup')
+
+    gui_config_path = os.path.join(pkg_share, 'gui', 'pyrosens_with_panel.gui')
+    pyrosens_gui_prefix = get_package_prefix('pyrosens_ignition_bringup')
+    plugin_dir = os.path.join(pyrosens_gui_prefix, 'lib')
+    existing_plugin_path = os.environ.get('IGN_GUI_PLUGIN_PATH', '')
+    combined_plugin_path = plugin_dir if not existing_plugin_path else plugin_dir + os.pathsep + existing_plugin_path
+
+    ld.add_action(SetEnvironmentVariable(
+        name='IGN_GAZEBO_GUI_CONFIG_PATH',
+        value=gui_config_path
+    ))
+    ld.add_action(SetEnvironmentVariable(
+        name='IGN_GUI_PLUGIN_PATH',
+        value=combined_plugin_path
+    ))
 
     # Additional command line arguments
     use_sim_time_launch_arg = DeclareLaunchArgument(
@@ -73,6 +92,7 @@ def generate_launch_description():
         choices=['simple_trees', 'large_demo', 'test_world_resize', 'test_world']
     )
     ld.add_action(world_launch_arg)
+    gui_config_flag = f' --gui-config {gui_config_path}'
     gazebo = IncludeLaunchDescription(
         PathJoinSubstitution([FindPackageShare('ros_ign_gazebo'),
                              'launch', 'ign_gazebo.launch.py']),
@@ -80,7 +100,8 @@ def generate_launch_description():
             'ign_args': [PathJoinSubstitution([pkg_path,
                                                'worlds',
                                                [LaunchConfiguration('world'), '.sdf']]),
-                         ' -r']}.items()
+                         ' -r',
+                         gui_config_flag]}.items()
     )
     ld.add_action(gazebo)
 
@@ -128,14 +149,34 @@ def generate_launch_description():
     )
     ld.add_action(nav2)
 
-    # # --- Launch Pyrosens GUI Package from outside this bringup ---
-    # gui_launch = IncludeLaunchDescription(
-    #     PathJoinSubstitution([FindPackageShare('pyrosens_gui'),
-    #                           'launch', 'pyrosens_gui.launch.py']),
-    #     launch_arguments={
-    #         'use_sim_time': use_sim_time
-    #     }.items()
-    # )
-    # ld.add_action(gui_launch)
+    # Mission management stack (proxy + command bridge)
+    mission_params = PathJoinSubstitution(
+        [FindPackageShare("pyrosens_mission"), "config", "mission_params.yaml"]
+    )
+
+    mission_manager = Node(
+        package="pyrosens_mission",
+        executable="main_mission",
+        name="mission_manager",
+        output="screen",
+        parameters=[
+            mission_params,
+            {"use_sim_time": LaunchConfiguration("use_sim_time")},
+            {
+                "downstream_nav_action_name": "/navigate_to_pose",
+                "upstream_nav_action_name": "/mission/navigate_to_pose",
+            },
+        ],
+    )
+    ld.add_action(mission_manager)
+
+    mission_cmd_bridge = Node(
+        package="pyrosens_mission",
+        executable="mission_cmd_bridge",
+        name="mission_cmd_bridge",
+        output="screen",
+        parameters=[{"use_sim_time": LaunchConfiguration("use_sim_time")}],
+    )
+    ld.add_action(mission_cmd_bridge)
 
     return ld

@@ -80,7 +80,7 @@
         <visual name='Plane'>
           <geometry>
             <mesh>
-              <uri>models/world_env_model/meshes/model.dae</uri>
+              <uri>../sim_env_models/world_env_model/meshes/model.dae</uri>
               <submesh>
                 <name>Plane</name>
               </submesh>
@@ -90,7 +90,7 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>models/world_env_model/meshes/model.dae</uri>
+              <uri>../sim_env_models/world_env_model/meshes/model.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -133,14 +133,14 @@
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>models/tree_model/meshes/tree.dae</uri>
+              <uri>../sim_env_models/tree_model/meshes/tree.dae</uri>
             </mesh>
           </geometry>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>models/tree_model/meshes/tree.dae</uri>
+              <uri>../sim_env_models/tree_model/meshes/tree.dae</uri>
             </mesh>
           </geometry>
         </collision>
@@ -168,14 +168,14 @@
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>models/tree_model/meshes/tree.dae</uri>
+              <uri>../sim_env_models/tree_model/meshes/tree.dae</uri>
             </mesh>
           </geometry>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>models/tree_model/meshes/tree.dae</uri>
+              <uri>../sim_env_models/tree_model/meshes/tree.dae</uri>
             </mesh>
           </geometry>
         </collision>
@@ -189,14 +189,14 @@
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>models/tree_model/meshes/tree.dae</uri>
+              <uri>../sim_env_models/tree_model/meshes/tree.dae</uri>
             </mesh>
           </geometry>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>models/tree_model/meshes/tree.dae</uri>
+              <uri>../sim_env_models/tree_model/meshes/tree.dae</uri>
             </mesh>
           </geometry>
         </collision>
@@ -210,14 +210,14 @@
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>models/tree_model/meshes/tree.dae</uri>
+              <uri>../sim_env_models/tree_model/meshes/tree.dae</uri>
             </mesh>
           </geometry>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>models/tree_model/meshes/tree.dae</uri>
+              <uri>../sim_env_models/tree_model/meshes/tree.dae</uri>
             </mesh>
           </geometry>
         </collision>

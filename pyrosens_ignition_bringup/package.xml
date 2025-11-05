@@ -18,6 +18,13 @@
   <depend>pcl_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <build_depend>Qt5Core</build_depend>
+  <build_depend>Qt5Widgets</build_depend>
+  <build_depend>Qt5Qml</build_depend>
+  <build_depend>Qt5Quick</build_depend>
+  <build_depend>ignition-gui6</build_depend>
+  <exec_depend>ignition-gui6</exec_depend>
 
   <!-- Other -->
   <depend>robot_localization</depend>
