@@ -128,14 +128,14 @@ def generate_launch_description():
     )
     ld.add_action(nav2)
 
-    # --- Launch Pyrosens GUI Package from outside this bringup ---
-    gui_launch = IncludeLaunchDescription(
-        PathJoinSubstitution([FindPackageShare('pyrosens_gui'),
-                              'launch', 'pyrosens_gui.launch.py']),
-        launch_arguments={
-            'use_sim_time': use_sim_time
-        }.items()
-    )
-    ld.add_action(gui_launch)
+    # # --- Launch Pyrosens GUI Package from outside this bringup ---
+    # gui_launch = IncludeLaunchDescription(
+    #     PathJoinSubstitution([FindPackageShare('pyrosens_gui'),
+    #                           'launch', 'pyrosens_gui.launch.py']),
+    #     launch_arguments={
+    #         'use_sim_time': use_sim_time
+    #     }.items()
+    # )
+    # ld.add_action(gui_launch)
 
     return ld
