@@ -41,7 +41,7 @@ private:
   int height_ = 400;           // cells
 
   // Splat kernel
-  double sigma_m_ = 0.75;      // meters
+  double sigma_m_ = 0.01;      // meters
   int kernel_radius_cells_ = 0;
   cv::Mat kernel_;             // float32 kernel
 
