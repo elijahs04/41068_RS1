@@ -2,27 +2,35 @@
 <package format="3">
   <name>pyrosens_hotspotDetection</name>
   <version>0.1.0</version>
-  <description>Hotspot detection from thermal images (Ignition → ROS 2)</description>
+  <description>Hotspot detection and mapping from thermal images.</description>
 
   <maintainer email="connor.lindsell@student.uts.edu.au">Connor Lindsell</maintainer>
   <author email="dev1@student.uts.edu.au">Dev One</author>
   <author email="dev3@student.uts.edu.au">Dev Two</author>
-
   <license>LGPLv3</license>
 
   <!-- Build tool -->
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <!-- Core runtime deps -->
+  <!-- Core runtime/build deps -->
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>std_srvs</depend>
   <depend>cv_bridge</depend>
   <depend>vision_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>message_filters</depend>
+  <depend>eigen3_cmake_module</depend>
+  <depend>Eigen3</depend>
+  <depend>opencv</depend>
 
-  <!-- OpenCV -->
-  <exec_depend>opencv</exec_depend>
-
-  <!-- Rviz -->
+  <!-- Launching / RViz -->
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
   <exec_depend>rviz2</exec_depend>
 
   <export>
