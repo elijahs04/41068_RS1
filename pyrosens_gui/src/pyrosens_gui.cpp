@@ -2,6 +2,7 @@
 #include <ignition/gui/Application.hh>
 #include <ignition/gui/MainWindow.hh>
 #include <QQmlContext>
+#include <QRegularExpression>
 #include <ignition/plugin/Register.hh>
 
 using namespace pyrosens;
@@ -51,8 +52,20 @@ void PyroSENSGui::LoadConfig(const tinyxml2::XMLElement* _pluginElem)
       QMutexLocker lk(&mtx_);
       pendingGoals_.clear();
       const QString q = QString::fromStdString(msg->data);
-      for (const auto &item : q.split(';', Qt::SkipEmptyParts))
-        pendingGoals_ << item.trimmed();
+      auto logger = node_->get_logger();
+      RCLCPP_INFO(logger, "GUI received /mission/goals update: '%s'", msg->data.c_str());
+      const auto parts = q.split(QRegularExpression("[;\\r\\n]+"), Qt::SkipEmptyParts);
+      if (!parts.isEmpty()) {
+        for (const auto &item : parts) {
+          const QString trimmed = item.trimmed();
+          if (!trimmed.isEmpty()) {
+            pendingGoals_ << trimmed;
+          }
+        }
+      }
+      if (pendingGoals_.isEmpty()) {
+        pendingGoals_ << (q.trimmed().isEmpty() ? QStringLiteral("(no goals loaded)") : q.trimmed());
+      }
       goalsDirty_ = true;
     });
 
@@ -76,8 +89,19 @@ void PyroSENSGui::OnUiTick()
 {
   if (node_) rclcpp::spin_some(node_);
   QMutexLocker lk(&mtx_);
-  if (statusDirty_) { missionStatus_ = pendingStatus_; statusDirty_ = false; emit missionStatusChanged(); }
-  if (goalsDirty_)  { goals_ = pendingGoals_; goalsDirty_ = false; emit goalsChanged(); }
+  if (statusDirty_) {
+    missionStatus_ = pendingStatus_;
+    statusDirty_ = false;
+    emit missionStatusChanged();
+  }
+  if (goalsDirty_)  {
+    goals_ = pendingGoals_;
+    if (goals_.isEmpty()) {
+      goals_ << "(no goals loaded)";
+    }
+    goalsDirty_ = false;
+    emit goalsChanged();
+  }
   if (windDirty_)   { windText_ = pendingWind_; windDirty_ = false; emit windTextChanged(); }
 }
 

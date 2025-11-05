@@ -46,7 +46,7 @@ def generate_launch_description():
         name="mission_manager",
         output="screen",
         parameters=[
-            # Proxy forwards to Nav2 running under dedicated namespace
+            # Proxy forwards to Nav2 running on its default namespace
             {"downstream_nav_action_name": "/navigate_to_pose",
              "upstream_nav_action_name": "/mission/navigate_to_pose"},
             # Optional: load other mission params from YAML (below)

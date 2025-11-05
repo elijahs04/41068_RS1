@@ -42,22 +42,36 @@ Item {
       title: "Goals (sequential)"
       Layout.fillWidth: true
       Layout.fillHeight: true
-      ListView {
-        id: goalsView
+      Layout.minimumHeight: 220
+      ColumnLayout {
+        spacing: 6
         Layout.fillWidth: true
         Layout.fillHeight: true
-        model: PyroSENSGui.goals
-        clip: true
-        delegate: Rectangle {
-          width: goalsView.width
-          height: Math.max(28, textItem.implicitHeight + 10)
-          color: index % 2 === 0 ? "#f5f5f5" : "#ffffff"
-          Text {
-            id: textItem
-            anchors.margins: 6
-            anchors.fill: parent
-            text: (index+1) + ". " + modelData
-            wrapMode: Text.WordWrap
+        Label {
+          visible: PyroSENSGui.goals.length === 0
+          text: "(no goals loaded)"
+          wrapMode: Text.WordWrap
+          Layout.fillWidth: true
+          Layout.alignment: Qt.AlignTop
+        }
+        Repeater {
+          model: PyroSENSGui.goals
+          delegate: Frame {
+            Layout.fillWidth: true
+            Layout.preferredHeight: Math.max(goalLabel.implicitHeight + 12, 36)
+            padding: 6
+            background: Rectangle {
+              color: index % 2 === 0 ? "#f5f5f5" : "#ffffff"
+              radius: 2
+            }
+            Label {
+              id: goalLabel
+              text: (index + 1) + ". " + modelData
+              wrapMode: Text.WordWrap
+              Layout.fillWidth: true
+              horizontalAlignment: Text.AlignLeft
+              verticalAlignment: Text.AlignVCenter
+            }
           }
         }
       }
