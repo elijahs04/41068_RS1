@@ -46,7 +46,7 @@ def generate_launch_description():
 
     # RViz: auto-launch with a custom or default config
     rviz = ExecuteProcess(
-        cmd=['rviz2', '-d', '$(find pyrosens_hotspotDetection)/rviz/hotspot_detection.rviz'],
+        cmd=['rviz2', '-d', '$(find pyrosens_hotspotDetection)/rviz/hotspot_detection2.rviz'],
         output='screen'
     )
 
