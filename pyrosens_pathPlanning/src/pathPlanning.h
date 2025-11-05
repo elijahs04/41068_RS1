@@ -44,6 +44,7 @@ class PathPlanning: public rclcpp::Node {
             double radius{0.0};
             rclcpp::Time last_seen;
             bool explored{false};
+            size_t next_boundary_index{0};
         };
         std::vector<Cluster> clusters_;
         std::optional<size_t> activeClusterId_;
@@ -66,6 +67,9 @@ class PathPlanning: public rclcpp::Node {
         rclcpp_action::Client<NavigateToPose>::SharedPtr client_;
         using GoalHandleNavigateToPose = rclcpp_action::ClientGoalHandle<NavigateToPose>;
         GoalHandleNavigateToPose::SharedPtr activeGoalHandle_;
+        rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr goalVizPub_;
+        rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr plannedPathPub_;
+        rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr executedPathPub_;
 
         rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr pointCloudSub_;
 
@@ -89,7 +93,13 @@ class PathPlanning: public rclcpp::Node {
         bool refreshActiveClusterLocked();
         bool computeNextGoalForActiveClusterLocked();
         void updateClusterCoverageLocked();
+        void markPendingCellVisitedLocked();
+        void appendExecutedPathLocked(const geometry_msgs::msg::Pose &pose);
         bool clusterHasUnvisited(const Cluster &cluster) const;
+        std::vector<std::pair<float, float>> extractBoundaryPoints(
+            const std::vector<std::pair<float, float>> &points,
+            double centroid_x,
+            double centroid_y) const;
         int64_t cellKeyForPoint(float x, float y) const;
 
         const double clusterDistanceThreshold_{1.0};
@@ -98,6 +108,15 @@ class PathPlanning: public rclcpp::Node {
         const double visitRadius_{1.0};
         const double goalStandOff_{3.0};
         const double cellSize_{0.5};
+        const size_t boundaryAngleBins_{72};
+        const double minBoundaryRadius_{0.3};
+        const double boundaryDistanceTolerance_{0.05};
+        const size_t executedPathMaxSize_{2000};
+        const double executedPathMinSpacing_{0.1};
+
+        nav_msgs::msg::Path executedPath_;
+        bool executedPathInitialized_{false};
+        std::optional<nav_msgs::msg::Path> pendingPathMsg_;
 };
 
 
