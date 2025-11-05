@@ -4,9 +4,18 @@ mission_manager:
     # --- Core mission proxy setup ---
     # This tells your Mission node which downstream Nav2 action to forward to.
     # The launch file already sets this default (so this is redundant but explicit).
-    downstream_nav_action_name: "/nav2_downstream/navigate_to_pose"
+    downstream_nav_action_name: "/navigate_to_pose"
     # Action name exposed to clients (RViz, teammates)
-    upstream_nav_action_name: "/nav2/navigate_to_pose"
+    upstream_nav_action_name: "/mission/navigate_to_pose"
+    # How long to wait (seconds) for the downstream Nav2 action server on each goal
+    downstream_wait_timeout_sec: 15.0
+
+    # --- Home position used when aborting a mission ---
+    home_frame_id: "map"
+    home_x: 0.0
+    home_y: 0.0
+    home_z: 0.0
+    home_yaw_deg: 0.0
 
     # --- Topic-based goal intake (optional) ---
     # If your team ever wants to feed multiple goals at once (PoseArray or Path).

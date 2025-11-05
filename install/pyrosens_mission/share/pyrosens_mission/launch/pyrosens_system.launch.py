@@ -76,7 +76,7 @@ def generate_launch_description():
             "bringup_launch.py",
         ])),
         launch_arguments={
-            "namespace": "nav2",
+            "namespace": "nav2_downstream",
             "use_namespace": "true",
             "use_sim_time": LaunchConfiguration("use_sim_time"),
             "autostart": "true",
@@ -125,8 +125,10 @@ def generate_launch_description():
         name="mission_manager",
         output="screen",
         parameters=[
-            {"use_sim_time": LaunchConfiguration("use_sim_time")},
             mission_params,
+            {"use_sim_time": LaunchConfiguration("use_sim_time")},
+            {"downstream_nav_action_name": "/navigate_to_pose",
+             "upstream_nav_action_name": "/mission/navigate_to_pose"},
         ],
     )
 

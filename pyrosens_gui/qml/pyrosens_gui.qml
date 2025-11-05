@@ -22,10 +22,10 @@ Item {
       Layout.fillWidth: true
       RowLayout {
         spacing: 8
-        Button { text: "Start";  onClicked: PyroSENSGui.startMission() }
-        Button { text: "Pause";  onClicked: PyroSENSGui.pauseMission() }
-        Button { text: "Resume"; onClicked: PyroSENSGui.resumeMission() }
-        Button { text: "Abort";  onClicked: PyroSENSGui.abortMission() }
+        Button { text: "Start";   onClicked: PyroSENSGui.startMission() }
+        Button { text: "Resume";  onClicked: PyroSENSGui.resumeMission() }
+        Button { text: "Abort";   onClicked: PyroSENSGui.abortMission() }
+        Button { text: "E-Stop";  onClicked: PyroSENSGui.estopMission() }
       }
     }
 

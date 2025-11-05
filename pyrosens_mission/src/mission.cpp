@@ -39,9 +39,16 @@ Mission::Mission() : rclcpp::Node("mission_manager")
   allow_pose_stream_  = this->declare_parameter<bool>("allow_pose_stream", false);
   pose_stream_topic_  = this->declare_parameter<std::string>("pose_stream_topic", "/goals/pose_stream");
   downstream_nav_action_name_ = this->declare_parameter<std::string>(
-      "downstream_nav_action_name", "/nav2/navigate_to_pose");
+      "downstream_nav_action_name", "/navigate_to_pose");
   upstream_nav_action_name_ = this->declare_parameter<std::string>(
-      "upstream_nav_action_name", "navigate_to_pose");
+      "upstream_nav_action_name", "/mission/navigate_to_pose");
+  downstream_wait_timeout_sec_ = this->declare_parameter<double>(
+      "downstream_wait_timeout_sec", 15.0);
+  home_frame_id_ = this->declare_parameter<std::string>("home_frame_id", "map");
+  home_x_ = this->declare_parameter<double>("home_x", 0.0);
+  home_y_ = this->declare_parameter<double>("home_y", 0.0);
+  home_z_ = this->declare_parameter<double>("home_z", 0.0);
+  home_yaw_deg_ = this->declare_parameter<double>("home_yaw_deg", 0.0);
 
   // ---- Subscriptions ----
   {
@@ -304,17 +311,48 @@ void Mission::srvAbort_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
   {
     std::lock_guard<std::mutex> lk(mtx_);
     if (state_ == MissionState::IDLE || state_ == MissionState::COMPLETED ||
-        state_ == MissionState::ABORTED || state_ == MissionState::ESTOPPED) {
-      res->success=false; res->message="Abort not applicable."; return;
+        state_ == MissionState::ESTOPPED) {
+      res->success = false;
+      res->message = "Abort not applicable.";
+      return;
     }
     cancel_requested_ = true;
     state_ = MissionState::ABORTED;
     updateGoalStatusesLocked_();
   }
-  cancelActiveGoalNoThrow_();
-  res->success = true; res->message = "Mission aborted (cannot resume).";
-  publishStatus_();
+
+  publishStatus_(std::string("Abort requested: cancelling active mission."));
   publishGoalList_();
+
+  stopWorker_();
+  {
+    std::lock_guard<std::mutex> lk(mtx_);
+    cancel_requested_ = false;
+    paused_ = false;
+  }
+
+  publishStatus_(std::string("Abort requested: returning to home."));
+  bool home_ok = goHomeBlocking_();
+
+  {
+    std::lock_guard<std::mutex> lk(mtx_);
+    goals_.clear();
+    goal_statuses_.clear();
+    current_index_ = 0;
+    state_ = MissionState::IDLE;
+    updateGoalStatusesLocked_();
+  }
+
+  publishGoalList_();
+  publishProgress_();
+  publishStatus_(home_ok
+      ? std::optional<std::string>("Abort complete: home reached.")
+      : std::optional<std::string>("Abort complete: failed to reach home."));
+
+  res->success = true;
+  res->message = home_ok
+      ? "Mission aborted; returned home."
+      : "Mission aborted; failed to reach home.";
 }
 
 void Mission::srvEStop_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
@@ -526,15 +564,17 @@ bool Mission::waitForActionServer_(const rclcpp::Duration& timeout)
   if (!nav_client_) return false;
   bool ok = nav_client_->wait_for_action_server(std::chrono::nanoseconds(timeout.nanoseconds()));
   if (!ok) {
-    RCLCPP_ERROR(get_logger(), "Downstream NavigateToPose server not available at '%s'.",
-                 downstream_nav_action_name_.c_str());
+    RCLCPP_ERROR(get_logger(),
+                 "Downstream NavigateToPose server not available at '%s' after waiting %.1f s.",
+                 downstream_nav_action_name_.c_str(), downstream_wait_timeout_sec_);
   }
   return ok;
 }
 
 bool Mission::sendGoal_(const geometry_msgs::msg::PoseStamped& goal_pose)
 {
-  if (!waitForActionServer_(2s)) {
+  const auto wait_timeout = rclcpp::Duration::from_seconds(downstream_wait_timeout_sec_);
+  if (!waitForActionServer_(wait_timeout)) {
     return false;
   }
 
@@ -604,6 +644,45 @@ bool Mission::sendGoal_(const geometry_msgs::msg::PoseStamped& goal_pose)
     }
   }
   return false;
+}
+
+geometry_msgs::msg::PoseStamped Mission::makeHomePose_() const
+{
+  geometry_msgs::msg::PoseStamped pose;
+  pose.header.frame_id = home_frame_id_;
+  pose.header.stamp = this->now();
+  pose.pose.position.x = home_x_;
+  pose.pose.position.y = home_y_;
+  pose.pose.position.z = home_z_;
+  const double yaw_rad = home_yaw_deg_ * (3.14159265358979323846 / 180.0);
+  const double half_yaw = yaw_rad * 0.5;
+  pose.pose.orientation.x = 0.0;
+  pose.pose.orientation.y = 0.0;
+  pose.pose.orientation.z = std::sin(half_yaw);
+  pose.pose.orientation.w = std::cos(half_yaw);
+  return pose;
+}
+
+bool Mission::goHomeBlocking_()
+{
+  auto home_pose = makeHomePose_();
+  RCLCPP_INFO(get_logger(),
+              "Abort: commanding return-to-home to (%.2f, %.2f, %.2f) in frame '%s'.",
+              home_pose.pose.position.x,
+              home_pose.pose.position.y,
+              home_pose.pose.position.z,
+              home_pose.header.frame_id.c_str());
+  const bool success = sendGoal_(home_pose);
+  if (success) {
+    RCLCPP_INFO(get_logger(), "Return-to-home goal completed successfully.");
+  } else {
+    RCLCPP_WARN(get_logger(), "Return-to-home goal failed.");
+  }
+  {
+    std::lock_guard<std::mutex> lk(mtx_);
+    active_goal_handle_.reset();
+  }
+  return success;
 }
 
 void Mission::cancelActiveGoalNoThrow_()
@@ -788,10 +867,18 @@ void Mission::startWorker_()
 
 void Mission::stopWorker_()
 {
-  if (!worker_running_.exchange(false)) return;
+  const bool was_running = worker_running_.exchange(false);
   cancel_requested_ = true;
   cancelActiveGoalNoThrow_();
-  if (worker_.joinable()) worker_.join();
+
+  if (worker_.joinable()) {
+    if (!was_running) {
+      // Worker already finished; just join to reclaim resources.
+      worker_.join();
+    } else {
+      worker_.join();
+    }
+  }
 }
 
 void Mission::runLoop_()

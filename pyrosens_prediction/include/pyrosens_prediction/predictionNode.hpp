@@ -65,9 +65,11 @@ private:
     std::string prediction_marker_topic_;
     std::string point_topic_;
     std::string frame_id_;
+    std::string heat_value_field_;
     double wind_x_;
     double wind_y_;
     double wind_z_;
+    double default_heat_temperature_;
     bool wind_ready_;
     bool heat_ready_;
     bool point_ready_;

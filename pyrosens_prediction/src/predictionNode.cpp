@@ -29,7 +29,9 @@ PredictionNode::PredictionNode() : Node("prediction_node")
   path_visualization_limit_ = static_cast<std::size_t>(this->declare_parameter<int>("path_visualization_limit", 200));
   wind_point_topic_ = this->declare_parameter<std::string>("wind_point_topic", "/wind/point");
   wind_velocity_topic_ = this->declare_parameter<std::string>("wind_velocity_topic", "/wind/velocity");
-  heat_samples_topic_ = this->declare_parameter<std::string>("heat_samples_topic", "/heat/samples");
+  heat_samples_topic_ = this->declare_parameter<std::string>("heat_samples_topic", "/hotspots/points_cloud");
+  heat_value_field_ = this->declare_parameter<std::string>("heat_value_field", "temp");
+  default_heat_temperature_ = this->declare_parameter("default_heat_temperature", 160.0);
   prediction_marker_topic_ = this->declare_parameter<std::string>("prediction_marker_topic", "prediction_markers");
   point_topic_ = this->declare_parameter<std::string>("prediction_point_topic", "point");
   frame_id_ = this->declare_parameter<std::string>("frame_id", "map");
@@ -112,25 +114,88 @@ void PredictionNode::onHeatSamples(const sensor_msgs::msg::PointCloud2::SharedPt
   std::lock_guard<std::mutex> lock(data_mutex_);
   heat_samples_.clear();
 
-  try {
-    sensor_msgs::PointCloud2ConstIterator<float> it_x(*msg, "x");
-    sensor_msgs::PointCloud2ConstIterator<float> it_y(*msg, "y");
-    sensor_msgs::PointCloud2ConstIterator<float> it_z(*msg, "z");
-    sensor_msgs::PointCloud2ConstIterator<float> it_temp(*msg, "temp");
-
-    for (; it_x != it_x.end(); ++it_x, ++it_y, ++it_z, ++it_temp) {
-      HeatSample sample;
-      sample.point.x = *it_x;
-      sample.point.y = *it_y;
-      sample.point.z = *it_z;
-      sample.temperature = *it_temp;
-      heat_samples_.push_back(sample);
+  auto field_available = [&msg](const std::string & name) {
+    if (name.empty()) {
+      return false;
     }
-    heat_ready_ = !heat_samples_.empty();
-    RCLCPP_INFO(this->get_logger(), "Received %zu heat samples.", heat_samples_.size());
+    return std::any_of(msg->fields.begin(), msg->fields.end(),
+                       [&name](const sensor_msgs::msg::PointField & field) {
+                         return field.name == name;
+                       });
+  };
+
+  std::vector<std::string> candidates;
+  candidates.reserve(5);
+  candidates.push_back(heat_value_field_);
+  if (heat_value_field_ != "temp") {
+    candidates.push_back("temp");
+  }
+  if (heat_value_field_ != "temperature") {
+    candidates.push_back("temperature");
+  }
+  if (heat_value_field_ != "intensity") {
+    candidates.push_back("intensity");
+  }
+  if (heat_value_field_ != "i") {
+    candidates.push_back("i");
+  }
+
+  std::string value_field;
+  for (const auto & name : candidates) {
+    if (field_available(name)) {
+      value_field = name;
+      break;
+    }
+  }
+
+  try {
+    if (!value_field.empty()) {
+      sensor_msgs::PointCloud2ConstIterator<float> it_x(*msg, "x");
+      sensor_msgs::PointCloud2ConstIterator<float> it_y(*msg, "y");
+      sensor_msgs::PointCloud2ConstIterator<float> it_z(*msg, "z");
+      sensor_msgs::PointCloud2ConstIterator<float> it_val(*msg, value_field);
+
+      for (; it_x != it_x.end(); ++it_x, ++it_y, ++it_z, ++it_val) {
+        HeatSample sample;
+        sample.point.x = *it_x;
+        sample.point.y = *it_y;
+        sample.point.z = *it_z;
+        sample.temperature = *it_val;
+        heat_samples_.push_back(sample);
+      }
+      heat_ready_ = !heat_samples_.empty();
+      if (heat_ready_) {
+        RCLCPP_INFO(this->get_logger(),
+                    "Received %zu heat samples using field '%s'.",
+                    heat_samples_.size(), value_field.c_str());
+      }
+    } else {
+      sensor_msgs::PointCloud2ConstIterator<float> it_x(*msg, "x");
+      sensor_msgs::PointCloud2ConstIterator<float> it_y(*msg, "y");
+      sensor_msgs::PointCloud2ConstIterator<float> it_z(*msg, "z");
+
+      for (; it_x != it_x.end(); ++it_x, ++it_y, ++it_z) {
+        HeatSample sample;
+        sample.point.x = *it_x;
+        sample.point.y = *it_y;
+        sample.point.z = *it_z;
+        sample.temperature = static_cast<float>(default_heat_temperature_);
+        heat_samples_.push_back(sample);
+      }
+      heat_ready_ = !heat_samples_.empty();
+      if (heat_ready_) {
+        RCLCPP_WARN(this->get_logger(),
+                    "Heat samples missing value field; defaulting to %.1f°C for %zu points.",
+                    default_heat_temperature_, heat_samples_.size());
+      }
+    }
   } catch (const std::runtime_error & ex) {
     heat_ready_ = false;
     RCLCPP_WARN(this->get_logger(), "Failed to parse heat samples: %s", ex.what());
+  }
+
+  if (!heat_ready_) {
+    RCLCPP_WARN(this->get_logger(), "Heat data unavailable or empty.");
   }
 }
 

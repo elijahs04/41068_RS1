@@ -88,8 +88,8 @@ void PyroSENSGui::publishCmd(const std::string &cmd)
 }
 
 void PyroSENSGui::startMission(){ publishCmd("start"); }
-void PyroSENSGui::pauseMission(){ publishCmd("pause"); }
 void PyroSENSGui::resumeMission(){ publishCmd("resume"); }
 void PyroSENSGui::abortMission() { publishCmd("abort"); }
+void PyroSENSGui::estopMission() { publishCmd("pause"); }
 
 IGNITION_ADD_PLUGIN(pyrosens::PyroSENSGui, ignition::gui::Plugin)
