@@ -243,8 +243,8 @@ void ThermalHotspotNode::syncCallback(const sensor_msgs::msg::Image::ConstShared
       ps.point.z = plane_z_; // flatten to plane for your 2D visualization
       hot_points_pub_->publish(ps);
 
-      RCLCPP_INFO(get_logger(), "Hot pt depth_px=(%d,%d) depth=%.3f m world=(%.3f,%.3f,%.3f)",
-                   u, v, Zm, Pm.x(), Pm.y(), plane_z_);
+      // RCLCPP_INFO(get_logger(), "Hot pt depth_px=(%d,%d) depth=%.3f m world=(%.3f,%.3f,%.3f)",
+      //              u, v, Zm, Pm.x(), Pm.y(), plane_z_);
 
       // Append to cloud
       mod.resize(mod.size() + 1);

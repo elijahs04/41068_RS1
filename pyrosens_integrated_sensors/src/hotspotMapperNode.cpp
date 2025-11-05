@@ -57,8 +57,11 @@ HotspotMapperNode::HotspotMapperNode() : rclcpp::Node("hotspot_mapper_node")
       "hotspots/points_cloud", qos, std::bind(&HotspotMapperNode::cloudCb, this, _1));
 
   // Publishers
-  pub_grid_ = this->create_publisher<nav_msgs::msg::OccupancyGrid>("hotspots/heatmap", rclcpp::SystemDefaultsQoS());
-  pub_img_  = this->create_publisher<sensor_msgs::msg::Image>("hotspots/heatmap_image", rclcpp::SystemDefaultsQoS());
+  auto map_qos = rclcpp::QoS(rclcpp::KeepLast(1)).reliable().transient_local();
+  pub_grid_ = this->create_publisher<nav_msgs::msg::OccupancyGrid>("hotspots/heatmap", map_qos);
+
+  auto img_qos = rclcpp::SensorDataQoS().keep_last(1);
+  pub_img_  = this->create_publisher<sensor_msgs::msg::Image>("hotspots/heatmap_image", img_qos);
 
   // Reset service
   srv_reset_ = this->create_service<std_srvs::srv::Empty>(
@@ -200,15 +203,24 @@ void HotspotMapperNode::publishOutputs()
   og.info.origin.orientation.w = 1.0;
   og.data.resize(size_t(width_) * size_t(height_));
 
+  og.data.resize(size_t(width_) * size_t(height_));
+  if (publish_unknown_as_unseen_) {
+    std::fill(og.data.begin(), og.data.end(), static_cast<int8_t>(-1));
+  } else {
+    std::fill(og.data.begin(), og.data.end(), static_cast<int8_t>(0)); // free
+  }
+
   for (size_t i = 0; i < grid_.size(); ++i) {
-    if (publish_unknown_as_unseen_ && !seen_[i]) {
-      og.data[i] = int8_t(-1); // unknown -> RViz transparent (no purple slab)
-    } else {
-      int v = int(std::round(std::min(100.0f, grid_[i] * inv_cap)));
-      og.data[i] = int8_t(v);
-    }
+    if (publish_unknown_as_unseen_ && !seen_[i]) continue; // keep unknown
+    int v = int(std::round(std::min(100.0f, grid_[i] * inv_cap)));
+    og.data[i] = static_cast<int8_t>(v);
   }
   pub_grid_->publish(og);
+
+  size_t hot = 0, seen = 0;
+  for (size_t i = 0; i < grid_.size(); ++i) { seen += seen_[i]; if (grid_[i] > 0.f) ++hot; }
+  RCLCPP_INFO(this->get_logger(), "heatmap: seen=%zu hot=%zu cap=%.3f", seen, hot, cap);
+
 
   // Pretty image (use only seen cells for normalization)
   cv::Mat img(height_, width_, CV_32F, (void*)grid_.data());

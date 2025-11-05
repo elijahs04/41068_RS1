@@ -51,7 +51,7 @@ void WindSensNode::onTestCloud(const sensor_msgs::msg::PointCloud2 & cloud) {
     point_pub_->publish(p_msg);
     w_vel_pub_->publish(v_msg);
 
-    RCLCPP_INFO(this->get_logger(), "Point: (%.2f, %.2f, %.2f)  Velocity: (%.2f, %.2f)", p_msg.point.x, p_msg.point.y, p_msg.point.z, v_msg.vector.x, v_msg.vector.y);
+    // RCLCPP_INFO(this->get_logger(), "Point: (%.2f, %.2f, %.2f)  Velocity: (%.2f, %.2f)", p_msg.point.x, p_msg.point.y, p_msg.point.z, v_msg.vector.x, v_msg.vector.y);
 
     // delay between samples
     std::this_thread::sleep_for(10ms); // uncomment to simulate slower sensor
