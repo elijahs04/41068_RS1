@@ -43,6 +43,7 @@ Add a *MarkerArray* display in RViz, select `/prediction_markers`, and keep the 
 ## Build & Run
 
 ```bash
+# refer to the README for ignition bringup, launch drone with test world and no mapping before proceeding with the following
 # From the workspace root
 colcon build --packages-select pyrosens_integrated_sensors pyrosens_prediction
 source install/setup.bash   # repeat in every terminal
