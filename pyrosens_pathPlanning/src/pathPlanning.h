@@ -51,6 +51,7 @@ class PathPlanning: public rclcpp::Node {
         std::optional<int64_t> pendingTargetCell_;
         bool goalReady_{false};
         bool goalDispatched_{false};
+        bool goalActive_{false};
         
         geometry_msgs::msg::Pose currentPose_;
 
@@ -63,6 +64,8 @@ class PathPlanning: public rclcpp::Node {
         std::thread runThread;
         
         rclcpp_action::Client<NavigateToPose>::SharedPtr client_;
+        using GoalHandleNavigateToPose = rclcpp_action::ClientGoalHandle<NavigateToPose>;
+        GoalHandleNavigateToPose::SharedPtr activeGoalHandle_;
 
         rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr pointCloudSub_;
 
@@ -74,6 +77,12 @@ class PathPlanning: public rclcpp::Node {
         void pointCloudCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr msg);
 
         void sendNextGoal();
+        void dispatchGoal(const geometry_msgs::msg::PoseStamped &goal_pose);
+        void handleGoalResponse(const GoalHandleNavigateToPose::SharedPtr &future_handle);
+        void handleFeedback(
+            GoalHandleNavigateToPose::SharedPtr goal_handle,
+            const std::shared_ptr<const NavigateToPose::Feedback> feedback);
+        void handleResult(const GoalHandleNavigateToPose::WrappedResult &result);
 
         void updatePlanningStateLocked();
         void rebuildClustersLocked();

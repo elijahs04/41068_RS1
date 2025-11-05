@@ -19,7 +19,7 @@ PathPlanning::PathPlanning() : rclcpp::Node("planning_execution")
 {
     RCLCPP_INFO(this->get_logger(), "Planning action client started");
 
-    client_ = rclcpp_action::create_client<NavigateToPose>(this, "navigate_to_pose");
+    client_ = rclcpp_action::create_client<NavigateToPose>(this, "/mission/navigate_to_pose");
 
     odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
         "/odometry",
@@ -463,7 +463,7 @@ void PathPlanning::sendNextGoal()
     geometry_msgs::msg::PoseStamped goal;
     {
         std::lock_guard<std::mutex> lock(dataMutex_);
-        if (!goalReady_ || goalDispatched_) {
+        if (!goalReady_ || goalDispatched_ || goalActive_) {
             return;
         }
 
@@ -472,16 +472,122 @@ void PathPlanning::sendNextGoal()
         goalDispatched_ = true;
     }
 
+    dispatchGoal(goal);
+}
+
+void PathPlanning::dispatchGoal(const geometry_msgs::msg::PoseStamped &goal_pose)
+{
+    if (!client_->action_server_is_ready()) {
+        RCLCPP_WARN(
+            this->get_logger(),
+            "NavigateToPose action server not ready; deferring goal dispatch");
+        std::lock_guard<std::mutex> lock(dataMutex_);
+        currentGoalPose_ = goal_pose;
+        goalReady_ = true;
+        goalDispatched_ = false;
+        goalActive_ = false;
+        return;
+    }
+
     RCLCPP_INFO(
         this->get_logger(),
         "Dispatching goal at (%.3f, %.3f) facing %.3f rad",
-        goal.pose.position.x,
-        goal.pose.position.y,
+        goal_pose.pose.position.x,
+        goal_pose.pose.position.y,
         std::atan2(
-            2.0 * (goal.pose.orientation.w * goal.pose.orientation.z +
-                   goal.pose.orientation.x * goal.pose.orientation.y),
-            1.0 - 2.0 * (goal.pose.orientation.y * goal.pose.orientation.y +
-                         goal.pose.orientation.z * goal.pose.orientation.z)));
+            2.0 * (goal_pose.pose.orientation.w * goal_pose.pose.orientation.z +
+                   goal_pose.pose.orientation.x * goal_pose.pose.orientation.y),
+            1.0 - 2.0 * (goal_pose.pose.orientation.y * goal_pose.pose.orientation.y +
+                         goal_pose.pose.orientation.z * goal_pose.pose.orientation.z)));
 
-    // TODO: integrate with NavigateToPose action when action workflow is ready.
+    NavigateToPose::Goal goal_msg;
+    goal_msg.pose = goal_pose;
+
+    rclcpp_action::Client<NavigateToPose>::SendGoalOptions options;
+    options.goal_response_callback =
+        std::bind(&PathPlanning::handleGoalResponse, this, std::placeholders::_1);
+    options.feedback_callback =
+        std::bind(&PathPlanning::handleFeedback, this, std::placeholders::_1, std::placeholders::_2);
+    options.result_callback =
+        std::bind(&PathPlanning::handleResult, this, std::placeholders::_1);
+
+    try {
+        client_->async_send_goal(goal_msg, options);
+        std::lock_guard<std::mutex> lock(dataMutex_);
+        goalActive_ = true;
+    } catch (const std::exception &ex) {
+        RCLCPP_ERROR(
+            this->get_logger(),
+            "Failed to send NavigateToPose goal: %s",
+            ex.what());
+        std::lock_guard<std::mutex> lock(dataMutex_);
+        goalReady_ = true;
+        goalDispatched_ = false;
+        goalActive_ = false;
+    }
+}
+
+void PathPlanning::handleGoalResponse(const GoalHandleNavigateToPose::SharedPtr &goal_handle)
+{
+    if (!goal_handle) {
+        RCLCPP_WARN(this->get_logger(), "NavigateToPose goal rejected by server");
+        {
+            std::lock_guard<std::mutex> lock(dataMutex_);
+            goalActive_ = false;
+            goalDispatched_ = false;
+            goalReady_ = true;
+        }
+        sendNextGoal();
+        return;
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(dataMutex_);
+        activeGoalHandle_ = goal_handle;
+    }
+
+    RCLCPP_INFO(this->get_logger(), "NavigateToPose goal accepted");
+}
+
+void PathPlanning::handleFeedback(
+    GoalHandleNavigateToPose::SharedPtr,
+    const std::shared_ptr<const NavigateToPose::Feedback> feedback)
+{
+    if (!feedback) {
+        return;
+    }
+
+    RCLCPP_DEBUG(
+        this->get_logger(),
+        "NavigateToPose feedback: distance remaining %.2f m",
+        feedback->distance_remaining);
+}
+
+void PathPlanning::handleResult(const GoalHandleNavigateToPose::WrappedResult &result)
+{
+    {
+        std::lock_guard<std::mutex> lock(dataMutex_);
+        goalActive_ = false;
+        goalDispatched_ = false;
+        activeGoalHandle_.reset();
+        pendingTargetCell_.reset();
+        refreshActiveClusterLocked();
+    }
+
+    switch (result.code) {
+        case rclcpp_action::ResultCode::SUCCEEDED:
+            RCLCPP_INFO(this->get_logger(), "NavigateToPose goal succeeded");
+            break;
+        case rclcpp_action::ResultCode::CANCELED:
+            RCLCPP_WARN(this->get_logger(), "NavigateToPose goal canceled");
+            break;
+        case rclcpp_action::ResultCode::ABORTED:
+            RCLCPP_ERROR(this->get_logger(), "NavigateToPose goal aborted");
+            break;
+        default:
+            RCLCPP_ERROR(this->get_logger(), "NavigateToPose goal ended with unknown result code");
+            break;
+    }
+
+    sendNextGoal();
 }
