@@ -34,13 +34,11 @@ class DecisionMaking: public rclcpp::Node {
         
         geometry_msgs::msg::Pose currentPose_;
 
-        geometry_msgs::msg::PoseStamped currentGoalPose_; 
+        geometry_msgs::msg::PoseStamped currentGoalPose_;
 
         sensor_msgs::msg::PointCloud2::SharedPtr pointCloud_;
 
         std::mutex dataMutex_;
-
-        rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr goalsPublisher_;
 
         std::thread runThread;
         
@@ -65,12 +63,16 @@ class DecisionMaking: public rclcpp::Node {
 
         void findNextFire();
 
-        std::pair<float, float> findDenseCluster(const std::vector<std::pair<float, float>> points);
 
         bool outsideFireZones(float x, float y);
 
-        bool isCloseEnough(const geometry_msgs::msg::Pose& a,
-                           const geometry_msgs::msg::PoseStamped& b);
+        bool isCloseEnough(const geometry_msgs::msg::Pose a, const geometry_msgs::msg::PoseStamped b);
+
+        bool closeToDensePoint(float x, float y, float dense_x, float dense_y);
+
+        std::pair<float, float> findDenseCluster(const std::vector<std::pair<float, float>> points);
+
+        
 
         
 };
