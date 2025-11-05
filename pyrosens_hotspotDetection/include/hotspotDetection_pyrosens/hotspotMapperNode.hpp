@@ -36,9 +36,11 @@ private:
   std::string frame_id_ = "map";
   double origin_x_ = -50.0;    // meters
   double origin_y_ = -50.0;    // meters
-  double resolution_ = 0.25;   // meters/cell
-  int width_ = 400;            // cells
-  int height_ = 400;           // cells
+  double resolution_ = 0.01;   // meters/cell
+  int width_ = 5000;            // cells
+  int height_ = 5000;           // cells
+  float clear_threshold_ = 0.05f;    // when value falls below this, mark unseen
+  bool publish_unknown_as_unseen_ = true;  // publish -1 for never/cleared cells
 
   // Splat kernel
   double sigma_m_ = 0.01;      // meters
@@ -52,7 +54,8 @@ private:
   float add_weight_ = 1.0f;         // weight added per splat center
 
   // State grid (float accumulation)
-  std::vector<float> grid_; // size width_*height_
+  std::vector<float> grid_;          // width_*height_, heat values
+  std::vector<uint8_t> seen_;        // width_*height_, 0/1: has content?
 
   // ROS I/O
   rclcpp::Subscription<geometry_msgs::msg::PointStamped>::SharedPtr sub_pt_;
