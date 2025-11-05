@@ -24,9 +24,9 @@ public:
   void LoadConfig(const tinyxml2::XMLElement* _pluginElem) override;
 
   Q_INVOKABLE void startMission();
-  Q_INVOKABLE void pauseMission();
   Q_INVOKABLE void resumeMission();
   Q_INVOKABLE void abortMission();
+  Q_INVOKABLE void estopMission();
 
   QString missionStatus() const { return missionStatus_; }
   QString windText() const      { return windText_; }

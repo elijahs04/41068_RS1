@@ -10,6 +10,13 @@ mission_manager:
     # How long to wait (seconds) for the downstream Nav2 action server on each goal
     downstream_wait_timeout_sec: 15.0
 
+    # --- Home position used when aborting a mission ---
+    home_frame_id: "map"
+    home_x: 0.0
+    home_y: 0.0
+    home_z: 0.0
+    home_yaw_deg: 0.0
+
     # --- Topic-based goal intake (optional) ---
     # If your team ever wants to feed multiple goals at once (PoseArray or Path).
     # Leave false if your teammate uses NavigateToPose (action client).

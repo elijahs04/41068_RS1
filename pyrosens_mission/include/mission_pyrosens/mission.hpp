@@ -91,6 +91,8 @@ private:
   bool waitForActionServer_(const rclcpp::Duration& timeout);
   bool sendGoal_(const geometry_msgs::msg::PoseStamped& goal_pose);
   void cancelActiveGoalNoThrow_();
+  bool goHomeBlocking_();
+  geometry_msgs::msg::PoseStamped makeHomePose_() const;
 
   // ---------------- Status/Progress/Safety ----------------
   void publishStatus_(const std::optional<std::string>& extra = std::nullopt);
@@ -156,6 +158,11 @@ private:
   // Upstream action server name exposed to external clients (RViz, teammates)
   std::string upstream_nav_action_name_{"/mission/navigate_to_pose"};
   double downstream_wait_timeout_sec_{15.0};
+  std::string home_frame_id_{"map"};
+  double home_x_{0.0};
+  double home_y_{0.0};
+  double home_z_{0.0};
+  double home_yaw_deg_{0.0};
 
   // Optional tracking for server-side goal (not strictly required)
   std::mutex navsrv_mtx_;
