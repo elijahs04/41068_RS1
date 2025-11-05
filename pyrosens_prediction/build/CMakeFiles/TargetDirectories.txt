@@ -1,0 +1,11 @@
+/home/student/git/41068_RS1/pyrosens_prediction/build/CMakeFiles/uninstall.dir
+/home/student/git/41068_RS1/pyrosens_prediction/build/CMakeFiles/pyrosens_prediction_uninstall.dir
+/home/student/git/41068_RS1/pyrosens_prediction/build/CMakeFiles/pyrosens_prediction_nodes.dir
+/home/student/git/41068_RS1/pyrosens_prediction/build/CMakeFiles/prediction_main.dir
+/home/student/git/41068_RS1/pyrosens_prediction/build/CMakeFiles/test.dir
+/home/student/git/41068_RS1/pyrosens_prediction/build/CMakeFiles/edit_cache.dir
+/home/student/git/41068_RS1/pyrosens_prediction/build/CMakeFiles/rebuild_cache.dir
+/home/student/git/41068_RS1/pyrosens_prediction/build/CMakeFiles/list_install_components.dir
+/home/student/git/41068_RS1/pyrosens_prediction/build/CMakeFiles/install.dir
+/home/student/git/41068_RS1/pyrosens_prediction/build/CMakeFiles/install/local.dir
+/home/student/git/41068_RS1/pyrosens_prediction/build/CMakeFiles/install/strip.dir

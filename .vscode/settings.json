@@ -1,8 +1,12 @@
 {
-
-    "files.associations": {
-        "random": "cpp"
-    },
-    "cmake.ignoreCMakeListsMissing": true
-
+    "python.autoComplete.extraPaths": [
+        "/home/elijahs04/ros2_ws/install/turtlesim/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/elijahs04/ros2_ws/install/turtlesim/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
 }

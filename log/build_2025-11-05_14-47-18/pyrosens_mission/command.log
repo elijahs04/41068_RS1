@@ -1,0 +1,4 @@
+Invoking command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission -- -j16 -l16
+Invoked command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission -- -j16 -l16
+Invoking command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission
+Invoked command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission

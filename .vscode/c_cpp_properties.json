@@ -6,9 +6,12 @@
         "limitSymbolsToIncludedHeaders": false
       },
       "includePath": [
-        "/home/elijahs04/ros2_ws/src/41068_RS1/install/slam_toolbox/include/**",
+        "/home/elijahs04/ros2_ws/install/pyrosens_gui/include/**",
         "/home/elijahs04/ros2_ws/install/turtlesim/include/**",
         "/opt/ros/humble/include/**",
+        "/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_gui/include/**",
+        "/home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_es/pyrosens_world/include/**",
+        "include/**",
         "/usr/include/**"
       ],
       "name": "ros2",

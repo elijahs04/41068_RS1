@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-97ed09163b6058998d01.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "pyrosens_prediction",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "prediction_main::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-prediction_main-Debug-55ac65fa1383c42dba21.json",
+					"name" : "prediction_main",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pyrosens_prediction_nodes::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pyrosens_prediction_nodes-Debug-0d747587816f8fed8a62.json",
+					"name" : "pyrosens_prediction_nodes",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pyrosens_prediction_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pyrosens_prediction_uninstall-Debug-8ee14cc586220bb76848.json",
+					"name" : "pyrosens_prediction_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Debug-2dfb59511eefa91e59f0.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/student/git/41068_RS1/pyrosens_prediction/build",
+		"source" : "/home/student/git/41068_RS1/pyrosens_prediction"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}
