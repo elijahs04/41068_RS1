@@ -140,19 +140,15 @@ def generate_launch_description():
         parameters=[{"use_sim_time": LaunchConfiguration("use_sim_time")}],
     )
 
-    # --- Perception + simulation bundles (thermal / wind) ---
-    perception_bundle = Node(
-        package="pyrosens_mission",
-        executable="main_perception",
-        output="screen",
-        parameters=[{"use_sim_time": LaunchConfiguration("use_sim_time")}],
-    )
-
-    simulation_bundle = Node(
-        package="pyrosens_mission",
-        executable="main_sim",
-        output="screen",
-        parameters=[{"use_sim_time": LaunchConfiguration("use_sim_time")}],
+    sensors_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([
+            FindPackageShare("pyrosens_integrated_sensors"),
+            "launch",
+            "integrated_sensors.launch.py",
+        ])),
+        launch_arguments={
+            "use_sim_time": LaunchConfiguration("use_sim_time"),
+        }.items(),
     )
 
     return LaunchDescription([
@@ -167,6 +163,5 @@ def generate_launch_description():
         bridge_node,
         mission_node,
         cmd_bridge_node,
-        perception_bundle,
-        simulation_bundle,
+        sensors_launch,
     ])

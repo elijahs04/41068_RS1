@@ -55,6 +55,7 @@ ament_target_dependencies(${PROJECT_NAME}_lib
   tf2_geometry_msgs
   message_filters
   cv_bridge
+  std_msgs
   std_srvs
 )
 target_link_libraries(${PROJECT_NAME}_lib
@@ -103,6 +104,7 @@ ament_export_dependencies(
   tf2_geometry_msgs
   message_filters
   cv_bridge
+  std_msgs
   std_srvs
 )
 ament_export_libraries(${PROJECT_NAME}_lib)
