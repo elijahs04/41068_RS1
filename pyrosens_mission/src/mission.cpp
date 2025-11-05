@@ -448,24 +448,18 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
     std::lock_guard<std::mutex> lk(mtx_);
     mission_active = (state_ == MissionState::RUNNING || state_ == MissionState::PAUSED);
     if (mission_active) {
-      cancel_requested_ = true;
-      paused_ = false;
-      should_stop_worker = worker_running_.load();
-      reset_queue = true;
+      append_only = true;
+      should_stop_worker = false;
     } else if (state_ == MissionState::COMPLETED ||
                state_ == MissionState::ABORTED   ||
                state_ == MissionState::ESTOPPED) {
       reset_queue = true;
     }
-    append_only = !mission_active && !reset_queue;
+    append_only = append_only || (!mission_active && !reset_queue);
   }
 
-  if (mission_active) {
-    if (should_stop_worker) {
-      stopWorker_();
-    } else {
-      cancelActiveGoalNoThrow_();
-    }
+  if (mission_active && should_stop_worker) {
+    stopWorker_();
   }
 
   std::size_t queue_size = 0;
@@ -482,10 +476,17 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
     goal_statuses_.push_back(GoalStatus::PENDING);
     my_index = goals_.size() - 1;
     cancel_requested_ = false;
-    paused_ = false;
+    if (!mission_active) {
+      paused_ = false;
+      state_ = MissionState::IDLE;
+    }
     queue_size = goals_.size();
-    auto_start = (queue_size == 1);
-    state_ = auto_start ? MissionState::RUNNING : MissionState::IDLE;
+    auto_start = (!mission_active && queue_size == 1);
+    if (auto_start) {
+      state_ = MissionState::RUNNING;
+    } else if (mission_active) {
+      state_ = MissionState::RUNNING;
+    }
     updateGoalStatusesLocked_();
   }
   {
@@ -496,7 +497,7 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
   publishProgress_();
   if (auto_start) {
     publishStatus_();
-  } else {
+  } else if (!mission_active) {
     publishStatus_("awaiting start");
   }
   if (auto_start) {
@@ -765,48 +766,21 @@ void Mission::publishGoalList_()
     if (goals_.empty()) {
       msg.data = "(no goals loaded)";
     } else {
-      constexpr double kRadToDeg = 57.29577951308232;  // 180/pi
-      constexpr double kHalfPi   = 1.5707963267948966; // pi/2
       for (std::size_t i = 0; i < goals_.size(); ++i) {
         const auto & goal = goals_[i];
         const auto & pos = goal.pose.position;
-        const auto & q   = goal.pose.orientation;
-        const double sinr_cosp = 2.0 * (q.w * q.x + q.y * q.z);
-        const double cosr_cosp = 1.0 - 2.0 * (q.x * q.x + q.y * q.y);
-        const double roll = std::atan2(sinr_cosp, cosr_cosp);
-
-        const double sinp = 2.0 * (q.w * q.y - q.z * q.x);
-        double pitch = 0.0;
-        if (std::abs(sinp) >= 1.0) {
-          pitch = std::copysign(kHalfPi, sinp);
-        } else {
-          pitch = std::asin(sinp);
-        }
-
-        const double siny_cosp = 2.0 * (q.w * q.z + q.x * q.y);
-        const double cosy_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z);
-        const double yaw = std::atan2(siny_cosp, cosy_cosp);
-        const double roll_deg  = roll  * kRadToDeg;
-        const double pitch_deg = pitch * kRadToDeg;
-        const double yaw_deg   = yaw   * kRadToDeg;
-
-        const char* status_str =
-            (i < goal_statuses_.size()) ? goalStatusToString(goal_statuses_[i]) : "PENDING";
+        const GoalStatus status =
+            (i < goal_statuses_.size()) ? goal_statuses_[i] : GoalStatus::PENDING;
+        const char* display_status =
+            (status == GoalStatus::COMPLETED) ? "Achieved" :
+            (status == GoalStatus::ACTIVE)    ? "In Progress" : "Pending";
 
         if (i > 0) {
-          oss << "; ";
+          oss << "\n";
         }
-        oss << "Goal " << (i + 1) << " [" << status_str << "]: " << std::fixed
-            << "pos=(" << std::setprecision(2) << pos.x << ","
-            << std::setprecision(2) << pos.y << ","
-            << std::setprecision(2) << pos.z << ") "
-            << "rpy_deg=(" << std::setprecision(1) << roll_deg << ","
-            << std::setprecision(1) << pitch_deg << ","
-            << std::setprecision(1) << yaw_deg << ") "
-            << "quat=(" << std::setprecision(3) << q.x << ","
-            << std::setprecision(3) << q.y << ","
-            << std::setprecision(3) << q.z << ","
-            << std::setprecision(3) << q.w << ")";
+        oss << "Goal " << (i + 1) << " - " << display_status << ": "
+            << "(" << std::fixed << std::setprecision(2)
+            << pos.x << ", " << pos.y << ", " << pos.z << ")";
       }
       msg.data = oss.str();
     }
@@ -862,6 +836,9 @@ void Mission::safeDisarm_()
 void Mission::startWorker_()
 {
   if (worker_running_.exchange(true)) return;
+  if (worker_.joinable()) {
+    worker_.join();
+  }
   worker_ = std::thread([this](){ this->runLoop_(); });
 }
 
