@@ -1,0 +1,416 @@
+<?xml version="1.0"?>
+<sdf version='1.7'>
+  <world name='default'>
+    
+    <physics name='ode' type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <real_time_factor>1</real_time_factor>
+      <gravity>0 0 0</gravity>
+    
+    </physics>
+    <atmosphere type='adiabatic'>
+      <temperature>295.15</temperature>   <!-- 22C -->
+      <temperature_gradient>0.1</temperature_gradient>
+    </atmosphere>
+    
+    <magnetic_field>6e-06 2e-06 -4e-05</magnetic_field>
+    
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.8 1 1</background>
+      <shadows>1</shadows>
+    </scene>
+    
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>-73.8367 -47.6955 58.1835 0 0.616001 0.688</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+    
+    <light name='sun' type='directional'>
+      <cast_shadows>1</cast_shadows>
+      <pose>0 0 10 0 -0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+    
+    <light name='fill_light' type='point'>
+      <pose>2 2 3 0 -0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>25</range>
+        <constant>0.8</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <direction>0 0 -1</direction>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+    
+    <gravity>0 0 0</gravity>
+    
+    <audio>
+      <device>default</device>
+    </audio>
+    
+    <wind/>
+    
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    
+    <model name='test'>
+      <static>1</static>
+      <link name='testlink'>
+        <visual name='Plane'>
+          <geometry>
+            <mesh>
+              <uri>../sim_env_models/world_env_model/meshes/model.dae</uri>
+              <submesh>
+                <name>Plane</name>
+              </submesh>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>../sim_env_models/world_env_model/meshes/model.dae</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+          <max_contacts>10</max_contacts>
+          <collide_bitmask>1</collide_bitmask>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0 0 0 0 -0 0</pose>
+    </model>
+    
+    <state world_name='default'>
+      <sim_time>42 407000000</sim_time>
+      <real_time>42 657847779</real_time>
+      <wall_time>1756957148 628814946</wall_time>
+      <iterations>42407</iterations>
+      <model name='ground_plane'>
+        <pose>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='simple_box'>
+        <pose>1 5e-06 0.499995 -1e-05 0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>1 5e-06 0.499995 -1e-05 0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>-0.024172 0.070968 -9.7056 -0.141151 -0.048981 -0.000512</acceleration>
+          <wrench>-0.024172 0.070968 -9.7056 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='test'>
+        <pose>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='testlink'>
+          <pose>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='fill_light'>
+        <pose>2 2 3 0 -0 0</pose>
+      </light>
+      <light name='sun'>
+        <pose>0 0 10 0 -0 0</pose>
+      </light>
+    </state>
+
+<!-- ================== fire 1 ==================== -->
+    <model name="fire_pit" canonical_link="fire_link">
+      <static>true</static>
+      <pose>3 -5 0 0 0 0</pose>
+
+      <link name="fire_link">
+        <!-- Collision (center at z=0.5 for length=1.0) -->
+        <collision name="fire_collision">
+          <pose>0 0 0.5 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>1.05</radius>
+              <length>1.10</length>
+            </cylinder>
+          </geometry>
+        </collision>
+
+        <!-- Hot inner core -->
+        <visual name="fire_visual_core">
+          <pose>0 0 0.5 0 0 0</pose> <!-- length=1.0 => z=0.5 -->
+          <geometry>
+            <cylinder>
+              <radius>1.00</radius>
+              <length>1.0</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>1.0 0.5 0.0 1.0</ambient>
+            <diffuse>1.0 0.4 0.0 1.0</diffuse>
+            <specular>0.2 0.2 0.2 1.0</specular>
+            <emissive>1.0 0.6 0.1 1.0</emissive>
+          </material>
+          <plugin filename="libignition-gazebo-thermal-system.so"
+                  name="ignition::gazebo::systems::Thermal">
+            <temperature>499.0</temperature>
+          </plugin>
+        </visual>
+
+        <!-- Warm outer plume - Visual (due to thermal limitations) -->
+        <visual name="fire_visual_outer">
+          <pose>0 0 0.625 0 0 0</pose> <!-- length=1.25 => z=0.625 -->
+          <geometry>
+            <cylinder>
+              <radius>1.20</radius>
+              <length>1.25</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>1.0 0.3 0.0 0.5</ambient>
+            <diffuse>1.0 0.3 0.0 0.5</diffuse>
+            <emissive>1.0 0.3 0.0 0.5</emissive>
+          </material>
+          <plugin filename="libignition-gazebo-thermal-system.so"
+                  name="ignition::gazebo::systems::Thermal">
+            <temperature>499.0</temperature>
+          </plugin>
+        </visual>
+
+        <!-- Glow in RGB (scaled up) -->
+        <light name="fire_light" type="point">
+          <pose>0 0 1.0 0 0 0</pose>
+          <diffuse>1.0 0.6 0.2 1.0</diffuse>
+          <specular>0.2 0.2 0.2 1.0</specular>
+          <attenuation>
+            <range>20.0</range>      <!-- was 6.0 -->
+            <linear>0.4</linear>     <!-- soften falloff -->
+            <constant>0.1</constant>
+            <quadratic>0.05</quadratic>
+          </attenuation>
+          <cast_shadows>false</cast_shadows>
+        </light>
+      </link>
+    </model>
+
+<!-- ================== fire 2 ==================== -->
+    <model name="fire_pit2" canonical_link="fire_link">
+      <static>true</static>
+      <pose>-4 -2 0 0 0 0</pose>
+
+      <link name="fire_link2">
+        <!-- Collision (center at z=0.5 for length=1.0) -->
+        <collision name="fire_collision">
+          <pose>0 0 0.5 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>1.05</radius>
+              <length>1.10</length>
+            </cylinder>
+          </geometry>
+        </collision>
+
+        <!-- Hot inner core -->
+        <visual name="fire_visual_core">
+          <pose>0 0 0.5 0 0 0</pose> <!-- length=1.0 => z=0.5 -->
+          <geometry>
+            <cylinder>
+              <radius>1.00</radius>
+              <length>1.0</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>1.0 0.5 0.0 1.0</ambient>
+            <diffuse>1.0 0.4 0.0 1.0</diffuse>
+            <specular>0.2 0.2 0.2 1.0</specular>
+            <emissive>1.0 0.6 0.1 1.0</emissive>
+          </material>
+          <plugin filename="libignition-gazebo-thermal-system.so"
+                  name="ignition::gazebo::systems::Thermal">
+            <temperature>499.0</temperature>
+          </plugin>
+        </visual>
+
+        <!-- Warm outer plume - Visual (due to thermal limitations) -->
+        <visual name="fire_visual_outer">
+          <pose>0 0 0.625 0 0 0</pose> <!-- length=1.25 => z=0.625 -->
+          <geometry>
+            <cylinder>
+              <radius>1.20</radius>
+              <length>1.25</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>1.0 0.3 0.0 0.5</ambient>
+            <diffuse>1.0 0.3 0.0 0.5</diffuse>
+            <emissive>1.0 0.3 0.0 0.5</emissive>
+          </material>
+          <plugin filename="libignition-gazebo-thermal-system.so"
+                  name="ignition::gazebo::systems::Thermal">
+            <temperature>499.0</temperature>
+          </plugin>
+        </visual>
+
+        <!-- Glow in RGB (scaled up) -->
+        <light name="fire_light" type="point">
+          <pose>0 0 1.0 0 0 0</pose>
+          <diffuse>1.0 0.6 0.2 1.0</diffuse>
+          <specular>0.2 0.2 0.2 1.0</specular>
+          <attenuation>
+            <range>20.0</range>      <!-- was 6.0 -->
+            <linear>0.4</linear>     <!-- soften falloff -->
+            <constant>0.1</constant>
+            <quadratic>0.05</quadratic>
+          </attenuation>
+          <cast_shadows>false</cast_shadows>
+        </light>
+      </link>
+    </model>
+
+    <!-- Pine tree with temperature -->
+    <include>
+      <uri>
+        https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine%20tree
+      </uri>
+      <name>pine1_temp</name>
+      <pose>-13.0 -7.0 0 0 0 0</pose>
+      <plugin filename="libignition-gazebo-thermal-system.so"
+              name="ignition::gazebo::systems::Thermal">
+        <temperature>303.15</temperature>
+      </plugin>
+    </include>
+
+
+    <!-- Pine tree -->
+    <include>
+      <uri>
+        https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine%20tree
+      </uri>
+      <name>pine2_temp</name>
+      <pose>-8.0 -11.5 0 0 0 0</pose>
+      <plugin filename="libignition-gazebo-thermal-system.so"
+              name="ignition::gazebo::systems::Thermal">
+        <temperature>303.15</temperature>
+      </plugin>
+    </include>
+
+    <!-- Pine tree with temperature -->
+    <include>
+      <uri>
+        https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine%20tree
+      </uri>
+      <name>pine3_temp</name>
+      <pose>-6.0 -7.5 0 0 0 0</pose>
+      <plugin filename="libignition-gazebo-thermal-system.so"
+              name="ignition::gazebo::systems::Thermal">
+        <temperature>303.15</temperature>
+      </plugin>
+    </include>
+
+
+    <!-- Pine tree -->
+    <include>
+      <uri>
+        https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine%20tree
+      </uri>
+      <name>pine4_temp</name>
+      <pose>0.0 -8.5 0 0 0 0</pose>
+      <plugin filename="libignition-gazebo-thermal-system.so"
+              name="ignition::gazebo::systems::Thermal">
+        <temperature>303.15</temperature>
+      </plugin>
+    </include>
+
+    <!-- Pine tree with temperature -->
+    <include>
+      <uri>
+        https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine%20tree
+      </uri>
+      <name>pine5_temp</name>
+      <pose> 4.0 -8.0 0 0 0 0</pose>
+      <plugin filename="libignition-gazebo-thermal-system.so"
+              name="ignition::gazebo::systems::Thermal">
+        <temperature>303.15</temperature>
+      </plugin>
+    </include>
+
+
+    <!-- Pine tree -->
+    <include>
+      <uri>
+        https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine%20tree
+      </uri>
+      <name>pine6_temp</name>
+      <pose> 7.0 -12.5 0 0 0 0</pose>
+      <plugin filename="libignition-gazebo-thermal-system.so"
+              name="ignition::gazebo::systems::Thermal">
+        <temperature>303.15</temperature>
+      </plugin>
+    </include>
+
+    <!-- Pine tree -->
+    <include>
+      <uri>
+        https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine%20tree
+      </uri>
+      <name>pine7_temp</name>
+      <pose> 11.0 -7.5 0 0 0 0</pose>
+      <plugin filename="libignition-gazebo-thermal-system.so"
+              name="ignition::gazebo::systems::Thermal">
+        <temperature>303.15</temperature>
+      </plugin>
+    </include>
+
+
+  
+  </world>
+</sdf>

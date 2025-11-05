@@ -1,2 +1,0 @@
-/usr/bin/ar qc libthermalSim_lib.a CMakeFiles/thermalSim_lib.dir/src/thermalSimNode.cpp.o
-/usr/bin/ranlib libthermalSim_lib.a

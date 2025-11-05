@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>pyrosens_ignition_bringup</name>
+  <version>1.0.3</version>
+  <description>Parrot Ignition Simulator bringup</description>
+  <maintainer email="connor.lindsell@studnent.uts.edu.au">Connor</maintainer>
+  <license>Apache 2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- ROS IGN -->
+  <depend>ros_ign_interfaces</depend>
+  <depend>ros_ign_gazebo</depend>
+  <depend>ros_ign_bridge</depend>
+  <depend>octomap_server</depend>
+  <depend>octomap_msgs</depend>
+  <depend>pcl_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <build_depend>Qt5Core</build_depend>
+  <build_depend>Qt5Widgets</build_depend>
+  <build_depend>Qt5Qml</build_depend>
+  <build_depend>Qt5Quick</build_depend>
+  <build_depend>ignition-gui6</build_depend>
+  <exec_depend>ignition-gui6</exec_depend>
+
+  <!-- Other -->
+  <depend>robot_localization</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+    <gazebo_ros gazebo_model_path="${prefix}/models"/>
+    <gazebo_ros gazebo_media_path="${prefix}/worlds"/>
+  </export>
+</package>

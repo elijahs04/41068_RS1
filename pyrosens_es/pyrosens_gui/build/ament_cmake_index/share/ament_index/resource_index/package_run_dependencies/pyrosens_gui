@@ -1,1 +1,0 @@
-rclcpp;std_msgs;qtbase5-dev;qml-module-qtquick-controls2;qml-module-qtquick-layouts;gazebo;ignition-gui6;ament_lint_auto;ament_lint_common

@@ -1,3 +1,0 @@
-source;share/thermal_pyrosens/environment/ament_prefix_path.sh
-source;share/thermal_pyrosens/environment/library_path.sh
-source;share/thermal_pyrosens/environment/path.sh

@@ -16,7 +16,7 @@ Goals::Goals() : rclcpp::Node("goals_execution") {
 
     // Subscribe to odometry
     odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
-        "/odom", 10, std::bind(&Goals::odomCallback, this, std::placeholders::_1));
+        "/odometry", 10, std::bind(&Goals::odomCallback, this, std::placeholders::_1));
 
 
     // Wait for the action server
