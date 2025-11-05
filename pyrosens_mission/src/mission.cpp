@@ -8,6 +8,11 @@
 #include <sstream>
 #include <string>
 
+// Mission node acts as a NavigateToPose proxy: it ingests waypoints from
+// topics/services/action clients, keeps a local queue with state tracking,
+// and forwards one goal at a time to the downstream Nav2 action server
+// exposed under `downstream_nav_action_name_`.
+
 using namespace std::chrono_literals;
 using mission_pyrosens::MissionState;
 
@@ -37,8 +42,6 @@ Mission::Mission() : rclcpp::Node("mission_manager")
       "downstream_nav_action_name", "/nav2/navigate_to_pose");
   upstream_nav_action_name_ = this->declare_parameter<std::string>(
       "upstream_nav_action_name", "navigate_to_pose");
-  simple_goal_topic_ = this->declare_parameter<std::string>(
-      "simple_goal_topic", "/goal_pose");
 
   // ---- Subscriptions ----
   {
@@ -75,14 +78,6 @@ Mission::Mission() : rclcpp::Node("mission_manager")
     RCLCPP_INFO(get_logger(),
       "Pose stream intake enabled on %s (use /mission/commit_goals to load).",
       pose_stream_topic_.c_str());
-  }
-
-  {
-    rclcpp::SubscriptionOptions sub_opts;
-    sub_opts.callback_group = cbg_topics_;
-    sub_simple_goal_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
-        simple_goal_topic_, 10,
-        std::bind(&Mission::onSimpleGoal_, this, std::placeholders::_1), sub_opts);
   }
 
   // ---- Services (Start/Stop/Resume/Abort/E-Stop) ----
@@ -166,7 +161,7 @@ void Mission::onGoals_(const geometry_msgs::msg::PoseArray::SharedPtr msg)
       return;
     }
     goals_.clear();
-    goal_statuses_.clear();
+     goal_statuses_.clear();
     goals_.reserve(msg->poses.size());
     goal_statuses_.reserve(msg->poses.size());
     for (const auto& p : msg->poses) {
@@ -219,67 +214,6 @@ void Mission::onPoseStream_(const geometry_msgs::msg::PoseStamped::SharedPtr ps)
 {
   std::lock_guard<std::mutex> lk(mtx_);
   stream_buffer_.push_back(*ps);
-}
-
-void Mission::onSimpleGoal_(const geometry_msgs::msg::PoseStamped::SharedPtr msg)
-{
-  if (!msg) {
-    return;
-  }
-
-  {
-    std::lock_guard<std::mutex> lk(mtx_);
-    if (state_ == MissionState::ESTOPPED) {
-      RCLCPP_WARN(get_logger(), "Ignoring simple goal from '%s' while mission is ESTOPPED.",
-                  simple_goal_topic_.c_str());
-      return;
-    }
-  }
-
-  bool need_stop_worker = false;
-  {
-    std::lock_guard<std::mutex> lk(mtx_);
-    if (state_ == MissionState::RUNNING || state_ == MissionState::PAUSED) {
-      cancel_requested_ = true;
-      paused_ = false;
-      need_stop_worker = worker_running_.load();
-    } else {
-      cancel_requested_ = false;
-      paused_ = false;
-    }
-  }
-
-  if (need_stop_worker) {
-    stopWorker_();
-  } else {
-    cancelActiveGoalNoThrow_();
-  }
-
-  {
-    std::lock_guard<std::mutex> g(navsrv_mtx_);
-    navsrv_goal_index_.clear();
-    navsrv_active_.reset();
-  }
-
-  {
-    std::lock_guard<std::mutex> lk(mtx_);
-    goals_.clear();
-    goal_statuses_.clear();
-    goals_.push_back(*msg);
-    goal_statuses_.push_back(GoalStatus::PENDING);
-    current_index_ = 0;
-    cancel_requested_ = false;
-    paused_ = false;
-    state_ = MissionState::RUNNING;
-    updateGoalStatusesLocked_();
-  }
-
-  publishGoalList_();
-  publishProgress_();
-  publishCurrentGoal_();
-  publishStatus_();
-  RCLCPP_INFO(get_logger(), "Loaded single goal from '%s'; auto-starting mission queue.", simple_goal_topic_.c_str());
-  startWorker_();
 }
 
 void Mission::srvCommitGoals_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
@@ -498,7 +432,7 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
 
   std::size_t queue_size = 0;
   std::size_t my_index = 0;
-  bool auto_start = true;
+  bool auto_start = false;
   {
     std::lock_guard<std::mutex> lk(mtx_);
     if (reset_queue) {
@@ -522,7 +456,6 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
   }
   publishGoalList_();
   publishProgress_();
-  publishCurrentGoal_();
   if (auto_start) {
     publishStatus_();
   } else {
@@ -750,7 +683,6 @@ void Mission::publishGoalList_()
   std::ostringstream oss;
   {
     std::lock_guard<std::mutex> lk(mtx_);
-    updateGoalStatusesLocked_();
     if (goals_.empty()) {
       msg.data = "(no goals loaded)";
     } else {
