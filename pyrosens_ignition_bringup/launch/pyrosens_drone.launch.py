@@ -87,9 +87,9 @@ def generate_launch_description():
     # Start Gazebo to simulate the robot in the chosen world
     world_launch_arg = DeclareLaunchArgument(
         'world',
-        default_value='test_world_resize',
+        default_value='test_world',
         description='Which world to load',
-        choices=['simple_trees', 'large_demo', 'test_world_resize', 'test_world']
+        choices=['simple_trees', 'large_demo', 'test_world_resize', 'test_world', 'multi_fire', 'multi_fire_dec_mak_demo']
     )
     ld.add_action(world_launch_arg)
     gui_config_flag = f' --gui-config {gui_config_path}'
@@ -148,6 +148,16 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('nav2'))
     )
     ld.add_action(nav2)
+
+    sensors = IncludeLaunchDescription(
+        PathJoinSubstitution([FindPackageShare('pyrosens_integrated_sensors'),
+                              'launch',
+                              'integrated_sensors.launch.py']),
+        launch_arguments={
+            'use_sim_time': use_sim_time
+        }.items()
+    )
+    ld.add_action(sensors)
 
     # Mission management stack (proxy + command bridge)
     mission_params = PathJoinSubstitution(

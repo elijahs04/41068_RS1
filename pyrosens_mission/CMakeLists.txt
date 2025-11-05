@@ -30,10 +30,7 @@ include_directories(
 )
 
 # Pull in component cmake files
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/thermal.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/wind.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/movement.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/integration.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/mission.cmake)
 
 # Shared data
