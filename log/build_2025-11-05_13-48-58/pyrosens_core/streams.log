@@ -1,0 +1,78 @@
+[0.008s] Invoking command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_core': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_core -DCMAKE_INSTALL_PREFIX=/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core
+[0.050s] -- The C compiler identification is GNU 11.4.0
+[0.084s] -- The CXX compiler identification is GNU 11.4.0
+[0.088s] -- Detecting C compiler ABI info
+[0.138s] -- Detecting C compiler ABI info - done
+[0.142s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.142s] -- Detecting C compile features
+[0.143s] -- Detecting C compile features - done
+[0.145s] -- Detecting CXX compiler ABI info
+[0.202s] -- Detecting CXX compiler ABI info - done
+[0.207s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.207s] -- Detecting CXX compile features
+[0.207s] -- Detecting CXX compile features - done
+[0.210s] -- Found ament_cmake: 1.3.12 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.312s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[0.385s] -- Found rclcpp: 16.0.15 (/opt/ros/humble/share/rclcpp/cmake)
+[0.430s] -- Found rosidl_generator_c: 3.1.7 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.435s] -- Found rosidl_adapter: 3.1.7 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.442s] -- Found rosidl_generator_cpp: 3.1.7 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.452s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.465s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.501s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.504s] -- Found rmw_fastrtps_cpp: 6.2.9 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[0.568s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[0.588s] -- Found FastRTPS: /opt/ros/humble/include  
+[0.617s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.625s] -- Looking for pthread.h
+[0.681s] -- Looking for pthread.h - found
+[0.681s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[0.736s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[0.736s] -- Found Threads: TRUE  
+[0.772s] -- Found rclcpp_components: 16.0.15 (/opt/ros/humble/share/rclcpp_components/cmake)
+[0.792s] -- Found sensor_msgs: 4.9.0 (/opt/ros/humble/share/sensor_msgs/cmake)
+[0.813s] -- Found tf2: 0.25.16 (/opt/ros/humble/share/tf2/cmake)
+[0.817s] -- Found tf2_ros: 0.25.16 (/opt/ros/humble/share/tf2_ros/cmake)
+[0.870s] -- Found ament_lint_auto: 0.12.14 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[0.924s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[0.924s] -- Configured cppcheck include dirs: 
+[0.924s] -- Configured cppcheck exclude dirs and/or files: 
+[0.925s] -- Added test 'lint_cmake' to check CMake code style
+[0.926s] -- Added test 'uncrustify' to check C / C++ code style
+[0.926s] -- Configured uncrustify additional arguments: 
+[0.926s] -- Added test 'xmllint' to check XML markup files
+[0.927s] -- Configuring done
+[0.936s] -- Generating done
+[0.939s] -- Build files have been written to: /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_core
+[30.030s] Invoked command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_core' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_core -DCMAKE_INSTALL_PREFIX=/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core
+[30.033s] Invoking command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_core': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_core -- -j16 -l16
+[30.071s] [ 50%] Building CXX object CMakeFiles/my_component.dir/src/components/my_component.cpp.o
+[30.071s] [ 50%] Building CXX object CMakeFiles/my_node.dir/src/nodes/my_node.cpp.o
+[31.703s] [ 75%] Linking CXX executable my_node
+[31.778s] [100%] Linking CXX shared library libmy_component.so
+[31.782s] [100%] Built target my_node
+[31.851s] [100%] Built target my_component
+[31.859s] Invoked command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_core' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_core -- -j16 -l16
+[31.865s] Invoking command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_core': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_core
+[31.869s] -- Install configuration: ""
+[31.869s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/lib/libmy_component.so
+[31.870s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/lib/libmy_component.so" to ""
+[31.870s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/lib/pyrosens_core/my_node
+[31.870s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/lib/pyrosens_core/my_node" to ""
+[31.870s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/ament_index/resource_index/package_run_dependencies/pyrosens_core
+[31.870s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/ament_index/resource_index/parent_prefix_path/pyrosens_core
+[31.870s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/pyrosens_core/environment/ament_prefix_path.sh
+[31.870s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/pyrosens_core/environment/ament_prefix_path.dsv
+[31.870s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/pyrosens_core/environment/path.sh
+[31.870s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/pyrosens_core/environment/path.dsv
+[31.870s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/pyrosens_core/local_setup.bash
+[31.870s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/pyrosens_core/local_setup.sh
+[31.871s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/pyrosens_core/local_setup.zsh
+[31.871s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/pyrosens_core/local_setup.dsv
+[31.871s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/pyrosens_core/package.dsv
+[31.871s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/ament_index/resource_index/packages/pyrosens_core
+[31.871s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/ament_index/resource_index/rclcpp_components/pyrosens_core
+[31.871s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/pyrosens_core/cmake/pyrosens_coreConfig.cmake
+[31.871s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/pyrosens_core/cmake/pyrosens_coreConfig-version.cmake
+[31.871s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_core/share/pyrosens_core/package.xml
+[31.872s] Invoked command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_core' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_core

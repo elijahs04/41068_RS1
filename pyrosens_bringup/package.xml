@@ -14,6 +14,12 @@
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>pyrosens_core</exec_depend>
+  <exec_depend>pyrosens_mission</exec_depend>
+  <exec_depend>pyrosens_world</exec_depend>
+  <exec_depend>pyrosens_gui</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>ros_ign_bridge</exec_depend>
+  <exec_depend>41068_ignition_bringup</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
