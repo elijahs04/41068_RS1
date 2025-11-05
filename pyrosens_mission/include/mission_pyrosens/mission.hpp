@@ -35,6 +35,12 @@ enum class MissionState {
   ESTOPPED
 };
 
+enum class GoalStatus {
+  PENDING,
+  ACTIVE,
+  COMPLETED
+};
+
 class Mission : public rclcpp::Node
 {
 public:
@@ -55,6 +61,7 @@ private:
   void onGoals_(const geometry_msgs::msg::PoseArray::SharedPtr msg);
   void onPath_(const nav_msgs::msg::Path::SharedPtr msg);
   void onPoseStream_(const geometry_msgs::msg::PoseStamped::SharedPtr ps);
+  void onSimpleGoal_(const geometry_msgs::msg::PoseStamped::SharedPtr ps);
 
   // ---------------- Services ----------------
   void srvStart_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
@@ -91,6 +98,8 @@ private:
   void publishCurrentGoal_();
   void publishGoalList_();
   void safeDisarm_();
+  void updateGoalStatusesLocked_();
+  static const char* goalStatusToString(GoalStatus status);
 
 private:
   // Mission data
@@ -99,6 +108,7 @@ private:
 
   // Simple FIFO queue of waypoints (PoseStamped)
   std::vector<geometry_msgs::msg::PoseStamped> goals_;
+  std::vector<GoalStatus> goal_statuses_;
   std::size_t current_index_{0};
 
   // Stream buffer for PoseStamped intake
@@ -119,6 +129,7 @@ private:
   rclcpp::Subscription<geometry_msgs::msg::PoseArray>::SharedPtr sub_goals_;
   rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr sub_path_;
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr sub_stream_;
+  rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr sub_simple_goal_;
 
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr srv_start_;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr srv_stop_;
@@ -138,6 +149,7 @@ private:
   std::string path_topic_{"/goals/path"};
   bool allow_pose_stream_{false};
   std::string pose_stream_topic_{"/goals/pose_stream"};
+  std::string simple_goal_topic_{"/goal_pose"};
 
   // Downstream Nav2 NavigateToPose action name (client forwards to this)
   std::string downstream_nav_action_name_{"/nav2/navigate_to_pose"};

@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <cmath>
+#include <algorithm>
 #include <future>
 #include <iomanip>
 #include <sstream>
@@ -36,6 +37,8 @@ Mission::Mission() : rclcpp::Node("mission_manager")
       "downstream_nav_action_name", "/nav2/navigate_to_pose");
   upstream_nav_action_name_ = this->declare_parameter<std::string>(
       "upstream_nav_action_name", "navigate_to_pose");
+  simple_goal_topic_ = this->declare_parameter<std::string>(
+      "simple_goal_topic", "/goal_pose");
 
   // ---- Subscriptions ----
   {
@@ -72,6 +75,14 @@ Mission::Mission() : rclcpp::Node("mission_manager")
     RCLCPP_INFO(get_logger(),
       "Pose stream intake enabled on %s (use /mission/commit_goals to load).",
       pose_stream_topic_.c_str());
+  }
+
+  {
+    rclcpp::SubscriptionOptions sub_opts;
+    sub_opts.callback_group = cbg_topics_;
+    sub_simple_goal_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
+        simple_goal_topic_, 10,
+        std::bind(&Mission::onSimpleGoal_, this, std::placeholders::_1), sub_opts);
   }
 
   // ---- Services (Start/Stop/Resume/Abort/E-Stop) ----
@@ -155,15 +166,19 @@ void Mission::onGoals_(const geometry_msgs::msg::PoseArray::SharedPtr msg)
       return;
     }
     goals_.clear();
+    goal_statuses_.clear();
     goals_.reserve(msg->poses.size());
+    goal_statuses_.reserve(msg->poses.size());
     for (const auto& p : msg->poses) {
       geometry_msgs::msg::PoseStamped ps;
       ps.header = msg->header;
       ps.pose   = p;
       goals_.push_back(ps);
+      goal_statuses_.push_back(GoalStatus::PENDING);
     }
     current_index_ = 0;
     state_ = MissionState::IDLE;
+    updateGoalStatusesLocked_();
     loaded = goals_.size();
   }
   RCLCPP_INFO(get_logger(), "Loaded %zu goals from PoseArray.", loaded);
@@ -182,12 +197,16 @@ void Mission::onPath_(const nav_msgs::msg::Path::SharedPtr msg)
       return;
     }
     goals_.clear();
+    goal_statuses_.clear();
     goals_.reserve(msg->poses.size());
+    goal_statuses_.reserve(msg->poses.size());
     for (const auto& ps : msg->poses) {
       goals_.push_back(ps);
+      goal_statuses_.push_back(GoalStatus::PENDING);
     }
     current_index_ = 0;
     state_ = MissionState::IDLE;
+    updateGoalStatusesLocked_();
     loaded = goals_.size();
   }
   RCLCPP_INFO(get_logger(), "Loaded %zu goals from nav_msgs/Path.", loaded);
@@ -200,6 +219,67 @@ void Mission::onPoseStream_(const geometry_msgs::msg::PoseStamped::SharedPtr ps)
 {
   std::lock_guard<std::mutex> lk(mtx_);
   stream_buffer_.push_back(*ps);
+}
+
+void Mission::onSimpleGoal_(const geometry_msgs::msg::PoseStamped::SharedPtr msg)
+{
+  if (!msg) {
+    return;
+  }
+
+  {
+    std::lock_guard<std::mutex> lk(mtx_);
+    if (state_ == MissionState::ESTOPPED) {
+      RCLCPP_WARN(get_logger(), "Ignoring simple goal from '%s' while mission is ESTOPPED.",
+                  simple_goal_topic_.c_str());
+      return;
+    }
+  }
+
+  bool need_stop_worker = false;
+  {
+    std::lock_guard<std::mutex> lk(mtx_);
+    if (state_ == MissionState::RUNNING || state_ == MissionState::PAUSED) {
+      cancel_requested_ = true;
+      paused_ = false;
+      need_stop_worker = worker_running_.load();
+    } else {
+      cancel_requested_ = false;
+      paused_ = false;
+    }
+  }
+
+  if (need_stop_worker) {
+    stopWorker_();
+  } else {
+    cancelActiveGoalNoThrow_();
+  }
+
+  {
+    std::lock_guard<std::mutex> g(navsrv_mtx_);
+    navsrv_goal_index_.clear();
+    navsrv_active_.reset();
+  }
+
+  {
+    std::lock_guard<std::mutex> lk(mtx_);
+    goals_.clear();
+    goal_statuses_.clear();
+    goals_.push_back(*msg);
+    goal_statuses_.push_back(GoalStatus::PENDING);
+    current_index_ = 0;
+    cancel_requested_ = false;
+    paused_ = false;
+    state_ = MissionState::RUNNING;
+    updateGoalStatusesLocked_();
+  }
+
+  publishGoalList_();
+  publishProgress_();
+  publishCurrentGoal_();
+  publishStatus_();
+  RCLCPP_INFO(get_logger(), "Loaded single goal from '%s'; auto-starting mission queue.", simple_goal_topic_.c_str());
+  startWorker_();
 }
 
 void Mission::srvCommitGoals_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
@@ -215,10 +295,12 @@ void Mission::srvCommitGoals_(const std::shared_ptr<std_srvs::srv::Trigger::Requ
       res->success = false; res->message = "No poses buffered from stream."; return;
     }
     goals_ = stream_buffer_;
+    goal_statuses_.assign(goals_.size(), GoalStatus::PENDING);
     committed = goals_.size();
     stream_buffer_.clear();
     current_index_ = 0;
     state_ = MissionState::IDLE;
+    updateGoalStatusesLocked_();
   }
   publishGoalList_();
   publishStatus_();
@@ -242,11 +324,13 @@ void Mission::srvStart_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
     cancel_requested_ = false;
     paused_ = false;
     state_ = MissionState::RUNNING;
+    updateGoalStatusesLocked_();
   }
 
   startWorker_();
   res->success = true; res->message = "Mission started.";
   publishStatus_();
+  publishGoalList_();
 }
 
 void Mission::srvStop_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
@@ -257,10 +341,12 @@ void Mission::srvStop_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
     if (state_ != MissionState::RUNNING) { res->success=false; res->message="Not RUNNING."; return; }
     paused_ = true;
     state_  = MissionState::PAUSED;
+    updateGoalStatusesLocked_();
   }
   cancelActiveGoalNoThrow_();
   res->success = true; res->message = "Mission paused.";
   publishStatus_();
+  publishGoalList_();
 }
 
 void Mission::srvResume_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
@@ -271,9 +357,11 @@ void Mission::srvResume_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
     if (state_ != MissionState::PAUSED) { res->success=false; res->message="Not PAUSED."; return; }
     paused_ = false;
     state_  = MissionState::RUNNING;
+    updateGoalStatusesLocked_();
   }
   res->success = true; res->message = "Mission resumed.";
   publishStatus_();
+  publishGoalList_();
 }
 
 void Mission::srvAbort_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
@@ -287,10 +375,12 @@ void Mission::srvAbort_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
     }
     cancel_requested_ = true;
     state_ = MissionState::ABORTED;
+    updateGoalStatusesLocked_();
   }
   cancelActiveGoalNoThrow_();
   res->success = true; res->message = "Mission aborted (cannot resume).";
   publishStatus_();
+  publishGoalList_();
 }
 
 void Mission::srvEStop_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
@@ -301,11 +391,13 @@ void Mission::srvEStop_(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
     cancel_requested_ = true;
     paused_ = false;
     state_ = MissionState::ESTOPPED;
+    updateGoalStatusesLocked_();
   }
   cancelActiveGoalNoThrow_();
   safeDisarm_();
   res->success = true; res->message = "E-Stop asserted.";
   publishStatus_();
+  publishGoalList_();
 }
 
 // ---------------- NavigateToPose SERVER (proxy) ----------------
@@ -406,18 +498,23 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
 
   std::size_t queue_size = 0;
   std::size_t my_index = 0;
+  bool auto_start = true;
   {
     std::lock_guard<std::mutex> lk(mtx_);
     if (reset_queue) {
       goals_.clear();
+      goal_statuses_.clear();
       current_index_ = 0;
     }
     goals_.push_back(goal->pose);
+    goal_statuses_.push_back(GoalStatus::PENDING);
     my_index = goals_.size() - 1;
     cancel_requested_ = false;
     paused_ = false;
-    state_ = MissionState::IDLE;
     queue_size = goals_.size();
+    auto_start = (queue_size == 1);
+    state_ = auto_start ? MissionState::RUNNING : MissionState::IDLE;
+    updateGoalStatusesLocked_();
   }
   {
     std::lock_guard<std::mutex> g(navsrv_mtx_);
@@ -425,7 +522,15 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
   }
   publishGoalList_();
   publishProgress_();
-  publishStatus_("awaiting start");
+  publishCurrentGoal_();
+  if (auto_start) {
+    publishStatus_();
+  } else {
+    publishStatus_("awaiting start");
+  }
+  if (auto_start) {
+    startWorker_();
+  }
   if (append_only) {
     RCLCPP_INFO(get_logger(), "[Proxy] Appended goal. Queue size: %zu", queue_size);
   } else if (mission_active) {
@@ -433,8 +538,12 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
   } else {
     RCLCPP_INFO(get_logger(), "[Proxy] Loaded goal. Queue size: %zu", queue_size);
   }
-  RCLCPP_INFO(get_logger(),
-    "[Proxy] Goal enqueued and waiting. Use Mission Start to begin navigation.");
+  if (auto_start) {
+    RCLCPP_INFO(get_logger(), "[Proxy] Auto-starting mission for single goal from upstream client.");
+  } else {
+    RCLCPP_INFO(get_logger(),
+      "[Proxy] Goal enqueued and waiting. Use Mission Start to begin navigation.");
+  }
 
   // 3) Keep server goal active until our enqueued index is passed by the worker
   rclcpp::Rate rate(10.0);
@@ -589,6 +698,48 @@ void Mission::publishCurrentGoal_()
   }
 }
 
+const char* Mission::goalStatusToString(GoalStatus status)
+{
+  switch (status)
+  {
+    case GoalStatus::PENDING:   return "PENDING";
+    case GoalStatus::ACTIVE:    return "ACTIVE";
+    case GoalStatus::COMPLETED: return "COMPLETED";
+  }
+  return "UNKNOWN";
+}
+
+void Mission::updateGoalStatusesLocked_()
+{
+  if (goal_statuses_.size() != goals_.size()) {
+    goal_statuses_.assign(goals_.size(), GoalStatus::PENDING);
+  }
+
+  if (goals_.empty()) {
+    goal_statuses_.clear();
+    return;
+  }
+
+  if (current_index_ >= goals_.size()) {
+    std::fill(goal_statuses_.begin(), goal_statuses_.end(), GoalStatus::COMPLETED);
+    return;
+  }
+
+  for (std::size_t i = 0; i < goal_statuses_.size(); ++i) {
+    if (i < current_index_) {
+      goal_statuses_[i] = GoalStatus::COMPLETED;
+    } else if (i == current_index_) {
+      if (state_ == MissionState::RUNNING || state_ == MissionState::PAUSED) {
+        goal_statuses_[i] = GoalStatus::ACTIVE;
+      } else {
+        goal_statuses_[i] = GoalStatus::PENDING;
+      }
+    } else {
+      goal_statuses_[i] = GoalStatus::PENDING;
+    }
+  }
+}
+
 void Mission::publishGoalList_()
 {
   if (!pub_goal_list_) {
@@ -599,26 +750,52 @@ void Mission::publishGoalList_()
   std::ostringstream oss;
   {
     std::lock_guard<std::mutex> lk(mtx_);
+    updateGoalStatusesLocked_();
     if (goals_.empty()) {
       msg.data = "(no goals loaded)";
     } else {
       constexpr double kRadToDeg = 57.29577951308232;  // 180/pi
+      constexpr double kHalfPi   = 1.5707963267948966; // pi/2
       for (std::size_t i = 0; i < goals_.size(); ++i) {
         const auto & goal = goals_[i];
         const auto & pos = goal.pose.position;
         const auto & q   = goal.pose.orientation;
+        const double sinr_cosp = 2.0 * (q.w * q.x + q.y * q.z);
+        const double cosr_cosp = 1.0 - 2.0 * (q.x * q.x + q.y * q.y);
+        const double roll = std::atan2(sinr_cosp, cosr_cosp);
+
+        const double sinp = 2.0 * (q.w * q.y - q.z * q.x);
+        double pitch = 0.0;
+        if (std::abs(sinp) >= 1.0) {
+          pitch = std::copysign(kHalfPi, sinp);
+        } else {
+          pitch = std::asin(sinp);
+        }
+
         const double siny_cosp = 2.0 * (q.w * q.z + q.x * q.y);
         const double cosy_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z);
         const double yaw = std::atan2(siny_cosp, cosy_cosp);
-        const double yaw_deg = yaw * kRadToDeg;
+        const double roll_deg  = roll  * kRadToDeg;
+        const double pitch_deg = pitch * kRadToDeg;
+        const double yaw_deg   = yaw   * kRadToDeg;
+
+        const char* status_str =
+            (i < goal_statuses_.size()) ? goalStatusToString(goal_statuses_[i]) : "PENDING";
 
         if (i > 0) {
           oss << "; ";
         }
-        oss << "Goal " << (i + 1) << ": " << std::fixed
-            << "x=" << std::setprecision(2) << pos.x
-            << " y=" << std::setprecision(2) << pos.y
-            << " yaw_deg=" << std::setprecision(1) << yaw_deg;
+        oss << "Goal " << (i + 1) << " [" << status_str << "]: " << std::fixed
+            << "pos=(" << std::setprecision(2) << pos.x << ","
+            << std::setprecision(2) << pos.y << ","
+            << std::setprecision(2) << pos.z << ") "
+            << "rpy_deg=(" << std::setprecision(1) << roll_deg << ","
+            << std::setprecision(1) << pitch_deg << ","
+            << std::setprecision(1) << yaw_deg << ") "
+            << "quat=(" << std::setprecision(3) << q.x << ","
+            << std::setprecision(3) << q.y << ","
+            << std::setprecision(3) << q.z << ","
+            << std::setprecision(3) << q.w << ")";
       }
       msg.data = oss.str();
     }
@@ -643,18 +820,22 @@ void Mission::publishProgress_()
 void Mission::publishStatus_(const std::optional<std::string>& extra)
 {
   std_msgs::msg::String out;
+  std::optional<std::string> extra_copy;
   {
     std::lock_guard<std::mutex> lk(mtx_);
-    std::string state_str =
+    const std::string state_str =
       (state_==MissionState::IDLE     ? "IDLE" :
        state_==MissionState::RUNNING  ? "RUNNING" :
        state_==MissionState::PAUSED   ? "PAUSED" :
        state_==MissionState::COMPLETED? "COMPLETED" :
        state_==MissionState::ABORTED  ? "ABORTED" : "ESTOPPED");
-    out.data = "state=" + state_str +
-               " idx=" + std::to_string(current_index_) +
-               " total=" + std::to_string(goals_.size());
-    if (extra) out.data += " extra=" + *extra;
+    out.data = state_str;
+    if (extra && !extra->empty()) {
+      extra_copy = *extra;
+    }
+  }
+  if (extra_copy) {
+    RCLCPP_INFO(get_logger(), "Mission status detail: %s", extra_copy->c_str());
   }
   pub_status_->publish(out);
 }
@@ -699,20 +880,36 @@ void Mission::runLoop_()
     if (s == MissionState::PAUSED) { r.sleep(); continue; }
     if (s != MissionState::RUNNING) { r.sleep(); continue; }
 
+    bool no_goals = false;
+    bool completed = false;
     {
       std::lock_guard<std::mutex> lk(mtx_);
       if (goals_.empty()) {
         state_ = MissionState::IDLE;
-        publishStatus_();
-        break;
-      }
-      if (current_index_ >= goals_.size()) {
+        updateGoalStatusesLocked_();
+        no_goals = true;
+      } else if (current_index_ >= goals_.size()) {
         state_ = MissionState::COMPLETED;
-        publishStatus_();
-        break;
+        updateGoalStatusesLocked_();
+        completed = true;
+      } else {
+        updateGoalStatusesLocked_();
       }
     }
 
+    if (no_goals) {
+      publishGoalList_();
+      publishStatus_();
+      break;
+    }
+
+    if (completed) {
+      publishGoalList_();
+      publishStatus_();
+      break;
+    }
+
+    publishGoalList_();
     publishCurrentGoal_();
     geometry_msgs::msg::PoseStamped goal_copy;
     {
@@ -725,25 +922,34 @@ void Mission::runLoop_()
     if (paused_.load()) continue;
 
     if (!ok) {
-      std::lock_guard<std::mutex> lk(mtx_);
-      state_ = MissionState::ABORTED;
+      {
+        std::lock_guard<std::mutex> lk(mtx_);
+        state_ = MissionState::ABORTED;
+        updateGoalStatusesLocked_();
+      }
+      publishGoalList_();
       publishStatus_(std::string("Navigation failed"));
       break;
     }
 
+    bool reached_end = false;
     {
       std::lock_guard<std::mutex> lk(mtx_);
-      ++current_index_;
-    }
-    publishProgress_();
-
-    {
-      std::lock_guard<std::mutex> lk(mtx_);
+      if (current_index_ < goals_.size()) {
+        ++current_index_;
+      }
       if (current_index_ >= goals_.size()) {
         state_ = MissionState::COMPLETED;
-        publishStatus_();
-        break;
+        reached_end = true;
       }
+      updateGoalStatusesLocked_();
+    }
+    publishProgress_();
+    publishGoalList_();
+
+    if (reached_end) {
+      publishStatus_();
+      break;
     }
   }
 
