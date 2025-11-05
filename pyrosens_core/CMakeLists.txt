@@ -15,15 +15,22 @@ find_package(geometry_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 
-add_executable(my_component src/components/my_component.cpp)
+add_library(my_component SHARED src/components/my_component.cpp)
 ament_target_dependencies(my_component rclcpp rclcpp_components std_msgs sensor_msgs geometry_msgs tf2 tf2_ros)
+rclcpp_components_register_nodes(my_component "pkg_ns::MyComponent")
 
 add_executable(my_node src/nodes/my_node.cpp)
 ament_target_dependencies(my_node rclcpp std_msgs sensor_msgs geometry_msgs tf2 tf2_ros)
 
 install(TARGETS
+  my_component
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
+
+install(TARGETS
   my_node
-  DESTINATION nodes/${PROJECT_NAME})
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

@@ -1,0 +1,527 @@
+[0.000000] (-) TimerEvent: {}
+[0.000261] (-) JobUnselected: {'identifier': '41068_ignition_bringup'}
+[0.000423] (-) JobUnselected: {'identifier': 'pyrosens'}
+[0.000459] (-) JobUnselected: {'identifier': 'pyrosens_bringup'}
+[0.000543] (-) JobUnselected: {'identifier': 'pyrosens_core'}
+[0.000609] (-) JobUnselected: {'identifier': 'pyrosens_gui'}
+[0.000627] (-) JobUnselected: {'identifier': 'pyrosens_heat'}
+[0.000654] (-) JobUnselected: {'identifier': 'pyrosens_movement'}
+[0.000670] (-) JobUnselected: {'identifier': 'pyrosens_progress'}
+[0.000732] (-) JobUnselected: {'identifier': 'pyrosens_world'}
+[0.000749] (-) JobUnselected: {'identifier': 'systemDev'}
+[0.000767] (-) JobUnselected: {'identifier': 'testing_ground'}
+[0.000783] (-) JobUnselected: {'identifier': 'thermal_pyrosens'}
+[0.000798] (-) JobUnselected: {'identifier': 'thermal_pyrosens'}
+[0.000824] (-) JobUnselected: {'identifier': 'thermal_pyrosens'}
+[0.000846] (-) JobUnselected: {'identifier': 'wind_pyrosens'}
+[0.000892] (pyrosens_mission) JobQueued: {'identifier': 'pyrosens_mission', 'dependencies': OrderedDict()}
+[0.000918] (pyrosens_mission) JobStarted: {'identifier': 'pyrosens_mission'}
+[0.099883] (-) TimerEvent: {}
+[0.200148] (-) TimerEvent: {}
+[0.300392] (-) TimerEvent: {}
+[0.400667] (-) TimerEvent: {}
+[0.500907] (-) TimerEvent: {}
+[0.601213] (-) TimerEvent: {}
+[0.701469] (-) TimerEvent: {}
+[0.801758] (-) TimerEvent: {}
+[0.902011] (-) TimerEvent: {}
+[1.002417] (-) TimerEvent: {}
+[1.102704] (-) TimerEvent: {}
+[1.202981] (-) TimerEvent: {}
+[1.303456] (-) TimerEvent: {}
+[1.403736] (-) TimerEvent: {}
+[1.504050] (-) TimerEvent: {}
+[1.604259] (-) TimerEvent: {}
+[1.704461] (-) TimerEvent: {}
+[1.804719] (-) TimerEvent: {}
+[1.904971] (-) TimerEvent: {}
+[2.005147] (-) TimerEvent: {}
+[2.105389] (-) TimerEvent: {}
+[2.205588] (-) TimerEvent: {}
+[2.305863] (-) TimerEvent: {}
+[2.406112] (-) TimerEvent: {}
+[2.506324] (-) TimerEvent: {}
+[2.606580] (-) TimerEvent: {}
+[2.706809] (-) TimerEvent: {}
+[2.807023] (-) TimerEvent: {}
+[2.907307] (-) TimerEvent: {}
+[3.007522] (-) TimerEvent: {}
+[3.107897] (-) TimerEvent: {}
+[3.208243] (-) TimerEvent: {}
+[3.308608] (-) TimerEvent: {}
+[3.409022] (-) TimerEvent: {}
+[3.509408] (-) TimerEvent: {}
+[3.609698] (-) TimerEvent: {}
+[3.710038] (-) TimerEvent: {}
+[3.810444] (-) TimerEvent: {}
+[3.910762] (-) TimerEvent: {}
+[4.011129] (-) TimerEvent: {}
+[4.111504] (-) TimerEvent: {}
+[4.211750] (-) TimerEvent: {}
+[4.311973] (-) TimerEvent: {}
+[4.412350] (-) TimerEvent: {}
+[4.512568] (-) TimerEvent: {}
+[4.612783] (-) TimerEvent: {}
+[4.713033] (-) TimerEvent: {}
+[4.813340] (-) TimerEvent: {}
+[4.913589] (-) TimerEvent: {}
+[5.013840] (-) TimerEvent: {}
+[5.114078] (-) TimerEvent: {}
+[5.214233] (-) TimerEvent: {}
+[5.314424] (-) TimerEvent: {}
+[5.414694] (-) TimerEvent: {}
+[5.515043] (-) TimerEvent: {}
+[5.615313] (-) TimerEvent: {}
+[5.715583] (-) TimerEvent: {}
+[5.815875] (-) TimerEvent: {}
+[5.916082] (-) TimerEvent: {}
+[6.016302] (-) TimerEvent: {}
+[6.116466] (-) TimerEvent: {}
+[6.216715] (-) TimerEvent: {}
+[6.317008] (-) TimerEvent: {}
+[6.417217] (-) TimerEvent: {}
+[6.517426] (-) TimerEvent: {}
+[6.617640] (-) TimerEvent: {}
+[6.717882] (-) TimerEvent: {}
+[6.818203] (-) TimerEvent: {}
+[6.918485] (-) TimerEvent: {}
+[7.018740] (-) TimerEvent: {}
+[7.118969] (-) TimerEvent: {}
+[7.219321] (-) TimerEvent: {}
+[7.319609] (-) TimerEvent: {}
+[7.420072] (-) TimerEvent: {}
+[7.520386] (-) TimerEvent: {}
+[7.620796] (-) TimerEvent: {}
+[7.721035] (-) TimerEvent: {}
+[7.821312] (-) TimerEvent: {}
+[7.921547] (-) TimerEvent: {}
+[8.021830] (-) TimerEvent: {}
+[8.122019] (-) TimerEvent: {}
+[8.222348] (-) TimerEvent: {}
+[8.322543] (-) TimerEvent: {}
+[8.422899] (-) TimerEvent: {}
+[8.523132] (-) TimerEvent: {}
+[8.623488] (-) TimerEvent: {}
+[8.723720] (-) TimerEvent: {}
+[8.824044] (-) TimerEvent: {}
+[8.924362] (-) TimerEvent: {}
+[9.024815] (-) TimerEvent: {}
+[9.125121] (-) TimerEvent: {}
+[9.225463] (-) TimerEvent: {}
+[9.325857] (-) TimerEvent: {}
+[9.426261] (-) TimerEvent: {}
+[9.526522] (-) TimerEvent: {}
+[9.626740] (-) TimerEvent: {}
+[9.726980] (-) TimerEvent: {}
+[9.827387] (-) TimerEvent: {}
+[9.927833] (-) TimerEvent: {}
+[10.028102] (-) TimerEvent: {}
+[10.128458] (-) TimerEvent: {}
+[10.228739] (-) TimerEvent: {}
+[10.329020] (-) TimerEvent: {}
+[10.429440] (-) TimerEvent: {}
+[10.529884] (-) TimerEvent: {}
+[10.630234] (-) TimerEvent: {}
+[10.730467] (-) TimerEvent: {}
+[10.830739] (-) TimerEvent: {}
+[10.930986] (-) TimerEvent: {}
+[11.031361] (-) TimerEvent: {}
+[11.131623] (-) TimerEvent: {}
+[11.231967] (-) TimerEvent: {}
+[11.332359] (-) TimerEvent: {}
+[11.432628] (-) TimerEvent: {}
+[11.532926] (-) TimerEvent: {}
+[11.633259] (-) TimerEvent: {}
+[11.733517] (-) TimerEvent: {}
+[11.833800] (-) TimerEvent: {}
+[11.934159] (-) TimerEvent: {}
+[12.034411] (-) TimerEvent: {}
+[12.134583] (-) TimerEvent: {}
+[12.234759] (-) TimerEvent: {}
+[12.334943] (-) TimerEvent: {}
+[12.435162] (-) TimerEvent: {}
+[12.535381] (-) TimerEvent: {}
+[12.635556] (-) TimerEvent: {}
+[12.735761] (-) TimerEvent: {}
+[12.836068] (-) TimerEvent: {}
+[12.936361] (-) TimerEvent: {}
+[13.036541] (-) TimerEvent: {}
+[13.136780] (-) TimerEvent: {}
+[13.237072] (-) TimerEvent: {}
+[13.337412] (-) TimerEvent: {}
+[13.437672] (-) TimerEvent: {}
+[13.537974] (-) TimerEvent: {}
+[13.638292] (-) TimerEvent: {}
+[13.738555] (-) TimerEvent: {}
+[13.838763] (-) TimerEvent: {}
+[13.939080] (-) TimerEvent: {}
+[14.039439] (-) TimerEvent: {}
+[14.139667] (-) TimerEvent: {}
+[14.239868] (-) TimerEvent: {}
+[14.340073] (-) TimerEvent: {}
+[14.440292] (-) TimerEvent: {}
+[14.540561] (-) TimerEvent: {}
+[14.640786] (-) TimerEvent: {}
+[14.740945] (-) TimerEvent: {}
+[14.841161] (-) TimerEvent: {}
+[14.941400] (-) TimerEvent: {}
+[15.041716] (-) TimerEvent: {}
+[15.141954] (-) TimerEvent: {}
+[15.242145] (-) TimerEvent: {}
+[15.342470] (-) TimerEvent: {}
+[15.442712] (-) TimerEvent: {}
+[15.542915] (-) TimerEvent: {}
+[15.643115] (-) TimerEvent: {}
+[15.743375] (-) TimerEvent: {}
+[15.843574] (-) TimerEvent: {}
+[15.943839] (-) TimerEvent: {}
+[16.044093] (-) TimerEvent: {}
+[16.144329] (-) TimerEvent: {}
+[16.244677] (-) TimerEvent: {}
+[16.344972] (-) TimerEvent: {}
+[16.445262] (-) TimerEvent: {}
+[16.545423] (-) TimerEvent: {}
+[16.645579] (-) TimerEvent: {}
+[16.745828] (-) TimerEvent: {}
+[16.845987] (-) TimerEvent: {}
+[16.946304] (-) TimerEvent: {}
+[17.046556] (-) TimerEvent: {}
+[17.146749] (-) TimerEvent: {}
+[17.247075] (-) TimerEvent: {}
+[17.347354] (-) TimerEvent: {}
+[17.447582] (-) TimerEvent: {}
+[17.547789] (-) TimerEvent: {}
+[17.648010] (-) TimerEvent: {}
+[17.748380] (-) TimerEvent: {}
+[17.848725] (-) TimerEvent: {}
+[17.948919] (-) TimerEvent: {}
+[18.049068] (-) TimerEvent: {}
+[18.149341] (-) TimerEvent: {}
+[18.249508] (-) TimerEvent: {}
+[18.349733] (-) TimerEvent: {}
+[18.449980] (-) TimerEvent: {}
+[18.550305] (-) TimerEvent: {}
+[18.650473] (-) TimerEvent: {}
+[18.750658] (-) TimerEvent: {}
+[18.850983] (-) TimerEvent: {}
+[18.951212] (-) TimerEvent: {}
+[19.051372] (-) TimerEvent: {}
+[19.151587] (-) TimerEvent: {}
+[19.251968] (-) TimerEvent: {}
+[19.352252] (-) TimerEvent: {}
+[19.452513] (-) TimerEvent: {}
+[19.552785] (-) TimerEvent: {}
+[19.653011] (-) TimerEvent: {}
+[19.753252] (-) TimerEvent: {}
+[19.853512] (-) TimerEvent: {}
+[19.953726] (-) TimerEvent: {}
+[20.054009] (-) TimerEvent: {}
+[20.154332] (-) TimerEvent: {}
+[20.254526] (-) TimerEvent: {}
+[20.354865] (-) TimerEvent: {}
+[20.455094] (-) TimerEvent: {}
+[20.555439] (-) TimerEvent: {}
+[20.655764] (-) TimerEvent: {}
+[20.755979] (-) TimerEvent: {}
+[20.856313] (-) TimerEvent: {}
+[20.956526] (-) TimerEvent: {}
+[21.056747] (-) TimerEvent: {}
+[21.156924] (-) TimerEvent: {}
+[21.257124] (-) TimerEvent: {}
+[21.357394] (-) TimerEvent: {}
+[21.457728] (-) TimerEvent: {}
+[21.557922] (-) TimerEvent: {}
+[21.658109] (-) TimerEvent: {}
+[21.758300] (-) TimerEvent: {}
+[21.858455] (-) TimerEvent: {}
+[21.958667] (-) TimerEvent: {}
+[22.058848] (-) TimerEvent: {}
+[22.159038] (-) TimerEvent: {}
+[22.259268] (-) TimerEvent: {}
+[22.359415] (-) TimerEvent: {}
+[22.459562] (-) TimerEvent: {}
+[22.559747] (-) TimerEvent: {}
+[22.659956] (-) TimerEvent: {}
+[22.760140] (-) TimerEvent: {}
+[22.860333] (-) TimerEvent: {}
+[22.960606] (-) TimerEvent: {}
+[23.060893] (-) TimerEvent: {}
+[23.161112] (-) TimerEvent: {}
+[23.261289] (-) TimerEvent: {}
+[23.361529] (-) TimerEvent: {}
+[23.461740] (-) TimerEvent: {}
+[23.561997] (-) TimerEvent: {}
+[23.662230] (-) TimerEvent: {}
+[23.762412] (-) TimerEvent: {}
+[23.862651] (-) TimerEvent: {}
+[23.962891] (-) TimerEvent: {}
+[24.063148] (-) TimerEvent: {}
+[24.163337] (-) TimerEvent: {}
+[24.263485] (-) TimerEvent: {}
+[24.363661] (-) TimerEvent: {}
+[24.463841] (-) TimerEvent: {}
+[24.564022] (-) TimerEvent: {}
+[24.664325] (-) TimerEvent: {}
+[24.764502] (-) TimerEvent: {}
+[24.864720] (-) TimerEvent: {}
+[24.965057] (-) TimerEvent: {}
+[25.065306] (-) TimerEvent: {}
+[25.165572] (-) TimerEvent: {}
+[25.265859] (-) TimerEvent: {}
+[25.366060] (-) TimerEvent: {}
+[25.466366] (-) TimerEvent: {}
+[25.566532] (-) TimerEvent: {}
+[25.666749] (-) TimerEvent: {}
+[25.766972] (-) TimerEvent: {}
+[25.867252] (-) TimerEvent: {}
+[25.967468] (-) TimerEvent: {}
+[26.067694] (-) TimerEvent: {}
+[26.167912] (-) TimerEvent: {}
+[26.268074] (-) TimerEvent: {}
+[26.368370] (-) TimerEvent: {}
+[26.468564] (-) TimerEvent: {}
+[26.568759] (-) TimerEvent: {}
+[26.669058] (-) TimerEvent: {}
+[26.769212] (-) TimerEvent: {}
+[26.869414] (-) TimerEvent: {}
+[26.969626] (-) TimerEvent: {}
+[27.069939] (-) TimerEvent: {}
+[27.170125] (-) TimerEvent: {}
+[27.270334] (-) TimerEvent: {}
+[27.370599] (-) TimerEvent: {}
+[27.470833] (-) TimerEvent: {}
+[27.571030] (-) TimerEvent: {}
+[27.671267] (-) TimerEvent: {}
+[27.771506] (-) TimerEvent: {}
+[27.871819] (-) TimerEvent: {}
+[27.972142] (-) TimerEvent: {}
+[28.072417] (-) TimerEvent: {}
+[28.172786] (-) TimerEvent: {}
+[28.273159] (-) TimerEvent: {}
+[28.373436] (-) TimerEvent: {}
+[28.473611] (-) TimerEvent: {}
+[28.573786] (-) TimerEvent: {}
+[28.673996] (-) TimerEvent: {}
+[28.774338] (-) TimerEvent: {}
+[28.874732] (-) TimerEvent: {}
+[28.975061] (-) TimerEvent: {}
+[29.075332] (-) TimerEvent: {}
+[29.175596] (-) TimerEvent: {}
+[29.275869] (-) TimerEvent: {}
+[29.376257] (-) TimerEvent: {}
+[29.476532] (-) TimerEvent: {}
+[29.576802] (-) TimerEvent: {}
+[29.677048] (-) TimerEvent: {}
+[29.777378] (-) TimerEvent: {}
+[29.877629] (-) TimerEvent: {}
+[29.977879] (-) TimerEvent: {}
+[30.031363] (pyrosens_mission) JobProgress: {'identifier': 'pyrosens_mission', 'progress': 'cmake'}
+[30.032042] (pyrosens_mission) JobProgress: {'identifier': 'pyrosens_mission', 'progress': 'build'}
+[30.033630] (pyrosens_mission) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission', '--', '-j16', '-l16'], 'cwd': '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('VSCODE_CWD', '/home/elijahs04/ros2_ws/src/41068_RS1'), ('VSCODE_ESM_ENTRYPOINT', 'vs/workbench/api/node/extensionHostProcess'), ('LANGUAGE', 'en_AU:en'), ('USER', 'elijahs04'), ('SNAP_COMMON', '/var/snap/code/common'), ('CODEX_INTERNAL_ORIGINATOR_OVERRIDE', 'codex_vscode'), ('VSCODE_NLS_CONFIG', '{"userLocale":"en-gb","osLocale":"en-au","resolvedLanguage":"en","defaultMessagesFile":"/snap/code/211/usr/share/code/resources/app/out/nls.messages.json","locale":"en-gb","availableLanguages":{}}'), ('FONTCONFIG_PATH', '/etc/fonts'), ('GIO_MODULE_DIR', '/home/elijahs04/snap/code/common/.cache/gio-modules'), ('VSCODE_HANDLES_UNCAUGHT_ERRORS', 'true'), ('XDG_SESSION_TYPE', 'x11'), ('SNAP_UID', '1000'), ('SHLVL', '1'), ('HOME', '/home/elijahs04'), ('CHROME_DESKTOP', 'code.desktop'), ('SNAP_LIBRARY_PATH', '/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void'), ('OLDPWD', '/home/elijahs04/ros2_ws'), ('DESKTOP_SESSION', 'ubuntu'), ('SNAP_USER_DATA', '/home/elijahs04/snap/code/211'), ('GTK_PATH', '/snap/code/211/usr/lib/x86_64-linux-gnu/gtk-3.0'), ('VSCODE_IPC_HOOK', '/run/user/1000/vscode-2c295616-1.10-main.sock'), ('GTK_IM_MODULE_FILE', '/home/elijahs04/snap/code/common/.cache/immodules/immodules.cache'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('SYSTEMD_EXEC_PID', '3103'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('SNAP_REVISION', '211'), ('COLORTERM', 'truecolor'), ('VSCODE_CRASH_REPORTER_PROCESS_TYPE', 'extensionHost'), ('VSCODE_L10N_BUNDLE_LOCATION', ''), ('COLCON_PREFIX_PATH', '/home/elijahs04/ros2_ws/install:/home/elijahs04/41068_ws/install'), ('APPLICATION_INSIGHTS_NO_STATSBEAT', 'true'), ('ROS_DISTRO', 'humble'), ('GTK_IM_MODULE', 'ibus'), ('LOGNAME', 'elijahs04'), ('SNAP_CONTEXT', 'NubJsyMQvI3Wq5In06wUWjtHCwuJEeBGQVvmGf80dmvS1v8nI7gk'), ('IGN_GUI_PLUGIN_PATH', '/opt/ros/humble/lib'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_CONFIG_DIRS_VSCODE_SNAP_ORIG', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_SESSION_CLASS', 'user'), ('SNAP_VERSION', '7d842fb8'), ('XDG_DATA_DIRS_VSCODE_SNAP_ORIG', '/usr/share/ubuntu:/usr/share/gnome:/home/elijahs04/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('RUST_LOG', 'warn'), ('USERNAME', 'elijahs04'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('SNAP_INSTANCE_NAME', 'code'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/elijahs04/.local/bin:/tmp/.tmpPFC9dk:/opt/ros/humble/bin:/home/elijahs04/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/elijahs04/.vscode/extensions/openai.chatgpt-0.4.35-linux-x64/bin/linux-x86_64'), ('SESSION_MANAGER', 'local/elijahs04-G5-MF5:@/tmp/.ICE-unix/2782,unix/elijahs04-G5-MF5:/tmp/.ICE-unix/2782'), ('GTK_EXE_PREFIX', '/snap/code/211/usr'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/34cadda2_f11a_47f5_b8b6_e9fec6ffb4a3'), ('SNAP_DATA', '/var/snap/code/211'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('GDK_BACKEND', 'x11'), ('DISPLAY', ':1'), ('LOCPATH', '/snap/code/211/usr/lib/locale'), ('CODEX_SANDBOX_NETWORK_DISABLED', '1'), ('LANG', 'en_AU.UTF-8'), ('XDG_CURRENT_DESKTOP', 'Unity'), ('XDG_DATA_HOME', '/home/elijahs04/snap/code/211/.local/share'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.867'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SNAP_USER_COMMON', '/home/elijahs04/snap/code/common'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('GSETTINGS_SCHEMA_DIR', '/home/elijahs04/snap/code/211/.local/share/glib-2.0/schemas'), ('SNAP_ARCH', 'amd64'), ('AMENT_PREFIX_PATH', '/home/elijahs04/ros2_ws/install/pyrosens_bringup:/home/elijahs04/ros2_ws/install/pyrosens_core:/home/elijahs04/ros2_ws/install/week11_quad_solution:/home/elijahs04/ros2_ws/install/week11_quad:/home/elijahs04/ros2_ws/install/week10_quad_solution:/home/elijahs04/ros2_ws/install/week10_laser_solution:/home/elijahs04/ros2_ws/install/turtlesim:/home/elijahs04/ros2_ws/install/testing_ground:/home/elijahs04/ros2_ws/install/srv_client_checks:/home/elijahs04/ros2_ws/install/quiz5:/home/elijahs04/ros2_ws/install/quiz4_b:/home/elijahs04/ros2_ws/install/pyrosens_world:/home/elijahs04/ros2_ws/install/pyrosens_mission:/home/elijahs04/ros2_ws/install/pyrosens_gui:/home/elijahs04/ros2_ws/install/lucajsanchez:/home/elijahs04/ros2_ws/install/grid_example_solution:/home/elijahs04/ros2_ws/install/grid_example:/home/elijahs04/ros2_ws/install/a3_support:/home/elijahs04/ros2_ws/install/a3_skeleton:/home/elijahs04/ros2_ws/install/41068_ignition_bringup:/home/elijahs04/41068_ws/install/41068_ignition_bringup:/opt/ros/humble'), ('SNAP_COOKIE', 'NubJsyMQvI3Wq5In06wUWjtHCwuJEeBGQVvmGf80dmvS1v8nI7gk'), ('ORIGINAL_XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('SHELL', '/bin/bash'), ('GDK_PIXBUF_MODULEDIR', '/snap/code/211/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders'), ('QT_ACCESSIBILITY', '1'), ('ELECTRON_RUN_AS_NODE', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('SNAP_NAME', 'code'), ('FONTCONFIG_FILE', '/etc/fonts/fonts.conf'), ('GDK_PIXBUF_MODULE_FILE', '/home/elijahs04/snap/code/common/.cache/gdk-pixbuf-loaders.cache'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('GAZEBO_RESOURCE_PATH', '/usr/share/gazebo-11/'), ('SNAP_LAUNCHER_ARCH_TRIPLET', 'x86_64-linux-gnu'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission'), ('VSCODE_CLI', '1'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SNAP_REAL_HOME', '/home/elijahs04'), ('VSCODE_CODE_CACHE_PATH', '/home/elijahs04/.config/Code/CachedData/7d842fb85a0275a4a8e4d7e040d2625abbf7f084'), ('XDG_DATA_DIRS', '/home/elijahs04/snap/code/211/.local/share/flatpak/exports/share:/home/elijahs04/snap/code/211/.local/share:/home/elijahs04/snap/code/211:/snap/code/211/usr/share:/usr/share/ubuntu:/usr/share/gnome:/home/elijahs04/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('SNAP_EUID', '1000'), ('PYTHONPATH', '/home/elijahs04/ros2_ws/install/turtlesim/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('SNAP', '/snap/code/211'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('ELECTRON_NO_ATTACH_CONSOLE', '1'), ('CMAKE_PREFIX_PATH', '/home/elijahs04/ros2_ws/install/pyrosens_bringup:/home/elijahs04/ros2_ws/install/pyrosens_core:/home/elijahs04/ros2_ws/install/week11_quad_solution:/home/elijahs04/ros2_ws/install/week11_quad:/home/elijahs04/ros2_ws/install/week10_quad_solution:/home/elijahs04/ros2_ws/install/week10_laser_solution:/home/elijahs04/ros2_ws/install/turtlesim:/home/elijahs04/ros2_ws/install/testing_ground:/home/elijahs04/ros2_ws/install/srv_client_checks:/home/elijahs04/ros2_ws/install/quiz5:/home/elijahs04/ros2_ws/install/quiz4_b:/home/elijahs04/ros2_ws/install/pyrosens_world:/home/elijahs04/ros2_ws/install/pyrosens_mission:/home/elijahs04/ros2_ws/install/pyrosens_gui:/home/elijahs04/ros2_ws/install/lucajsanchez:/home/elijahs04/ros2_ws/install/grid_example_solution:/home/elijahs04/ros2_ws/install/grid_example:/home/elijahs04/ros2_ws/install/a3_support:/home/elijahs04/ros2_ws/install/a3_skeleton:/home/elijahs04/ros2_ws/install/41068_ignition_bringup:/home/elijahs04/41068_ws/install/41068_ignition_bringup:/opt/ros/humble'), ('VSCODE_PID', '96745')]), 'shell': False}
+[30.077973] (-) TimerEvent: {}
+[30.078456] (pyrosens_mission) StdoutLine: {'line': b'Consolidate compiler generated dependencies of target mission_core_lib\n'}
+[30.078862] (pyrosens_mission) StdoutLine: {'line': b'[  4%] Built target windSensor_lib\n'}
+[30.079056] (pyrosens_mission) StdoutLine: {'line': b'[ 11%] Built target thermalSim_lib\n'}
+[30.079126] (pyrosens_mission) StdoutLine: {'line': b'[ 13%] Built target thermSens_lib\n'}
+[30.080032] (pyrosens_mission) StdoutLine: {'line': b'[ 18%] Built target windInterpolation_lib\n'}
+[30.081643] (pyrosens_mission) StdoutLine: {'line': b'[ 22%] Built target windSim_lib\n'}
+[30.081952] (pyrosens_mission) StdoutLine: {'line': b'[ 31%] Built target mission_cmd_bridge\n'}
+[30.081998] (pyrosens_mission) StdoutLine: {'line': b'[ 31%] Built target thermInterpolation_lib\n'}
+[30.086719] (pyrosens_mission) StdoutLine: {'line': b'[ 36%] Built target goals_lib\n'}
+[30.091174] (pyrosens_mission) StdoutLine: {'line': b'[ 38%] Building CXX object CMakeFiles/mission_core_lib.dir/src/mission.cpp.o\n'}
+[30.100536] (pyrosens_mission) StdoutLine: {'line': b'[ 43%] Built target main_windSens\n'}
+[30.100699] (pyrosens_mission) StdoutLine: {'line': b'[ 47%] Built target main_thermSens\n'}
+[30.101275] (pyrosens_mission) StdoutLine: {'line': b'[ 52%] Built target main_thermalSim\n'}
+[30.103037] (pyrosens_mission) StdoutLine: {'line': b'[ 61%] Built target main_thermInterpolation\n'}
+[30.103217] (pyrosens_mission) StdoutLine: {'line': b'[ 59%] Built target main_interpolation\n'}
+[30.103275] (pyrosens_mission) StdoutLine: {'line': b'[ 65%] Built target main_windSim\n'}
+[30.103564] (pyrosens_mission) StdoutLine: {'line': b'[ 75%] Built target main_perception\n'}
+[30.103617] (pyrosens_mission) StdoutLine: {'line': b'[ 75%] Built target main_windInterpolation\n'}
+[30.103709] (pyrosens_mission) StdoutLine: {'line': b'[ 84%] Built target main_sim\n'}
+[30.103740] (pyrosens_mission) StdoutLine: {'line': b'[ 84%] Built target main_wind\n'}
+[30.103820] (pyrosens_mission) StdoutLine: {'line': b'[ 88%] Built target main_thermal\n'}
+[30.110379] (pyrosens_mission) StdoutLine: {'line': b'[ 93%] Built target main_goals\n'}
+[30.178086] (-) TimerEvent: {}
+[30.278350] (-) TimerEvent: {}
+[30.378514] (-) TimerEvent: {}
+[30.478696] (-) TimerEvent: {}
+[30.578862] (-) TimerEvent: {}
+[30.679066] (-) TimerEvent: {}
+[30.779237] (-) TimerEvent: {}
+[30.879423] (-) TimerEvent: {}
+[30.979577] (-) TimerEvent: {}
+[31.079728] (-) TimerEvent: {}
+[31.179985] (-) TimerEvent: {}
+[31.280172] (-) TimerEvent: {}
+[31.380328] (-) TimerEvent: {}
+[31.480482] (-) TimerEvent: {}
+[31.580639] (-) TimerEvent: {}
+[31.680832] (-) TimerEvent: {}
+[31.781059] (-) TimerEvent: {}
+[31.881255] (-) TimerEvent: {}
+[31.981414] (-) TimerEvent: {}
+[32.081607] (-) TimerEvent: {}
+[32.181874] (-) TimerEvent: {}
+[32.282034] (-) TimerEvent: {}
+[32.382314] (-) TimerEvent: {}
+[32.482539] (-) TimerEvent: {}
+[32.582901] (-) TimerEvent: {}
+[32.683155] (-) TimerEvent: {}
+[32.783326] (-) TimerEvent: {}
+[32.883477] (-) TimerEvent: {}
+[32.983733] (-) TimerEvent: {}
+[33.083958] (-) TimerEvent: {}
+[33.184222] (-) TimerEvent: {}
+[33.284389] (-) TimerEvent: {}
+[33.384558] (-) TimerEvent: {}
+[33.484824] (-) TimerEvent: {}
+[33.585099] (-) TimerEvent: {}
+[33.685326] (-) TimerEvent: {}
+[33.785575] (-) TimerEvent: {}
+[33.885792] (-) TimerEvent: {}
+[33.986062] (-) TimerEvent: {}
+[34.086228] (-) TimerEvent: {}
+[34.186486] (-) TimerEvent: {}
+[34.286675] (-) TimerEvent: {}
+[34.386867] (-) TimerEvent: {}
+[34.487148] (-) TimerEvent: {}
+[34.587430] (-) TimerEvent: {}
+[34.687641] (-) TimerEvent: {}
+[34.787800] (-) TimerEvent: {}
+[34.887990] (-) TimerEvent: {}
+[34.988140] (-) TimerEvent: {}
+[35.088300] (-) TimerEvent: {}
+[35.188447] (-) TimerEvent: {}
+[35.288601] (-) TimerEvent: {}
+[35.388866] (-) TimerEvent: {}
+[35.489032] (-) TimerEvent: {}
+[35.589309] (-) TimerEvent: {}
+[35.689472] (-) TimerEvent: {}
+[35.789777] (-) TimerEvent: {}
+[35.890036] (-) TimerEvent: {}
+[35.990208] (-) TimerEvent: {}
+[36.090478] (-) TimerEvent: {}
+[36.190663] (-) TimerEvent: {}
+[36.290836] (-) TimerEvent: {}
+[36.391099] (-) TimerEvent: {}
+[36.491245] (-) TimerEvent: {}
+[36.591410] (-) TimerEvent: {}
+[36.691613] (-) TimerEvent: {}
+[36.791865] (-) TimerEvent: {}
+[36.892028] (-) TimerEvent: {}
+[36.992242] (-) TimerEvent: {}
+[37.092398] (-) TimerEvent: {}
+[37.192595] (-) TimerEvent: {}
+[37.292858] (-) TimerEvent: {}
+[37.393043] (-) TimerEvent: {}
+[37.493307] (-) TimerEvent: {}
+[37.593451] (-) TimerEvent: {}
+[37.693661] (-) TimerEvent: {}
+[37.793821] (-) TimerEvent: {}
+[37.894000] (-) TimerEvent: {}
+[37.994190] (-) TimerEvent: {}
+[38.094331] (-) TimerEvent: {}
+[38.194529] (-) TimerEvent: {}
+[38.294730] (-) TimerEvent: {}
+[38.394911] (-) TimerEvent: {}
+[38.495072] (-) TimerEvent: {}
+[38.595229] (-) TimerEvent: {}
+[38.695410] (-) TimerEvent: {}
+[38.795599] (-) TimerEvent: {}
+[38.895848] (-) TimerEvent: {}
+[38.996028] (-) TimerEvent: {}
+[39.096208] (-) TimerEvent: {}
+[39.196390] (-) TimerEvent: {}
+[39.296598] (-) TimerEvent: {}
+[39.396751] (-) TimerEvent: {}
+[39.496934] (-) TimerEvent: {}
+[39.597210] (-) TimerEvent: {}
+[39.697374] (-) TimerEvent: {}
+[39.797558] (-) TimerEvent: {}
+[39.897838] (-) TimerEvent: {}
+[39.998117] (-) TimerEvent: {}
+[40.098287] (-) TimerEvent: {}
+[40.198438] (-) TimerEvent: {}
+[40.298684] (-) TimerEvent: {}
+[40.334005] (pyrosens_mission) StdoutLine: {'line': b'[ 95%] Linking CXX static library libmission_core_lib.a\n'}
+[40.398857] (-) TimerEvent: {}
+[40.499099] (-) TimerEvent: {}
+[40.525714] (pyrosens_mission) StdoutLine: {'line': b'[ 95%] Built target mission_core_lib\n'}
+[40.547181] (pyrosens_mission) StdoutLine: {'line': b'[ 97%] Linking CXX executable main_mission\n'}
+[40.599218] (-) TimerEvent: {}
+[40.699400] (-) TimerEvent: {}
+[40.799553] (-) TimerEvent: {}
+[40.899737] (-) TimerEvent: {}
+[40.999903] (-) TimerEvent: {}
+[41.100060] (-) TimerEvent: {}
+[41.143852] (pyrosens_mission) StdoutLine: {'line': b'[100%] Built target main_mission\n'}
+[41.151280] (pyrosens_mission) CommandEnded: {'returncode': 0}
+[41.151737] (pyrosens_mission) JobProgress: {'identifier': 'pyrosens_mission', 'progress': 'install'}
+[41.157589] (pyrosens_mission) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission'], 'cwd': '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('VSCODE_CWD', '/home/elijahs04/ros2_ws/src/41068_RS1'), ('VSCODE_ESM_ENTRYPOINT', 'vs/workbench/api/node/extensionHostProcess'), ('LANGUAGE', 'en_AU:en'), ('USER', 'elijahs04'), ('SNAP_COMMON', '/var/snap/code/common'), ('CODEX_INTERNAL_ORIGINATOR_OVERRIDE', 'codex_vscode'), ('VSCODE_NLS_CONFIG', '{"userLocale":"en-gb","osLocale":"en-au","resolvedLanguage":"en","defaultMessagesFile":"/snap/code/211/usr/share/code/resources/app/out/nls.messages.json","locale":"en-gb","availableLanguages":{}}'), ('FONTCONFIG_PATH', '/etc/fonts'), ('GIO_MODULE_DIR', '/home/elijahs04/snap/code/common/.cache/gio-modules'), ('VSCODE_HANDLES_UNCAUGHT_ERRORS', 'true'), ('XDG_SESSION_TYPE', 'x11'), ('SNAP_UID', '1000'), ('SHLVL', '1'), ('HOME', '/home/elijahs04'), ('CHROME_DESKTOP', 'code.desktop'), ('SNAP_LIBRARY_PATH', '/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void'), ('OLDPWD', '/home/elijahs04/ros2_ws'), ('DESKTOP_SESSION', 'ubuntu'), ('SNAP_USER_DATA', '/home/elijahs04/snap/code/211'), ('GTK_PATH', '/snap/code/211/usr/lib/x86_64-linux-gnu/gtk-3.0'), ('VSCODE_IPC_HOOK', '/run/user/1000/vscode-2c295616-1.10-main.sock'), ('GTK_IM_MODULE_FILE', '/home/elijahs04/snap/code/common/.cache/immodules/immodules.cache'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('SYSTEMD_EXEC_PID', '3103'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('SNAP_REVISION', '211'), ('COLORTERM', 'truecolor'), ('VSCODE_CRASH_REPORTER_PROCESS_TYPE', 'extensionHost'), ('VSCODE_L10N_BUNDLE_LOCATION', ''), ('COLCON_PREFIX_PATH', '/home/elijahs04/ros2_ws/install:/home/elijahs04/41068_ws/install'), ('APPLICATION_INSIGHTS_NO_STATSBEAT', 'true'), ('ROS_DISTRO', 'humble'), ('GTK_IM_MODULE', 'ibus'), ('LOGNAME', 'elijahs04'), ('SNAP_CONTEXT', 'NubJsyMQvI3Wq5In06wUWjtHCwuJEeBGQVvmGf80dmvS1v8nI7gk'), ('IGN_GUI_PLUGIN_PATH', '/opt/ros/humble/lib'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_CONFIG_DIRS_VSCODE_SNAP_ORIG', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_SESSION_CLASS', 'user'), ('SNAP_VERSION', '7d842fb8'), ('XDG_DATA_DIRS_VSCODE_SNAP_ORIG', '/usr/share/ubuntu:/usr/share/gnome:/home/elijahs04/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('RUST_LOG', 'warn'), ('USERNAME', 'elijahs04'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('SNAP_INSTANCE_NAME', 'code'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/elijahs04/.local/bin:/tmp/.tmpPFC9dk:/opt/ros/humble/bin:/home/elijahs04/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/elijahs04/.vscode/extensions/openai.chatgpt-0.4.35-linux-x64/bin/linux-x86_64'), ('SESSION_MANAGER', 'local/elijahs04-G5-MF5:@/tmp/.ICE-unix/2782,unix/elijahs04-G5-MF5:/tmp/.ICE-unix/2782'), ('GTK_EXE_PREFIX', '/snap/code/211/usr'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/34cadda2_f11a_47f5_b8b6_e9fec6ffb4a3'), ('SNAP_DATA', '/var/snap/code/211'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('GDK_BACKEND', 'x11'), ('DISPLAY', ':1'), ('LOCPATH', '/snap/code/211/usr/lib/locale'), ('CODEX_SANDBOX_NETWORK_DISABLED', '1'), ('LANG', 'en_AU.UTF-8'), ('XDG_CURRENT_DESKTOP', 'Unity'), ('XDG_DATA_HOME', '/home/elijahs04/snap/code/211/.local/share'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.867'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SNAP_USER_COMMON', '/home/elijahs04/snap/code/common'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('GSETTINGS_SCHEMA_DIR', '/home/elijahs04/snap/code/211/.local/share/glib-2.0/schemas'), ('SNAP_ARCH', 'amd64'), ('AMENT_PREFIX_PATH', '/home/elijahs04/ros2_ws/install/pyrosens_bringup:/home/elijahs04/ros2_ws/install/pyrosens_core:/home/elijahs04/ros2_ws/install/week11_quad_solution:/home/elijahs04/ros2_ws/install/week11_quad:/home/elijahs04/ros2_ws/install/week10_quad_solution:/home/elijahs04/ros2_ws/install/week10_laser_solution:/home/elijahs04/ros2_ws/install/turtlesim:/home/elijahs04/ros2_ws/install/testing_ground:/home/elijahs04/ros2_ws/install/srv_client_checks:/home/elijahs04/ros2_ws/install/quiz5:/home/elijahs04/ros2_ws/install/quiz4_b:/home/elijahs04/ros2_ws/install/pyrosens_world:/home/elijahs04/ros2_ws/install/pyrosens_mission:/home/elijahs04/ros2_ws/install/pyrosens_gui:/home/elijahs04/ros2_ws/install/lucajsanchez:/home/elijahs04/ros2_ws/install/grid_example_solution:/home/elijahs04/ros2_ws/install/grid_example:/home/elijahs04/ros2_ws/install/a3_support:/home/elijahs04/ros2_ws/install/a3_skeleton:/home/elijahs04/ros2_ws/install/41068_ignition_bringup:/home/elijahs04/41068_ws/install/41068_ignition_bringup:/opt/ros/humble'), ('SNAP_COOKIE', 'NubJsyMQvI3Wq5In06wUWjtHCwuJEeBGQVvmGf80dmvS1v8nI7gk'), ('ORIGINAL_XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('SHELL', '/bin/bash'), ('GDK_PIXBUF_MODULEDIR', '/snap/code/211/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders'), ('QT_ACCESSIBILITY', '1'), ('ELECTRON_RUN_AS_NODE', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('SNAP_NAME', 'code'), ('FONTCONFIG_FILE', '/etc/fonts/fonts.conf'), ('GDK_PIXBUF_MODULE_FILE', '/home/elijahs04/snap/code/common/.cache/gdk-pixbuf-loaders.cache'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('GAZEBO_RESOURCE_PATH', '/usr/share/gazebo-11/'), ('SNAP_LAUNCHER_ARCH_TRIPLET', 'x86_64-linux-gnu'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission'), ('VSCODE_CLI', '1'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SNAP_REAL_HOME', '/home/elijahs04'), ('VSCODE_CODE_CACHE_PATH', '/home/elijahs04/.config/Code/CachedData/7d842fb85a0275a4a8e4d7e040d2625abbf7f084'), ('XDG_DATA_DIRS', '/home/elijahs04/snap/code/211/.local/share/flatpak/exports/share:/home/elijahs04/snap/code/211/.local/share:/home/elijahs04/snap/code/211:/snap/code/211/usr/share:/usr/share/ubuntu:/usr/share/gnome:/home/elijahs04/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('SNAP_EUID', '1000'), ('PYTHONPATH', '/home/elijahs04/ros2_ws/install/turtlesim/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('SNAP', '/snap/code/211'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('ELECTRON_NO_ATTACH_CONSOLE', '1'), ('CMAKE_PREFIX_PATH', '/home/elijahs04/ros2_ws/install/pyrosens_bringup:/home/elijahs04/ros2_ws/install/pyrosens_core:/home/elijahs04/ros2_ws/install/week11_quad_solution:/home/elijahs04/ros2_ws/install/week11_quad:/home/elijahs04/ros2_ws/install/week10_quad_solution:/home/elijahs04/ros2_ws/install/week10_laser_solution:/home/elijahs04/ros2_ws/install/turtlesim:/home/elijahs04/ros2_ws/install/testing_ground:/home/elijahs04/ros2_ws/install/srv_client_checks:/home/elijahs04/ros2_ws/install/quiz5:/home/elijahs04/ros2_ws/install/quiz4_b:/home/elijahs04/ros2_ws/install/pyrosens_world:/home/elijahs04/ros2_ws/install/pyrosens_mission:/home/elijahs04/ros2_ws/install/pyrosens_gui:/home/elijahs04/ros2_ws/install/lucajsanchez:/home/elijahs04/ros2_ws/install/grid_example_solution:/home/elijahs04/ros2_ws/install/grid_example:/home/elijahs04/ros2_ws/install/a3_support:/home/elijahs04/ros2_ws/install/a3_skeleton:/home/elijahs04/ros2_ws/install/41068_ignition_bringup:/home/elijahs04/41068_ws/install/41068_ignition_bringup:/opt/ros/humble'), ('VSCODE_PID', '96745')]), 'shell': False}
+[41.163153] (pyrosens_mission) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[41.163373] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libthermSens_lib.a\n'}
+[41.163406] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libthermInterpolation_lib.a\n'}
+[41.163463] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libthermalSim_lib.a\n'}
+[41.163489] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libwindSensor_lib.a\n'}
+[41.163514] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libwindInterpolation_lib.a\n'}
+[41.163539] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libwindSim_lib.a\n'}
+[41.163563] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libgoals_lib.a\n'}
+[41.163590] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_goals\n'}
+[41.163639] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_thermal\n'}
+[41.163662] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_wind\n'}
+[41.163715] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_interpolation\n'}
+[41.163843] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_perception\n'}
+[41.163970] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_sim\n'}
+[41.164093] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_thermSens\n'}
+[41.164224] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_thermInterpolation\n'}
+[41.164355] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_windSens\n'}
+[41.164485] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_windInterpolation\n'}
+[41.164621] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_thermalSim\n'}
+[41.164743] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_windSim\n'}
+[41.164816] (pyrosens_mission) StdoutLine: {'line': b'-- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libmission_core_lib.a\n'}
+[41.179197] (pyrosens_mission) StdoutLine: {'line': b'-- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_mission\n'}
+[41.183571] (pyrosens_mission) StdoutLine: {'line': b'-- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_mission" to ""\n'}
+[41.183849] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/mission_cmd_bridge\n'}
+[41.183887] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include\n'}
+[41.183916] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/wind_pyrosens\n'}
+[41.183944] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/wind_pyrosens/windInterpolationNode.hpp\n'}
+[41.183973] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/wind_pyrosens/windSensNode.hpp\n'}
+[41.184000] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/wind_pyrosens/windSimNode.hpp\n'}
+[41.184105] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/mission_pyrosens\n'}
+[41.184132] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/mission_pyrosens/mission.hpp\n'}
+[41.184158] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/goals_pyrosens\n'}
+[41.184192] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/goals_pyrosens/goals.hpp\n'}
+[41.184285] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/thermal_pyrosens\n'}
+[41.184311] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/thermal_pyrosens/thermalSimNode.hpp\n'}
+[41.184338] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/thermal_pyrosens/thermInterpolationNode.hpp\n'}
+[41.184364] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/thermal_pyrosens/thermSensNode.hpp\n'}
+[41.184389] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/config\n'}
+[41.184414] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/config/nav2_params.yaml\n'}
+[41.184439] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/config/mission_params.yaml\n'}
+[41.184463] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/maps\n'}
+[41.184488] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/maps/test_map.pgm\n'}
+[41.184512] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/maps/test_map.yaml\n'}
+[41.184537] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/launch\n'}
+[41.184561] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/launch/pyrosens_system.launch.py\n'}
+[41.184585] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/launch/mission_proxy_with_nav2.launch.py\n'}
+[41.184611] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/rviz\n'}
+[41.184636] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/rviz/Heatmap.rviz\n'}
+[41.184661] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/rviz/WindMarkerArray.rviz\n'}
+[41.184686] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/ament_index/resource_index/package_run_dependencies/pyrosens_mission\n'}
+[41.184713] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/ament_index/resource_index/parent_prefix_path/pyrosens_mission\n'}
+[41.184740] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/environment/ament_prefix_path.sh\n'}
+[41.184764] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/environment/ament_prefix_path.dsv\n'}
+[41.184789] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/environment/path.sh\n'}
+[41.184814] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/environment/path.dsv\n'}
+[41.184839] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/local_setup.bash\n'}
+[41.185019] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/local_setup.sh\n'}
+[41.185046] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/local_setup.zsh\n'}
+[41.185069] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/local_setup.dsv\n'}
+[41.185092] (pyrosens_mission) StdoutLine: {'line': b'-- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/package.dsv\n'}
+[41.185115] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/ament_index/resource_index/packages/pyrosens_mission\n'}
+[41.185138] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/cmake/pyrosens_missionConfig.cmake\n'}
+[41.185160] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/cmake/pyrosens_missionConfig-version.cmake\n'}
+[41.185194] (pyrosens_mission) StdoutLine: {'line': b'-- Up-to-date: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/package.xml\n'}
+[41.185634] (pyrosens_mission) CommandEnded: {'returncode': 0}
+[41.195262] (pyrosens_mission) JobEnded: {'identifier': 'pyrosens_mission', 'rc': 0}
+[41.195572] (-) EventReactorShutdown: {}

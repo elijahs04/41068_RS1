@@ -1,0 +1,189 @@
+[0.008s] Invoking command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_mission -DCMAKE_INSTALL_PREFIX=/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission
+[0.077s] -- The C compiler identification is GNU 11.4.0
+[0.121s] -- The CXX compiler identification is GNU 11.4.0
+[0.126s] -- Detecting C compiler ABI info
+[0.171s] -- Detecting C compiler ABI info - done
+[0.176s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.176s] -- Detecting C compile features
+[0.176s] -- Detecting C compile features - done
+[0.178s] -- Detecting CXX compiler ABI info
+[0.229s] -- Detecting CXX compiler ABI info - done
+[0.234s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.234s] -- Detecting CXX compile features
+[0.234s] -- Detecting CXX compile features - done
+[0.237s] -- Found ament_cmake: 1.3.12 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.338s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[0.413s] -- Found rclcpp: 16.0.15 (/opt/ros/humble/share/rclcpp/cmake)
+[0.450s] -- Found rosidl_generator_c: 3.1.7 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.455s] -- Found rosidl_adapter: 3.1.7 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.462s] -- Found rosidl_generator_cpp: 3.1.7 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.472s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.485s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.521s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.524s] -- Found rmw_fastrtps_cpp: 6.2.9 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[0.588s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[0.609s] -- Found FastRTPS: /opt/ros/humble/include  
+[0.644s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.652s] -- Looking for pthread.h
+[0.710s] -- Looking for pthread.h - found
+[0.710s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[0.759s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[0.760s] -- Found Threads: TRUE  
+[0.797s] -- Found sensor_msgs: 4.9.0 (/opt/ros/humble/share/sensor_msgs/cmake)
+[0.817s] -- Found nav_msgs: 4.9.0 (/opt/ros/humble/share/nav_msgs/cmake)
+[0.829s] -- Found visualization_msgs: 4.9.0 (/opt/ros/humble/share/visualization_msgs/cmake)
+[0.843s] -- Found tf2: 0.25.16 (/opt/ros/humble/share/tf2/cmake)
+[0.851s] -- Found tf2_ros: 0.25.16 (/opt/ros/humble/share/tf2_ros/cmake)
+[0.912s] -- Found nav2_msgs: 1.1.19 (/opt/ros/humble/share/nav2_msgs/cmake)
+[0.929s] -- Found std_srvs: 4.9.0 (/opt/ros/humble/share/std_srvs/cmake)
+[1.012s] -- Configuring done
+[1.054s] -- Generating done
+[1.075s] -- Build files have been written to: /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission
+[1.084s] Invoked command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/elijahs04/ros2_ws/src/41068_RS1/pyrosens_mission -DCMAKE_INSTALL_PREFIX=/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission
+[1.085s] Invoking command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission -- -j16 -l16
+[1.140s] [  2%] Building CXX object CMakeFiles/goals_lib.dir/src/goals.cpp.o
+[1.140s] [  4%] Building CXX object CMakeFiles/thermalSim_lib.dir/src/thermalSimNode.cpp.o
+[1.142s] [  6%] Building CXX object CMakeFiles/mission_core_lib.dir/src/mission.cpp.o
+[1.143s] [  9%] Building CXX object CMakeFiles/thermInterpolation_lib.dir/src/thermInterpolationNode.cpp.o
+[1.143s] [ 11%] Building CXX object CMakeFiles/windInterpolation_lib.dir/src/windInterpolationNode.cpp.o
+[1.144s] [ 13%] Building CXX object CMakeFiles/windSensor_lib.dir/src/windSensNode.cpp.o
+[1.145s] [ 15%] Building CXX object CMakeFiles/thermSens_lib.dir/src/thermSensNode.cpp.o
+[1.145s] [ 18%] Building CXX object CMakeFiles/windSim_lib.dir/src/windSimNode.cpp.o
+[1.146s] [ 20%] Building CXX object CMakeFiles/mission_cmd_bridge.dir/src/mission_cmd_bridge.cpp.o
+[4.225s] [ 22%] Linking CXX static library libwindSim_lib.a
+[4.285s] [ 22%] Built target windSim_lib
+[4.300s] [ 25%] Building CXX object CMakeFiles/main_windSim.dir/mains/main_windSim.cpp.o
+[4.414s] [ 27%] Linking CXX static library libthermalSim_lib.a
+[4.445s] [ 29%] Linking CXX static library libthermSens_lib.a
+[4.481s] [ 29%] Built target thermSens_lib
+[4.481s] [ 29%] Built target thermalSim_lib
+[4.502s] [ 36%] Building CXX object CMakeFiles/main_thermSens.dir/mains/main_thermSens.cpp.o
+[4.502s] [ 36%] Building CXX object CMakeFiles/main_thermalSim.dir/mains/main_thermalSim.cpp.o
+[4.502s] [ 36%] Building CXX object CMakeFiles/main_sim.dir/mains/main_sim.cpp.o
+[5.133s] [ 38%] Linking CXX static library libgoals_lib.a
+[5.170s] [ 38%] Built target goals_lib
+[5.185s] [ 40%] Building CXX object CMakeFiles/main_goals.dir/mains/main_goals.cpp.o
+[6.406s] [ 43%] Linking CXX executable main_windSim
+[6.639s] [ 43%] Built target main_windSim
+[6.992s] [ 45%] Linking CXX executable main_thermalSim
+[7.170s] [ 45%] Built target main_thermalSim
+[7.549s] [ 47%] Linking CXX executable mission_cmd_bridge
+[7.580s] [ 50%] Linking CXX static library libwindSensor_lib.a
+[7.626s] [ 52%] Linking CXX executable main_thermSens
+[7.693s] [ 52%] Built target windSensor_lib
+[7.709s] [ 54%] Building CXX object CMakeFiles/main_windSens.dir/mains/main_windSens.cpp.o
+[7.728s] [ 54%] Built target main_thermSens
+[7.847s] [ 56%] Linking CXX executable main_goals
+[7.856s] [ 56%] Built target mission_cmd_bridge
+[7.991s] [ 59%] Linking CXX executable main_sim
+[8.005s] [ 59%] Built target main_goals
+[8.195s] [ 59%] Built target main_sim
+[9.568s] [ 61%] Linking CXX executable main_windSens
+[9.798s] [ 63%] Linking CXX static library libthermInterpolation_lib.a
+[9.856s] [ 63%] Built target main_windSens
+[9.929s] [ 63%] Built target thermInterpolation_lib
+[9.944s] [ 65%] Building CXX object CMakeFiles/main_thermal.dir/mains/main_thermal.cpp.o
+[9.944s] [ 68%] Building CXX object CMakeFiles/main_thermInterpolation.dir/mains/main_thermInterpolation.cpp.o
+[11.820s] [ 70%] Linking CXX executable main_thermInterpolation
+[11.830s] [ 72%] Linking CXX static library libwindInterpolation_lib.a
+[11.915s] [ 75%] Linking CXX executable main_thermal
+[11.969s] [ 75%] Built target windInterpolation_lib
+[11.984s] [ 77%] Building CXX object CMakeFiles/main_windInterpolation.dir/mains/main_windInterpolation.cpp.o
+[11.986s] [ 79%] Building CXX object CMakeFiles/main_perception.dir/mains/main_perception.cpp.o
+[11.986s] [ 81%] Building CXX object CMakeFiles/main_wind.dir/mains/main_wind.cpp.o
+[11.986s] [ 84%] Building CXX object CMakeFiles/main_interpolation.dir/mains/main_interpolation.cpp.o
+[12.267s] [ 84%] Built target main_thermInterpolation
+[12.434s] [ 84%] Built target main_thermal
+[13.440s] [ 86%] Linking CXX static library libmission_core_lib.a
+[13.686s] [ 86%] Built target mission_core_lib
+[13.704s] [ 88%] Building CXX object CMakeFiles/main_mission.dir/mains/main_mission.cpp.o
+[14.099s] [ 90%] Linking CXX executable main_windInterpolation
+[14.169s] [ 93%] Linking CXX executable main_wind
+[14.186s] [ 95%] Linking CXX executable main_interpolation
+[14.341s] [ 97%] Linking CXX executable main_perception
+[14.561s] [ 97%] Built target main_windInterpolation
+[14.866s] [ 97%] Built target main_wind
+[14.969s] [ 97%] Built target main_interpolation
+[15.335s] [ 97%] Built target main_perception
+[15.801s] [100%] Linking CXX executable main_mission
+[16.364s] [100%] Built target main_mission
+[16.374s] Invoked command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission -- -j16 -l16
+[16.381s] Invoking command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission
+[16.384s] -- Install configuration: ""
+[16.385s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libthermSens_lib.a
+[16.385s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libthermInterpolation_lib.a
+[16.392s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libthermalSim_lib.a
+[16.394s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libwindSensor_lib.a
+[16.399s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libwindInterpolation_lib.a
+[16.406s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libwindSim_lib.a
+[16.407s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libgoals_lib.a
+[16.408s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_goals
+[16.409s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_goals" to ""
+[16.409s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_thermal
+[16.412s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_thermal" to ""
+[16.412s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_wind
+[16.415s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_wind" to ""
+[16.415s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_interpolation
+[16.418s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_interpolation" to ""
+[16.418s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_perception
+[16.423s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_perception" to ""
+[16.423s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_sim
+[16.424s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_sim" to ""
+[16.424s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_thermSens
+[16.424s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_thermSens" to ""
+[16.424s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_thermInterpolation
+[16.426s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_thermInterpolation" to ""
+[16.426s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_windSens
+[16.428s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_windSens" to ""
+[16.428s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_windInterpolation
+[16.431s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_windInterpolation" to ""
+[16.431s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_thermalSim
+[16.431s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_thermalSim" to ""
+[16.431s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_windSim
+[16.432s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_windSim" to ""
+[16.432s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/libmission_core_lib.a
+[16.443s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_mission
+[16.447s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/main_mission" to ""
+[16.447s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/mission_cmd_bridge
+[16.449s] -- Set runtime path of "/home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/lib/pyrosens_mission/mission_cmd_bridge" to ""
+[16.449s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include
+[16.449s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/wind_pyrosens
+[16.449s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/wind_pyrosens/windInterpolationNode.hpp
+[16.449s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/wind_pyrosens/windSensNode.hpp
+[16.449s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/wind_pyrosens/windSimNode.hpp
+[16.449s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/mission_pyrosens
+[16.449s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/mission_pyrosens/mission.hpp
+[16.450s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/goals_pyrosens
+[16.450s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/goals_pyrosens/goals.hpp
+[16.450s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/thermal_pyrosens
+[16.450s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/thermal_pyrosens/thermalSimNode.hpp
+[16.450s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/thermal_pyrosens/thermInterpolationNode.hpp
+[16.450s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/include/thermal_pyrosens/thermSensNode.hpp
+[16.450s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/config
+[16.450s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/config/nav2_params.yaml
+[16.450s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/config/mission_params.yaml
+[16.451s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/maps
+[16.451s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/maps/test_map.pgm
+[16.451s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/maps/test_map.yaml
+[16.451s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/launch
+[16.451s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/launch/pyrosens_system.launch.py
+[16.451s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/launch/mission_proxy_with_nav2.launch.py
+[16.451s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/rviz
+[16.451s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/rviz/Heatmap.rviz
+[16.451s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/rviz/WindMarkerArray.rviz
+[16.452s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/ament_index/resource_index/package_run_dependencies/pyrosens_mission
+[16.452s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/ament_index/resource_index/parent_prefix_path/pyrosens_mission
+[16.452s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/environment/ament_prefix_path.sh
+[16.452s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/environment/ament_prefix_path.dsv
+[16.452s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/environment/path.sh
+[16.452s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/environment/path.dsv
+[16.452s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/local_setup.bash
+[16.452s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/local_setup.sh
+[16.453s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/local_setup.zsh
+[16.453s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/local_setup.dsv
+[16.453s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/package.dsv
+[16.453s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/ament_index/resource_index/packages/pyrosens_mission
+[16.453s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/cmake/pyrosens_missionConfig.cmake
+[16.453s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/cmake/pyrosens_missionConfig-version.cmake
+[16.453s] -- Installing: /home/elijahs04/ros2_ws/src/41068_RS1/install/pyrosens_mission/share/pyrosens_mission/package.xml
+[30.011s] Invoked command in '/home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/elijahs04/ros2_ws/src/41068_RS1/build/pyrosens_mission

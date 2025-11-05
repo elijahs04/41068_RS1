@@ -1,0 +1,2 @@
+/usr/bin/ar qc libgoals_lib.a CMakeFiles/goals_lib.dir/src/goals.cpp.o
+/usr/bin/ranlib libgoals_lib.a
