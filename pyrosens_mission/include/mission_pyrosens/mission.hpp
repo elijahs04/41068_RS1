@@ -6,6 +6,7 @@
 #include <thread>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
@@ -144,6 +145,7 @@ private:
   // Optional tracking for server-side goal (not strictly required)
   std::mutex navsrv_mtx_;
   std::weak_ptr<ServerHandle> navsrv_active_;
+  std::unordered_map<ServerHandle*, std::size_t> navsrv_goal_index_;
 };
 
 } // namespace mission_pyrosens

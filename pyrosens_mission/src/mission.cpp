@@ -319,18 +319,33 @@ rclcpp_action::GoalResponse Mission::navSrvHandleGoal_(
 }
 
 rclcpp_action::CancelResponse Mission::navSrvHandleCancel_(
-    const std::shared_ptr<ServerHandle> /*goal_handle*/)
+    const std::shared_ptr<ServerHandle> goal_handle)
 {
-  {
-    std::lock_guard<std::mutex> lk(mtx_);
-    cancel_requested_ = true;
-    paused_ = false;
-    if (state_ == MissionState::RUNNING || state_ == MissionState::PAUSED)
-      state_ = MissionState::ABORTED;
-    cancelActiveGoalNoThrow_();
+  if (!goal_handle) {
+    RCLCPP_WARN(get_logger(), "[Proxy] Cancel requested with null handle.");
+    return rclcpp_action::CancelResponse::REJECT;
   }
-  publishStatus_();
-  RCLCPP_WARN(get_logger(), "[Proxy] Client requested cancel -> Mission ABORTED.");
+
+  std::size_t canceled_index = 0;
+  bool have_index = false;
+  {
+    std::lock_guard<std::mutex> g(navsrv_mtx_);
+    auto it = navsrv_goal_index_.find(goal_handle.get());
+    if (it != navsrv_goal_index_.end()) {
+      canceled_index = it->second;
+      have_index = true;
+      navsrv_goal_index_.erase(it);
+    }
+  }
+
+  if (have_index) {
+    RCLCPP_INFO(get_logger(),
+      "[Proxy] Cancel request acknowledged for queued goal idx=%zu. Mission state unchanged.",
+      canceled_index);
+  } else {
+    RCLCPP_INFO(get_logger(),
+      "[Proxy] Cancel request acknowledged for unknown goal handle. Mission state unchanged.");
+  }
   return rclcpp_action::CancelResponse::ACCEPT;
 }
 
@@ -351,44 +366,79 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
     return;
   }
 
-  // 1) Prepare mission queue with the new pose
-  bool had_worker = false;
+  auto raw_handle = goal_handle.get();
+  auto cleanup_tracking = [this, raw_handle]() {
+    std::lock_guard<std::mutex> g(navsrv_mtx_);
+    navsrv_goal_index_.erase(raw_handle);
+  };
+
+  // 1) Decide whether we are appending or replacing the queue
+  bool mission_active = false;
+  bool reset_queue = false;
+  bool append_only = false;
+  bool should_stop_worker = false;
   {
     std::lock_guard<std::mutex> lk(mtx_);
-    had_worker = worker_running_.load();
-    cancel_requested_ = true;
-    paused_ = false;
+    mission_active = (state_ == MissionState::RUNNING || state_ == MissionState::PAUSED);
+    if (mission_active) {
+      cancel_requested_ = true;
+      paused_ = false;
+      should_stop_worker = worker_running_.load();
+      reset_queue = true;
+    } else if (state_ == MissionState::COMPLETED ||
+               state_ == MissionState::ABORTED   ||
+               state_ == MissionState::ESTOPPED) {
+      reset_queue = true;
+    }
+    append_only = !mission_active && !reset_queue;
   }
 
-  if (had_worker) {
-    stopWorker_();
-  } else {
-    cancelActiveGoalNoThrow_();
+  if (mission_active) {
+    if (should_stop_worker) {
+      stopWorker_();
+    } else {
+      cancelActiveGoalNoThrow_();
+    }
   }
 
   std::size_t queue_size = 0;
+  std::size_t my_index = 0;
   {
     std::lock_guard<std::mutex> lk(mtx_);
-    goals_.clear();
+    if (reset_queue) {
+      goals_.clear();
+      current_index_ = 0;
+    }
     goals_.push_back(goal->pose);
-    current_index_ = 0;
+    my_index = goals_.size() - 1;
     cancel_requested_ = false;
+    paused_ = false;
     state_ = MissionState::IDLE;
     queue_size = goals_.size();
+  }
+  {
+    std::lock_guard<std::mutex> g(navsrv_mtx_);
+    navsrv_goal_index_[raw_handle] = my_index;
   }
   publishGoalList_();
   publishProgress_();
   publishStatus_("awaiting start");
-  RCLCPP_INFO(get_logger(), "[Proxy] Enqueued goal. Queue size: %zu", queue_size);
+  if (append_only) {
+    RCLCPP_INFO(get_logger(), "[Proxy] Appended goal. Queue size: %zu", queue_size);
+  } else if (mission_active) {
+    RCLCPP_WARN(get_logger(), "[Proxy] Active mission preempted. Queue reset to new goal.");
+  } else {
+    RCLCPP_INFO(get_logger(), "[Proxy] Loaded goal. Queue size: %zu", queue_size);
+  }
   RCLCPP_INFO(get_logger(),
     "[Proxy] Goal enqueued and waiting. Use Mission Start to begin navigation.");
 
   // 3) Keep server goal active until our enqueued index is passed by the worker
-  const std::size_t my_index = 0;
   rclcpp::Rate rate(10.0);
   while (rclcpp::ok())
   {
     if (goal_handle->is_canceling()) {
+      cleanup_tracking();
       goal_handle->canceled(std::make_shared<NavigateToPose::Result>());
       RCLCPP_WARN(get_logger(), "[Proxy] Server goal canceled by client.");
       return;
@@ -401,6 +451,7 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
       s = state_;
       finished = (current_index_ > my_index) || (current_index_ >= goals_.size());
       if (s == MissionState::ABORTED || s == MissionState::ESTOPPED) {
+        cleanup_tracking();
         goal_handle->abort(std::make_shared<NavigateToPose::Result>());
         RCLCPP_WARN(get_logger(), "[Proxy] Aborted/Estopped while waiting for completion.");
         return;
@@ -408,6 +459,7 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
     }
 
     if (finished) {
+      cleanup_tracking();
       goal_handle->succeed(std::make_shared<NavigateToPose::Result>());
       RCLCPP_INFO(get_logger(), "[Proxy] Server goal reported success.");
       return;
@@ -417,6 +469,7 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
   }
 
   if (!rclcpp::ok()) {
+    cleanup_tracking();
     goal_handle->abort(std::make_shared<NavigateToPose::Result>());
   }
 }
