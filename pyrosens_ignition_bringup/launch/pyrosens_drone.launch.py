@@ -87,9 +87,9 @@ def generate_launch_description():
     # Start Gazebo to simulate the robot in the chosen world
     world_launch_arg = DeclareLaunchArgument(
         'world',
-        default_value='test_world_resize',
+        default_value='test_world',
         description='Which world to load',
-        choices=['simple_trees', 'large_demo', 'test_world_resize', 'test_world']
+        choices=['simple_trees', 'large_demo', 'test_world_resize', 'test_world', 'multi_fire']
     )
     ld.add_action(world_launch_arg)
     gui_config_flag = f' --gui-config {gui_config_path}'
