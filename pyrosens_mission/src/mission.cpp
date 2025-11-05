@@ -34,6 +34,8 @@ Mission::Mission() : rclcpp::Node("mission_manager")
   pose_stream_topic_  = this->declare_parameter<std::string>("pose_stream_topic", "/goals/pose_stream");
   downstream_nav_action_name_ = this->declare_parameter<std::string>(
       "downstream_nav_action_name", "/nav2/navigate_to_pose");
+  upstream_nav_action_name_ = this->declare_parameter<std::string>(
+      "upstream_nav_action_name", "navigate_to_pose");
 
   // ---- Subscriptions ----
   {
@@ -121,7 +123,7 @@ Mission::Mission() : rclcpp::Node("mission_manager")
   // ---- Action SERVER (proxy inbox for teammates) ----
   nav_server_ = rclcpp_action::create_server<NavigateToPose>(
       this,
-      "navigate_to_pose",  // keep default; remap if needed
+      upstream_nav_action_name_,
       std::bind(&Mission::navSrvHandleGoal_,     this, std::placeholders::_1, std::placeholders::_2),
       std::bind(&Mission::navSrvHandleCancel_,   this, std::placeholders::_1),
       std::bind(&Mission::navSrvHandleAccepted_, this, std::placeholders::_1),
@@ -129,7 +131,8 @@ Mission::Mission() : rclcpp::Node("mission_manager")
       cbg_action_);
 
   RCLCPP_INFO(get_logger(),
-    "MissionManager up. Proxy server on /navigate_to_pose -> forwards to %s",
+    "MissionManager up. Proxy server on %s -> forwards to %s",
+    upstream_nav_action_name_.c_str(),
     downstream_nav_action_name_.c_str());
 
   publishStatus_();
