@@ -1,8 +1,27 @@
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.conditions import IfCondition
+from launch.substitutions import (Command, LaunchConfiguration,
+                                  PathJoinSubstitution)
 from launch_ros.actions import Node
-from launch.actions import ExecuteProcess
+from launch_ros.parameter_descriptions import ParameterValue
+from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
+
+    ld = LaunchDescription()
+
+    pkg_path = FindPackageShare('pyrosens_hotspotDetection')
+    default_rviz = PathJoinSubstitution([pkg_path, 'rviz', 'hotspot_detect_n_map.rviz'])
+
+    use_sim_time_arg = DeclareLaunchArgument('use_sim_time', default_value='True')
+    rviz_arg = DeclareLaunchArgument('rviz', default_value='True')
+    rviz_cfg_arg = DeclareLaunchArgument('rviz_config', default_value=default_rviz)
+
+    ld.add_action(use_sim_time_arg)
+    ld.add_action(rviz_arg)
+    ld.add_action(rviz_cfg_arg)
+
     # Node: detects hotspots and publishes point clouds
     detector = Node(
         package='pyrosens_hotspotDetection',
@@ -23,6 +42,8 @@ def generate_launch_description():
             'depth_stride': 3
         }]
     )
+    ld.add_action(detector)
+
 
     # Node: accumulates the hotspot points into a heatmap
     mapper = Node(
@@ -43,11 +64,17 @@ def generate_launch_description():
             'add_weight': 1.0
         }]
     )
+    ld.add_action(mapper)    
 
-    # RViz: auto-launch with a custom or default config
-    rviz = ExecuteProcess(
-        cmd=['rviz2', '-d', '$(find pyrosens_hotspotDetection)/rviz/hotspot_detection2.rviz'],
-        output='screen'
+    # rviz2 visualises data
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        output='screen',
+        parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
+        arguments=['-d', LaunchConfiguration('rviz_config')],
+        condition=IfCondition(LaunchConfiguration('rviz'))
     )
+    ld.add_action(rviz_node)
 
-    return LaunchDescription([detector, mapper, rviz])
+    return ld
