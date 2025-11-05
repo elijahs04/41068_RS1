@@ -11,35 +11,41 @@
 #include "nav_msgs/msg/odometry.hpp"
 #include "std_srvs/srv/empty.hpp"
 #include "nav2_msgs/srv/clear_entire_costmap.hpp"
+#include "sensor_msgs/msg/point_cloud2.hpp"
+#include <sensor_msgs/point_cloud2_iterator.hpp>
 #include <thread>
+#include <mutex>
 
 class PathPlanning: public rclcpp::Node {
     public:
+
         using NavigateToPose = nav2_msgs::action::NavigateToPose;
-        using GoalHandleNav = rclcpp_action::ClientGoalHandle<NavigateToPose>;
 
         PathPlanning();
-        ~PathPlanning();
-
-        bool sendGoalAndWait(double x, double y, double qz, double qw, double theta);
-        void runGoals();        
+        ~PathPlanning();      
 
 
     private:
 
         double currentPathLength_;
+
+        std::vector<std::pair<float, float>> xyPoints_;
         
         geometry_msgs::msg::Pose currentPose_;
 
         geometry_msgs::msg::PoseStamped currentGoalPose_; 
 
+        sensor_msgs::msg::PointCloud2::SharedPtr pointCloud_;
+        std::mutex dataMutex_;
+
+        
+
         std::thread runThread;
         
         rclcpp_action::Client<NavigateToPose>::SharedPtr client_;
 
-        rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr vel_pub_;
+        rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr pointCloudSub_;
 
-        rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr plan_sub_;
 
         rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
 
@@ -47,11 +53,11 @@ class PathPlanning: public rclcpp::Node {
         
         void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg);
 
-        void moveUpward(double meters);
+        void pointCloudCallback(sensor_msgs::msg::PointCloud2::SharedPtr msg);
 
-        bool checkGoalReachable();
+        void sendNextGoal();
 
-        void clearCostmap(); 
+        void findNextGoal();
 };
 
 

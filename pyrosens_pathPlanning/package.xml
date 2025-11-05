@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>pyrosens</name>
+  <name>pyrosens_pathPlanning</name>
   <version>0.0.1</version>
-  <description>pyrosens package</description>
+  <description>pyrosens_pathPlanning package</description>
   <maintainer email="your@email.com">Your Name</maintainer>
   <license>LGPLv3</license>
 
@@ -14,6 +14,9 @@
   <depend>rclcpp_action</depend>
   <depend>geometry_msgs</depend>
   <depend>nav2_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+
 
   <export>
     <build_type>ament_cmake</build_type>

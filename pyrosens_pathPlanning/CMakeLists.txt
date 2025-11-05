@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(pyrosens)
+project(pyrosens_pathPlanning)
 
 # Default to C++17
 if(NOT CMAKE_CXX_STANDARD)
@@ -19,16 +19,19 @@ find_package(rclcpp_action REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav2_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+
 
 ##################################################################################
 
-add_library(goals src/goals.cpp)
-ament_target_dependencies(goals 
+add_library(pathPlanning src/pathPlanning.cpp)
+ament_target_dependencies(pathPlanning
   rclcpp
   rclcpp_action
   geometry_msgs
   nav2_msgs
   std_srvs
+  sensor_msgs
 )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -40,8 +43,9 @@ ament_target_dependencies(runner
   geometry_msgs
   nav2_msgs
   std_srvs
+  sensor_msgs
 )
-target_link_libraries(runner goals)
+target_link_libraries(runner pathPlanning)
 
 
 
@@ -51,12 +55,13 @@ ament_target_dependencies(runner
   geometry_msgs
   nav2_msgs
   std_srvs
+  sensor_msgs
 ) 
 
 
 install (TARGETS
   runner
-  goals
+  pathPlanning
   DESTINATION lib/${PROJECT_NAME}
 )
 
