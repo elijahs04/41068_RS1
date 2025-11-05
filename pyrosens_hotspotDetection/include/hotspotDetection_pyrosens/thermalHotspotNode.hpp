@@ -27,19 +27,22 @@ public:
   ~ThermalHotspotNode() override;
 
 private:
-  // ROS callback -> Synced callback: thermal + depth
+  // === ROS callback -> Synced callback: thermal + depth ===
   void syncCallback(const sensor_msgs::msg::Image::ConstSharedPtr& thermal_msg,
                     const sensor_msgs::msg::Image::ConstSharedPtr& depth_msg);
 
 
   // ROS I/O
-  // message_filters subscribers for sync
+  // Subscribers
   std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image>> thermal_sub_;
   std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image>> depth_sub_;
+
+  // Synchronizer
   using SyncPolicy = message_filters::sync_policies::ApproximateTime<
       sensor_msgs::msg::Image, sensor_msgs::msg::Image>;
   std::shared_ptr<message_filters::Synchronizer<SyncPolicy>> sync_;
 
+  // Publishers
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr thermalOverlay_pub_;
   rclcpp::Publisher<geometry_msgs::msg::PoseArray>::SharedPtr hotspots_world_pub_;
   rclcpp::Publisher<geometry_msgs::msg::PointStamped>::SharedPtr hot_points_pub_;
@@ -67,7 +70,6 @@ private:
   int depth_stride_{3};           // sample every N pixels to keep it light
   double depth_min_{0.2};         // meters
   double depth_max_{10.0};        // meters (matches your SDF far clip)
-
   double temp_gain_ = 1.0;
   double temp_offset_ = 0.0;
   bool publish_overlay_ = true;
@@ -78,8 +80,6 @@ private:
   int min_area_px_ = 50;
   int max_area_px_ = 0;         // 0=off
   int max_regions_draw_ = 5;    // just for overlay sanity
-
-  // Cached geometry (optional convenience)
   int img_width_ = 0;
   int img_height_ = 0;
 
