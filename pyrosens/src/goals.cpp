@@ -72,8 +72,8 @@ void Goals::runGoals()
             break;
         }
 
-        moveUpward(10);
-        clearCostmap();
+        //moveUpward(10);
+        //clearCostmap();
     }
 }
 

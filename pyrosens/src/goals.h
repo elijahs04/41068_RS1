@@ -41,7 +41,7 @@ class Goals: public rclcpp::Node {
 
         rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr plan_sub_;
 
-        rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub;
+        rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
 
         void planCallback(const nav_msgs::msg::Path::SharedPtr msg);
         
