@@ -15,6 +15,8 @@ HotspotMapperNode::HotspotMapperNode() : rclcpp::Node("hotspot_mapper_node")
   this->declare_parameter<double>("decay_rate_hz", decay_rate_hz_);
   this->declare_parameter<double>("decay_half_life_s", decay_half_life_s_);
   this->declare_parameter<double>("add_weight", double(add_weight_));
+  this->declare_parameter<double>("clear_threshold", double(clear_threshold_));
+  this->declare_parameter<bool>("publish_unknown_as_unseen", publish_unknown_as_unseen_);
 
   // Get params
   this->get_parameter("frame_id", frame_id_);
@@ -27,9 +29,12 @@ HotspotMapperNode::HotspotMapperNode() : rclcpp::Node("hotspot_mapper_node")
   this->get_parameter("decay_rate_hz", decay_rate_hz_);
   this->get_parameter("decay_half_life_s", decay_half_life_s_);
   double addw; this->get_parameter("add_weight", addw); add_weight_ = float(addw);
+  double ct; this->get_parameter("clear_threshold", ct); clear_threshold_ = float(ct);
+  this->get_parameter("publish_unknown_as_unseen", publish_unknown_as_unseen_);
 
   // Pre-size grid
-  grid_.assign(size_t(width_ * height_), 0.0f);
+  grid_.assign(size_t(width_*height_), 0.0f);
+  seen_.assign(size_t(width_*height_), 0u);
 
   // Build Gaussian kernel
   buildKernel_();
@@ -117,8 +122,10 @@ void HotspotMapperNode::splatGaussian(int cx, int cy)
       int gx = x0 + kx;
       if (gx < 0 || gx >= width_) continue;
 
-      float w = kernel_.at<float>(ky, kx) * add_weight_;
-      grid_[gy * width_ + gx] += w;
+      const size_t idx = size_t(gy) * size_t(width_) + size_t(gx);
+      const float w = kernel_.at<float>(ky, kx) * add_weight_;
+      grid_[idx] += w;
+      seen_[idx] = 1u;
     }
   }
 }
@@ -152,20 +159,36 @@ void HotspotMapperNode::cloudCb(const sensor_msgs::msg::PointCloud2::SharedPtr m
 
 void HotspotMapperNode::tick()
 {
-  // Exponential decay
-  for (auto& v : grid_) v *= decay_factor_per_tick_;
+  for (size_t i = 0; i < grid_.size(); ++i) {
+    grid_[i] *= decay_factor_per_tick_;
+    if (grid_[i] < clear_threshold_) {
+      grid_[i] = 0.0f;
+      if (publish_unknown_as_unseen_) seen_[i] = 0u;  // let it disappear
+    }
+  }
   publishOutputs();
 }
 
 void HotspotMapperNode::publishOutputs()
 {
-  // 1) OccupancyGrid (0..100, -1=unknown). We normalise by a rolling cap.
-  // Compute a robust cap with percentile to avoid one huge spike dominating
-  std::vector<float> tmp = grid_;
-  std::nth_element(tmp.begin(), tmp.begin() + tmp.size()*9/10, tmp.end());
-  float cap = std::max(1e-3f, tmp[tmp.size()*9/10]); // 90th percentile
+  // Build a list of active values for percentile cap
+  float cap = 0.0f;
+  {
+    std::vector<float> vals; vals.reserve(grid_.size());
+    for (size_t i = 0; i < grid_.size(); ++i) {
+      if (seen_[i] && grid_[i] > 0.0f) vals.push_back(grid_[i]);
+    }
+    if (!vals.empty()) {
+      const size_t k = std::max<size_t>(0, vals.size() * 9 / 10);
+      std::nth_element(vals.begin(), vals.begin() + k, vals.end());
+      cap = std::max(1e-3f, vals[k]);
+    } else {
+      cap = 1.0f; // avoid div-by-zero; nothing to show
+    }
+  }
   const float inv_cap = 100.0f / cap;
 
+  // OccupancyGrid
   nav_msgs::msg::OccupancyGrid og;
   og.header.stamp = now();
   og.header.frame_id = frame_id_;
@@ -174,21 +197,32 @@ void HotspotMapperNode::publishOutputs()
   og.info.height = height_;
   og.info.origin.position.x = origin_x_;
   og.info.origin.position.y = origin_y_;
-  og.info.origin.position.z = 0.0;
   og.info.origin.orientation.w = 1.0;
-  og.data.resize(size_t(width_*height_));
+  og.data.resize(size_t(width_) * size_t(height_));
 
-  for (int i = 0; i < width_*height_; ++i) {
-    int v = int(std::round(std::min(100.0f, grid_[i] * inv_cap)));
-    og.data[size_t(i)] = int8_t(v);
+  for (size_t i = 0; i < grid_.size(); ++i) {
+    if (publish_unknown_as_unseen_ && !seen_[i]) {
+      og.data[i] = int8_t(-1); // unknown -> RViz transparent (no purple slab)
+    } else {
+      int v = int(std::round(std::min(100.0f, grid_[i] * inv_cap)));
+      og.data[i] = int8_t(v);
+    }
   }
   pub_grid_->publish(og);
 
-  // 2) Pretty image with color map (Jet)
+  // Pretty image (use only seen cells for normalization)
   cv::Mat img(height_, width_, CV_32F, (void*)grid_.data());
-  cv::Mat norm_u8, color_bgr;
-  img.convertTo(norm_u8, CV_8U, 255.0 / cap, 0.0);
-  cv::applyColorMap(norm_u8, color_bgr, cv::ColormapTypes::COLORMAP_JET);
+  cv::Mat norm_u8(height_, width_, CV_8U, cv::Scalar(0));
+  const float scale = 255.0f / cap;
+  for (int y = 0; y < height_; ++y) {
+    for (int x = 0; x < width_; ++x) {
+      const size_t idx = size_t(y) * size_t(width_) + size_t(x);
+      if (seen_[idx]) {
+        norm_u8.at<uint8_t>(y, x) = uint8_t(std::min(255.0f, grid_[idx] * scale));
+      } // else keep 0 (background)
+    }
+  }
+  cv::Mat color_bgr; cv::applyColorMap(norm_u8, color_bgr, cv::ColormapTypes::COLORMAP_JET);
 
   sensor_msgs::msg::Image out;
   out.header = og.header;
@@ -204,11 +238,13 @@ void HotspotMapperNode::publishOutputs()
 void HotspotMapperNode::reset_()
 {
   std::fill(grid_.begin(), grid_.end(), 0.0f);
+  std::fill(seen_.begin(), seen_.end(), uint8_t(0));
 }
 
-void HotspotMapperNode::handleReset_(const std::shared_ptr<std_srvs::srv::Empty::Request>,
-                               std::shared_ptr<std_srvs::srv::Empty::Response>)
+void HotspotMapperNode::handleReset_(
+    const std::shared_ptr<std_srvs::srv::Empty::Request> /*req*/,
+    std::shared_ptr<std_srvs::srv::Empty::Response> /*res*/)
 {
   reset_();
-  RCLCPP_INFO(this->get_logger(), "Heatmap reset.");
+  RCLCPP_INFO(this->get_logger(), "Heatmap reset via /hotspots/reset_heatmap");
 }
