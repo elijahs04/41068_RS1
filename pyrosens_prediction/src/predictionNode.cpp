@@ -4,6 +4,8 @@
 #include <cmath>
 #include <cstdint>
 #include <limits>
+#include <iomanip>
+#include <sstream>
 #include <utility>
 
 #include "sensor_msgs/point_cloud2_iterator.hpp"
@@ -404,16 +406,90 @@ void PredictionNode::predict_step()
 
   publish_visualization();
   publish_prediction_cloud();
+  log_prediction_step(predicted_point,
+                      wind_result->velocity,
+                      wind_speed,
+                      heat_value,
+                      heat_gradient,
+                      grad_mag,
+                      wind_result->neighbor_count,
+                      heat_neighbors);
+}
 
-  RCLCPP_INFO(this->get_logger(),
-              "Predict step -> point(%.2f, %.2f, %.2f) wind(%.2f, %.2f, %.2f | %.2f m/s, %zu samples) "
-              "heat=%.2f degC (grad=%.3f degC/m, dir=(%.2f, %.2f, %.2f), %zu samples)",
-              predicted_point.x, predicted_point.y, predicted_point.z,
-              wind_result->velocity.x, wind_result->velocity.y, wind_result->velocity.z,
-              wind_speed, wind_result->neighbor_count,
-              heat_value, grad_mag,
-              heat_gradient.x, heat_gradient.y, heat_gradient.z,
-              heat_neighbors);
+void PredictionNode::log_prediction_step(const geometry_msgs::msg::Point & point,
+                                         const geometry_msgs::msg::Vector3 & wind,
+                                         double wind_speed,
+                                         float heat_value,
+                                         const geometry_msgs::msg::Vector3 & gradient,
+                                         double gradient_magnitude,
+                                         std::size_t wind_neighbors,
+                                         std::size_t heat_neighbors)
+{
+  auto format_line = [](const std::string & label, const std::string & value) {
+    constexpr int box_width = 63;
+    const int base_width = 18;
+    const int padding = box_width - base_width - 3;
+    const int value_width = std::max(0, padding);
+    std::ostringstream line;
+    line << "| " << std::left << std::setw(base_width) << label << " "
+         << std::setw(value_width) << value << " |";
+    return line.str();
+  };
+
+  std::ostringstream oss;
+  oss.setf(std::ios::fixed);
+  oss << "\n+---------------------------------------------------------------+\n";
+  oss << "|                    Prediction Step Summary                    |\n";
+  oss << "+---------------------------------------------------------------+\n";
+
+  {
+    std::ostringstream tmp;
+    tmp.setf(std::ios::fixed);
+    tmp << std::setprecision(2)
+        << "(" << point.x << ", " << point.y << ", " << point.z << ") m";
+    oss << format_line("Point", tmp.str()) << "\n";
+  }
+
+  {
+    std::ostringstream tmp;
+    tmp.setf(std::ios::fixed);
+    tmp << std::setprecision(2)
+        << "(" << wind.x << ", " << wind.y << ", " << wind.z << ") m/s";
+    oss << format_line("Wind vector", tmp.str()) << "\n";
+  }
+
+  {
+    std::ostringstream tmp;
+    tmp.setf(std::ios::fixed);
+    tmp << std::setprecision(2) << wind_speed << " m/s (" << wind_neighbors << " samples)";
+    oss << format_line("Wind speed", tmp.str()) << "\n";
+  }
+
+  {
+    std::ostringstream tmp;
+    tmp.setf(std::ios::fixed);
+    tmp << std::setprecision(2) << heat_value << " degC (" << heat_neighbors << " samples)";
+    oss << format_line("Heat", tmp.str()) << "\n";
+  }
+
+  {
+    std::ostringstream tmp;
+    tmp.setf(std::ios::fixed);
+    tmp << std::setprecision(3) << gradient_magnitude << " degC/m";
+    oss << format_line("Gradient |∇T|", tmp.str()) << "\n";
+  }
+
+  {
+    std::ostringstream tmp;
+    tmp.setf(std::ios::fixed);
+    tmp << std::setprecision(3)
+        << "(" << gradient.x << ", " << gradient.y << ", " << gradient.z << ") degC/m";
+    oss << format_line("Gradient dir", tmp.str()) << "\n";
+  }
+
+  oss << "+---------------------------------------------------------------+";
+
+  RCLCPP_INFO_STREAM(this->get_logger(), oss.str());
 }
 // Trilinear interpolation function
 float PredictionNode::trilinear_interpolation(float x, float y, float z,
