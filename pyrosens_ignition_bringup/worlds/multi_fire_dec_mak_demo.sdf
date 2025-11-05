@@ -171,7 +171,7 @@
 <!-- ================== fire 1 ==================== -->
     <model name="fire_pit" canonical_link="fire_link">
       <static>true</static>
-      <pose>3 -5 0 0 0 0</pose>
+      <pose>4 -4 0 0 0 0</pose>
 
       <link name="fire_link">
         <!-- Collision (center at z=0.5 for length=1.0) -->
@@ -245,7 +245,7 @@
 <!-- ================== fire 2 ==================== -->
     <model name="fire_pit2" canonical_link="fire_link">
       <static>true</static>
-      <pose>-4 -2 0 0 0 0</pose>
+      <pose>-5 -3 0 0 0 0</pose>
 
       <link name="fire_link2">
         <!-- Collision (center at z=0.5 for length=1.0) -->
@@ -343,47 +343,6 @@
       </plugin>
     </include>
 
-    <!-- Pine tree with temperature -->
-    <include>
-      <uri>
-        https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine%20tree
-      </uri>
-      <name>pine3_temp</name>
-      <pose>-6.0 -7.5 0 0 0 0</pose>
-      <plugin filename="libignition-gazebo-thermal-system.so"
-              name="ignition::gazebo::systems::Thermal">
-        <temperature>303.15</temperature>
-      </plugin>
-    </include>
-
-
-    <!-- Pine tree -->
-    <include>
-      <uri>
-        https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine%20tree
-      </uri>
-      <name>pine4_temp</name>
-      <pose>0.0 -8.5 0 0 0 0</pose>
-      <plugin filename="libignition-gazebo-thermal-system.so"
-              name="ignition::gazebo::systems::Thermal">
-        <temperature>303.15</temperature>
-      </plugin>
-    </include>
-
-    <!-- Pine tree with temperature -->
-    <include>
-      <uri>
-        https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine%20tree
-      </uri>
-      <name>pine5_temp</name>
-      <pose> 4.0 -8.0 0 0 0 0</pose>
-      <plugin filename="libignition-gazebo-thermal-system.so"
-              name="ignition::gazebo::systems::Thermal">
-        <temperature>303.15</temperature>
-      </plugin>
-    </include>
-
-
     <!-- Pine tree -->
     <include>
       <uri>
@@ -410,6 +369,79 @@
       </plugin>
     </include>
 
+<!-- ================== fire 3 ==================== -->
+    <model name="fire_pit3" canonical_link="fire_link">
+      <static>true</static>
+      <pose>1 -12 0 0 0 0</pose>
+
+      <link name="fire_link2">
+        <!-- Collision (center at z=0.5 for length=1.0) -->
+        <collision name="fire_collision">
+          <pose>0 0 0.5 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>1.05</radius>
+              <length>1.10</length>
+            </cylinder>
+          </geometry>
+        </collision>
+
+        <!-- Hot inner core -->
+        <visual name="fire_visual_core">
+          <pose>0 0 0.5 0 0 0</pose> <!-- length=1.0 => z=0.5 -->
+          <geometry>
+            <cylinder>
+              <radius>1.00</radius>
+              <length>1.0</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>1.0 0.5 0.0 1.0</ambient>
+            <diffuse>1.0 0.4 0.0 1.0</diffuse>
+            <specular>0.2 0.2 0.2 1.0</specular>
+            <emissive>1.0 0.6 0.1 1.0</emissive>
+          </material>
+          <plugin filename="libignition-gazebo-thermal-system.so"
+                  name="ignition::gazebo::systems::Thermal">
+            <temperature>499.0</temperature>
+          </plugin>
+        </visual>
+
+        <!-- Warm outer plume - Visual (due to thermal limitations) -->
+        <visual name="fire_visual_outer">
+          <pose>0 0 0.625 0 0 0</pose> <!-- length=1.25 => z=0.625 -->
+          <geometry>
+            <cylinder>
+              <radius>1.20</radius>
+              <length>1.25</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>1.0 0.3 0.0 0.5</ambient>
+            <diffuse>1.0 0.3 0.0 0.5</diffuse>
+            <emissive>1.0 0.3 0.0 0.5</emissive>
+          </material>
+          <plugin filename="libignition-gazebo-thermal-system.so"
+                  name="ignition::gazebo::systems::Thermal">
+            <temperature>499.0</temperature>
+          </plugin>
+        </visual>
+
+        <!-- Glow in RGB (scaled up) -->
+        <light name="fire_light" type="point">
+          <pose>0 0 1.0 0 0 0</pose>
+          <diffuse>1.0 0.6 0.2 1.0</diffuse>
+          <specular>0.2 0.2 0.2 1.0</specular>
+          <attenuation>
+            <range>20.0</range>      <!-- was 6.0 -->
+            <linear>0.4</linear>     <!-- soften falloff -->
+            <constant>0.1</constant>
+            <quadratic>0.05</quadratic>
+          </attenuation>
+          <cast_shadows>false</cast_shadows>
+        </light>
+      </link>
+    </model>
 
   
   </world>
