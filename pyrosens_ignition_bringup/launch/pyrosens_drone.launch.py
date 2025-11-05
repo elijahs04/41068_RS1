@@ -13,7 +13,7 @@ def generate_launch_description():
     ld = LaunchDescription()
 
     # Get paths to directories
-    pkg_path = FindPackageShare('41068_ignition_bringup')
+    pkg_path = FindPackageShare('pyrosens_ignition_bringup')
     config_path = PathJoinSubstitution([pkg_path,
                                        'config'])
 
@@ -27,14 +27,14 @@ def generate_launch_description():
     ld.add_action(use_sim_time_launch_arg)
     rviz_launch_arg = DeclareLaunchArgument(
         'rviz',
-        default_value='False',
-        description='Flag to launch RViz'
+        default_value='True',
+        description='Flag to Not launch RViz'
     )
     ld.add_action(rviz_launch_arg)
     nav2_launch_arg = DeclareLaunchArgument(
         'nav2',
         default_value='True',
-        description='Flag to launch Nav2'
+        description='Flag to Not launch Nav2'
     )
     ld.add_action(nav2_launch_arg)
 
@@ -68,9 +68,9 @@ def generate_launch_description():
     # Start Gazebo to simulate the robot in the chosen world
     world_launch_arg = DeclareLaunchArgument(
         'world',
-        default_value='simple_trees',
+        default_value='test_world_resize',
         description='Which world to load',
-        choices=['simple_trees', 'large_demo', 'test_world']
+        choices=['simple_trees', 'large_demo', 'test_world_resize', 'test_world']
     )
     ld.add_action(world_launch_arg)
     gazebo = IncludeLaunchDescription(
@@ -111,7 +111,7 @@ def generate_launch_description():
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}],
         arguments=['-d', PathJoinSubstitution([config_path,
-                                               '41068.rviz'])],
+                                               'pyrosens.rviz'])],
         condition=IfCondition(LaunchConfiguration('rviz'))
     )
     ld.add_action(rviz_node)
@@ -120,7 +120,7 @@ def generate_launch_description():
     nav2 = IncludeLaunchDescription(
         PathJoinSubstitution([pkg_path,
                               'launch',
-                              '41068_navigation.launch.py']),
+                              'pyrosens_navigation.launch.py']),
         launch_arguments={
             'use_sim_time': use_sim_time
         }.items(),
@@ -128,6 +128,14 @@ def generate_launch_description():
     )
     ld.add_action(nav2)
 
-    
+    # --- Launch Pyrosens GUI Package from outside this bringup ---
+    gui_launch = IncludeLaunchDescription(
+        PathJoinSubstitution([FindPackageShare('pyrosens_gui'),
+                              'launch', 'pyrosens_gui.launch.py']),
+        launch_arguments={
+            'use_sim_time': use_sim_time
+        }.items()
+    )
+    ld.add_action(gui_launch)
 
     return ld
