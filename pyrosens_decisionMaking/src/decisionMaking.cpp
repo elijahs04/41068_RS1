@@ -21,7 +21,7 @@ DecisionMaking::DecisionMaking() : rclcpp::Node("planning_execution") {
         std::bind(&DecisionMaking::pointCloudCallback, this, std::placeholders::_1));
     
     goalsPublisher_ = this->create_publisher<geometry_msgs::msg::PoseStamped>(
-        "/next_goal", 10);
+        "/send_goal /mission/navigate_to_pose", 10);
     
     
 
@@ -30,6 +30,8 @@ DecisionMaking::DecisionMaking() : rclcpp::Node("planning_execution") {
         RCLCPP_ERROR(this->get_logger(), "Action server not available!");
         return;
     }
+
+    findNextFire();
 
     
 }
@@ -48,10 +50,7 @@ void DecisionMaking::pointCloudCallback(const sensor_msgs::msg::PointCloud2::Con
     xyPoints_.clear();
     xyPoints_.reserve(msg->width * msg->height);
 
-    float min_x = std::numeric_limits<float>::infinity();
-    float max_x = -std::numeric_limits<float>::infinity();
-    float min_y = std::numeric_limits<float>::infinity();
-    float max_y = -std::numeric_limits<float>::infinity();
+    
 
     for (sensor_msgs::PointCloud2ConstIterator<float> iter_x(*msg, "x"),
                                                      iter_y(*msg, "y");
@@ -83,9 +82,13 @@ void DecisionMaking::pointCloudCallback(const sensor_msgs::msg::PointCloud2::Con
 void DecisionMaking::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg){
     std::lock_guard<std::mutex> lock(dataMutex_);
     currentPose_ = msg->pose.pose;
+
+    if (isCloseEnough(currentPose_, currentGoalPose_)){
+        findNextFire();
+    }
 }
 
-void DecisionMaking::findFirstGoal(){
+void DecisionMaking::findNextFire(){
     geometry_msgs::msg::Pose current_pose;
     std::vector<std::pair<float, float>> points;
     {
@@ -99,6 +102,8 @@ void DecisionMaking::findFirstGoal(){
         return;
     }
 
+    auto dense_point = findDenseCluster(points);
+
     const double current_x = current_pose.position.x;
     const double current_y = current_pose.position.y;
 
@@ -110,7 +115,7 @@ void DecisionMaking::findFirstGoal(){
         const double dy = static_cast<double>(point.second) - current_y;
         const double distance_sq = dx * dx + dy * dy;
 
-        if (distance_sq < min_distance_sq) {
+        if ((distance_sq < min_distance_sq) && outsideFireZones(point.first, point.second) && closeToDensePoint(point.first, point.second, dense_point.first, dense_point.second)) {
             min_distance_sq = distance_sq;
             closest_point = point;
         }
@@ -142,6 +147,10 @@ void DecisionMaking::findFirstGoal(){
     currentGoalPose_.pose.orientation.z = q.z();
     currentGoalPose_.pose.orientation.w = q.w();
 
+    int numberFires = Fires_.size();
+
+    Fires_.push_back({numberFires + 1, static_cast<int>(goal_x), static_cast<int>(goal_y), 2});
+
     RCLCPP_INFO(
         this->get_logger(),
         "Next goal placed 3.0 m from closest point (%.3f, %.3f) at (%.3f, %.3f) facing the point",
@@ -151,6 +160,91 @@ void DecisionMaking::findFirstGoal(){
         goal_y);
 }
 
-void DecisionMaking::sendNextGoal(){
 
+
+bool DecisionMaking::outsideFireZones(float x, float y){
+    for(const auto& fire : Fires_){
+
+        float fire_x = static_cast<float>(fire[1]);
+        float fire_y = static_cast<float>(fire[2]);
+        float fire_radius = static_cast<float>(fire[3]);
+
+        if(x >= fire_x - fire_radius && x <= fire_x + fire_radius &&
+           y >= fire_y - fire_radius && y <= fire_y + fire_radius){
+               return false;
+           }
+    }
+    return true;
+}
+
+bool closeToDensePoint(float x, float y, float dense_x, float dense_y){
+    float threshold = 2; // 2 meters
+    float dx = x - dense_x;
+    float dy = y - dense_y;
+    float distance_sq = dx * dx + dy * dy;
+    return distance_sq <= threshold;
+}
+
+std::pair<float, float> DecisionMaking::findDenseCluster( const std::vector<std::pair<float, float>> points) {
+    float radius = 1.0;
+    int clusterSize = 10;
+
+    for (size_t i = 0; i < points.size(); ++i) {
+        int count = 0;
+        const auto& p1 = points[i];
+
+        for (size_t j = 0; j < points.size(); ++j) {
+            if (i == j) continue;
+            const auto& p2 = points[j];
+            float dx = p1.first  - p2.first;
+            float dy = p1.second - p2.second;
+            float dist = std::sqrt(dx * dx + dy * dy);
+
+            if (dist <= radius)
+                count++;
+        }
+
+        if (count >= clusterSize)
+            return p1;  // found a dense cluster
+    }
+
+    // none found
+    return {NAN, NAN};
+}
+
+bool isCloseEnough(const geometry_msgs::msg::Pose& a,
+                   const geometry_msgs::msg::PoseStamped& b)
+{
+    // --- Position difference ---
+    double dx = a.position.x - b.pose.position.x;
+    double dy = a.position.y - b.pose.position.y;
+    double dist = std::sqrt(dx * dx + dy * dy);
+    if (dist > 1.0)
+        return false;
+
+    // --- Quaternion → yaw conversion ---
+    auto quatToYaw = [](const geometry_msgs::msg::Quaternion& q) {
+        return std::atan2(2.0 * (q.w * q.z + q.x * q.y),
+                          1.0 - 2.0 * (q.y * q.y + q.z * q.z));
+    };
+
+    double yawA = quatToYaw(a.orientation);
+    double yawB = quatToYaw(b.pose.orientation);
+    double yawDiff = std::fabs(yawA - yawB);
+
+    // Normalize to [0, π]
+    if (yawDiff > M_PI)
+        yawDiff = 2 * M_PI - yawDiff;
+
+    // --- 30 degrees = π/6 radians ---
+    return yawDiff <= M_PI / 6;
+}
+
+
+void DecisionMaking::sendNextGoal(){
+   
+
+//please make this work xx, send current goal pose to your mission thing
+
+    
 }
