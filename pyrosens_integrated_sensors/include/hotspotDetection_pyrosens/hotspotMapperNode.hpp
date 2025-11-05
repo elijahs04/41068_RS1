@@ -34,16 +34,16 @@ private:
 
   // Params
   std::string frame_id_ = "map";
-  double origin_x_ = -6.25;    // meters
-  double origin_y_ = -6.25;    // meters
-  double resolution_ = 0.01;   // meters/cell
-  int width_ = 1250;            // cells
-  int height_ = 1250;           // cells
+  double origin_x_ = -10.0;    // meters
+  double origin_y_ = -10.0;    // meters
+  double resolution_ = 0.1;   // meters/cell
+  int width_ = 200;            // cells
+  int height_ = 200;           // cells
   float clear_threshold_ = 0.05f;    // when value falls below this, mark unseen
   bool publish_unknown_as_unseen_ = false;  // publish -1 for never/cleared cells
 
   // Splat kernel
-  double sigma_m_ = 0.01;      // meters
+  double sigma_m_ = 0.25;      // meters
   int kernel_radius_cells_ = 0;
   cv::Mat kernel_;             // float32 kernel
 
