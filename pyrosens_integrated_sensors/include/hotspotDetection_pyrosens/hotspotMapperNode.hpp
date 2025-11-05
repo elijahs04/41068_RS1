@@ -34,13 +34,13 @@ private:
 
   // Params
   std::string frame_id_ = "map";
-  double origin_x_ = -50.0;    // meters
-  double origin_y_ = -50.0;    // meters
+  double origin_x_ = -6.25;    // meters
+  double origin_y_ = -6.25;    // meters
   double resolution_ = 0.01;   // meters/cell
-  int width_ = 5000;            // cells
-  int height_ = 5000;           // cells
+  int width_ = 1250;            // cells
+  int height_ = 1250;           // cells
   float clear_threshold_ = 0.05f;    // when value falls below this, mark unseen
-  bool publish_unknown_as_unseen_ = true;  // publish -1 for never/cleared cells
+  bool publish_unknown_as_unseen_ = false;  // publish -1 for never/cleared cells
 
   // Splat kernel
   double sigma_m_ = 0.01;      // meters
