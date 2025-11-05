@@ -246,5 +246,5 @@ void DecisionMaking::sendNextGoal(){
 
 //please make this work xx, send current goal pose to your mission thing
 
-    
+     
 }
