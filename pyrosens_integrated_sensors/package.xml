@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>pyrosens_progress_integrated </name>
+  <name>pyrosens_integrated_sensors</name>
   <version>0.1.0</version>
   <description>Unified package combining thermal, wind, and goals nodes (sensors, interpolation, sims) plus multi-node runners for the progress demo.</description>
 
@@ -19,9 +19,7 @@
 
   <!-- Core ROS 2 -->
   <depend>rclcpp</depend>
-  <depend>rclcpp_action</depend>
-
-  <!-- Messages used across nodes -->
+  <!-- Core dependencies -->
   <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
@@ -30,9 +28,16 @@
   <!-- TF (thermal nodes use tf2/tf2_ros) -->
   <depend>tf2</depend>
   <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>message_filters</depend>
+  <depend>cv_bridge</depend>
+  <depend>std_srvs</depend>
+  <depend>opencv</depend>
 
-  <!-- Nav2 action/messages for goals -->
-  <depend>nav2_msgs</depend>
+  <build_depend>eigen3_cmake_module</build_depend>
+  <build_export_depend>eigen3_cmake_module</build_export_depend>
+  <exec_depend>eigen3_cmake_module</exec_depend>
+  <depend>Eigen3</depend>
 
   <!-- Tools (RViz configs, optional at runtime) -->
   <exec_depend>rviz2</exec_depend>

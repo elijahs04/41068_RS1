@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(pyrosens_progress)
+project(pyrosens_integrated_sensors)
 
 # Language + warnings
 set(CMAKE_CXX_STANDARD 17)
@@ -17,23 +17,77 @@ find_package(nav_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
-find_package(rclcpp_action REQUIRED)   # for goals
-find_package(nav2_msgs REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(message_filters REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(std_srvs REQUIRED)
 
 # Public headers for all targets
-include_directories(
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
+set(PROJECT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+set(SRC_FILES
+  src/hotspotDetector.cpp
+  src/hotspotMapperNode.cpp
+  src/hotspotTransform.cpp
+  src/thermalHotspotNode.cpp
+  src/windInterpolationNode.cpp
+  src/windSensNode.cpp
+  src/windSimNode.cpp
 )
 
-# Pull in component cmake files
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/thermal.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/wind.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/movement.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/integration.cmake)
+add_library(${PROJECT_NAME}_lib SHARED ${SRC_FILES})
+target_include_directories(${PROJECT_NAME}_lib
+  PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:include>
+    ${OpenCV_INCLUDE_DIRS}
+)
+ament_target_dependencies(${PROJECT_NAME}_lib
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+  nav_msgs
+  visualization_msgs
+  tf2
+  tf2_ros
+  tf2_geometry_msgs
+  message_filters
+  cv_bridge
+  std_srvs
+)
+target_link_libraries(${PROJECT_NAME}_lib
+  Eigen3::Eigen
+  ${OpenCV_LIBRARIES}
+)
 
-# Shared data
+function(add_sensor_executable target source)
+  add_executable(${target} ${source})
+  target_link_libraries(${target} ${PROJECT_NAME}_lib)
+  ament_target_dependencies(${target}
+    rclcpp
+  )
+  install(TARGETS ${target}
+    RUNTIME DESTINATION lib/${PROJECT_NAME}
+  )
+endfunction()
+
+add_sensor_executable(thermal_hotspot_node mains/main_thermalHotspotNode.cpp)
+add_sensor_executable(hotspot_mapper_node mains/main_hotspotMapperNode.cpp)
+add_sensor_executable(wind_sim_node mains/main_windSim.cpp)
+add_sensor_executable(wind_sensor_node mains/main_windSens.cpp)
+add_sensor_executable(wind_interpolation_node mains/main_windInterpolation.cpp)
+
+install(TARGETS ${PROJECT_NAME}_lib
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
+
 install(DIRECTORY include/ DESTINATION include)
 install(DIRECTORY rviz/ DESTINATION share/${PROJECT_NAME}/rviz FILES_MATCHING PATTERN "*.rviz")
+
+install(DIRECTORY launch/ DESTINATION share/${PROJECT_NAME}/launch)
 
 ament_package()
