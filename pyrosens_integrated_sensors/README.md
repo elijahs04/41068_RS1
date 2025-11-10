@@ -13,10 +13,9 @@ The thermal pipeline depends on the PyroSens Gazebo world so the simulated UAV c
 ```bash
 # Terminal 1 – bring up the Gazebo world that publishes the thermal/depth topics
 cd ~/ros2_ws
-colcon build --packages-select 41068_ignition_bringup
+colcon build --packages-select pyrosens_ignition_bringup pyrosens_mission
 source ~/ros2_ws/install/setup.bash
-ros2 launch 41068_ignition_bringup 41068_ignition_drone.launch.py \
-  slam:=true nav2:=true rviz:=true world:=test_world
+ros2 launch pyrosens_ignition_bringup pyrosens_drone.launch.py slam:=true nav2:=true rviz:=true world:=multi_fire
 
 # Terminal 2 – build and launch the integrated PyroSens stack
 cd ~/ros2_ws
