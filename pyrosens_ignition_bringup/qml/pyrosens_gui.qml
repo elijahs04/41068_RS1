@@ -1,10 +1,9 @@
-// SPDX-License-Identifier: MIT
+// This file is loaded by gz-gui when the plugin is active.
+// The C++ plugin instance is exposed as "PyroSENSGui"
+
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-
-// This file is loaded by gz-gui when the plugin is active.
-// The C++ plugin instance is exposed as "PyroSENSGui"
 
 Item {
   id: root
@@ -82,8 +81,6 @@ Item {
       Layout.fillWidth: true
       ColumnLayout {
         Label { text: PyroSENSGui.windText; wrapMode: Text.WordWrap }
-        // Extend here with more telemetry bindings
-        // e.g., Label { text: "Battery: " + PyroSENSGui.batteryText }
       }
     }
 

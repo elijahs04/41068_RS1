@@ -8,11 +8,6 @@
 #include <sstream>
 #include <string>
 
-// Mission node acts as a NavigateToPose proxy: it ingests waypoints from
-// topics/services/action clients, keeps a local queue with state tracking,
-// and forwards one goal at a time to the downstream Nav2 action server
-// exposed under `downstream_nav_action_name_`.
-
 using namespace std::chrono_literals;
 using mission_pyrosens::MissionState;
 
@@ -133,7 +128,7 @@ Mission::Mission() : rclcpp::Node("mission_manager")
   nav_client_ = rclcpp_action::create_client<NavigateToPose>(
       this, downstream_nav_action_name_, cbg_action_);
 
-  // ---- Action SERVER (proxy inbox for teammates) ----
+  // ---- Action SERVER ----
   nav_server_ = rclcpp_action::create_server<NavigateToPose>(
       this,
       upstream_nav_action_name_,
@@ -381,7 +376,6 @@ rclcpp_action::GoalResponse Mission::navSrvHandleGoal_(
   std::lock_guard<std::mutex> lk(mtx_);
   if (!goal) { RCLCPP_WARN(get_logger(), "[Proxy] Reject: null goal."); return rclcpp_action::GoalResponse::REJECT; }
   if (state_ == MissionState::ESTOPPED) { RCLCPP_WARN(get_logger(), "[Proxy] Reject: E-Stop."); return rclcpp_action::GoalResponse::REJECT; }
-  // Accept even if RUNNING/PAUSED — we will enqueue it
   return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
 }
 
@@ -439,7 +433,7 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
     navsrv_goal_index_.erase(raw_handle);
   };
 
-  // 1) Decide whether we are appending or replacing the queue
+  // 1) Decide queue is being appended to or reset
   bool mission_active = false;
   bool reset_queue = false;
   bool append_only = false;
@@ -517,7 +511,7 @@ void Mission::navSrvExecute_(const std::shared_ptr<ServerHandle> goal_handle)
       "[Proxy] Goal enqueued and waiting. Use Mission Start to begin navigation.");
   }
 
-  // 3) Keep server goal active until our enqueued index is passed by the worker
+  // 2) Keep server goal active until enqueued index is passed by the worker
   rclcpp::Rate rate(10.0);
   while (rclcpp::ok())
   {
@@ -697,7 +691,6 @@ void Mission::cancelActiveGoalNoThrow_()
       nav_client_->async_cancel_all_goals();
     }
   } catch (...) {
-    // best-effort
   }
 }
 
@@ -827,7 +820,6 @@ void Mission::publishStatus_(const std::optional<std::string>& extra)
 
 void Mission::safeDisarm_()
 {
-  // TODO: Implement vehicle-specific hard stop/disarm (topic/service/action)
   RCLCPP_WARN(get_logger(), "[SAFETY] E-Stop hook called. Implement vehicle-specific disarm/kill.");
 }
 

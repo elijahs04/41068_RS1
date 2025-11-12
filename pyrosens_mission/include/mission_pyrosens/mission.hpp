@@ -108,7 +108,7 @@ private:
   std::mutex mtx_;
   MissionState state_{MissionState::IDLE};
 
-  // Simple FIFO queue of waypoints (PoseStamped)
+  // Simple queue of waypoints
   std::vector<geometry_msgs::msg::PoseStamped> goals_;
   std::vector<GoalStatus> goal_statuses_;
   std::size_t current_index_{0};
@@ -153,9 +153,9 @@ private:
   std::string pose_stream_topic_{"/goals/pose_stream"};
   std::string simple_goal_topic_{"/goal_pose"};
 
-  // Downstream Nav2 NavigateToPose action name (client forwards to this)
+  // Downstream Nav2 NavigateToPose action name
   std::string downstream_nav_action_name_{"/navigate_to_pose"};
-  // Upstream action server name exposed to external clients (RViz, teammates)
+  // Upstream action server name exposed to external clients
   std::string upstream_nav_action_name_{"/mission/navigate_to_pose"};
   double downstream_wait_timeout_sec_{15.0};
   std::string home_frame_id_{"map"};
@@ -164,7 +164,6 @@ private:
   double home_z_{0.0};
   double home_yaw_deg_{0.0};
 
-  // Optional tracking for server-side goal (not strictly required)
   std::mutex navsrv_mtx_;
   std::weak_ptr<ServerHandle> navsrv_active_;
   std::unordered_map<ServerHandle*, std::size_t> navsrv_goal_index_;

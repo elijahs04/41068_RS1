@@ -68,7 +68,6 @@ def generate_launch_description():
         }.items(),
     )
 
-    # --- Optional Nav2 bring-up ---
     nav2_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([
             FindPackageShare("nav2_bringup"),

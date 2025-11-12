@@ -7,7 +7,7 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
-    # ---- Nav2 bringup args (adjust to your map/slam setup) ----
+    # ---- Nav2 bringup args ----
     nav2_params = DeclareLaunchArgument(
         "nav2_params",
         default_value=PathJoinSubstitution([FindPackageShare("nav2_bringup"), "params", "nav2_params.yaml"]),
@@ -21,7 +21,7 @@ def generate_launch_description():
         description="Path to a map YAML (leave empty if using SLAM)"
     )
 
-    # ---- Include Nav2 bringup (un-namespaced) ----
+    # ---- Include Nav2 bringup ----
     nav2_namespace = ""
 
     nav2 = IncludeLaunchDescription(
@@ -49,11 +49,8 @@ def generate_launch_description():
             # Proxy forwards to Nav2 running on its default namespace
             {"downstream_nav_action_name": "/navigate_to_pose",
              "upstream_nav_action_name": "/mission/navigate_to_pose"},
-            # Optional: load other mission params from YAML (below)
             PathJoinSubstitution([FindPackageShare("mission_pyrosens"), "config", "mission_params.yaml"]),
         ],
-        # If your teammate also sends waypoints as topics/paths, you can remap or set params here
-        # remappings=[("some/topic", "other/topic")],
     )
 
     return LaunchDescription([

@@ -1,11 +1,3 @@
-/**
- * @file mission_cmd_bridge.cpp
- *
- * Simple adapter that converts textual mission commands from the GUI
- * (published on /mission/cmd) into Trigger service calls understood
- * by the mission manager.
- */
-
 #include <algorithm>
 #include <chrono>
 #include <cctype>
