@@ -35,6 +35,15 @@ private:
     void onPoint(const geometry_msgs::msg::PointStamped::SharedPtr msg);
     void onPredict();
     void publish_visualization();
+    void publish_prediction_cloud();
+    void log_prediction_step(const geometry_msgs::msg::Point & point,
+                             const geometry_msgs::msg::Vector3 & wind,
+                             double wind_speed,
+                             float heat_value,
+                             const geometry_msgs::msg::Vector3 & gradient,
+                             double gradient_magnitude,
+                             std::size_t wind_neighbors,
+                             std::size_t heat_neighbors);
 
 // -------- Publishers / Subscribers --------
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr predict_pub_;
