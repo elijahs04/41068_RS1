@@ -39,7 +39,7 @@ PredictionNode::PredictionNode() : Node("prediction_node")
   point_topic_ = this->declare_parameter<std::string>("prediction_point_topic", "point");
   frame_id_ = this->declare_parameter<std::string>("frame_id", "map");
 
-  // Initialize variables
+  // Initialise variables
   wind_x_ = 0.0;
   wind_y_ = 0.0;
   wind_z_ = 0.0;
